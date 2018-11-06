@@ -21,6 +21,15 @@
 		848897502191A66400D99E91 /* FilterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488974F2191A66400D99E91 /* FilterState.swift */; };
 		848897532191A75300D99E91 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897522191A75300D99E91 /* PhotoViewController.swift */; };
 		84F5A0DE2191AEB600DEC40F /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F5A0DD2191AEB500DEC40F /* R.generated.swift */; };
+		84F5A0E52191B35800DEC40F /* CropState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F5A0E42191B35800DEC40F /* CropState.swift */; };
+		84F5A0E72191B77300DEC40F /* FiltersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F5A0E62191B77300DEC40F /* FiltersCollectionViewController.swift */; };
+		84F5A1032191DC2800DEC40F /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F5A1022191DC2800DEC40F /* PhotosUI.framework */; };
+		84F5A1052191DC2800DEC40F /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F5A1042191DC2800DEC40F /* Photos.framework */; };
+		84F5A1082191DC2800DEC40F /* PhotoEditingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F5A1072191DC2800DEC40F /* PhotoEditingViewController.swift */; };
+		84F5A10F2191DC2800DEC40F /* PhotoEditorEditingExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 84F5A1012191DC2800DEC40F /* PhotoEditorEditingExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		84F5A1182191DF5700DEC40F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F5A0ED2191D3FD00DEC40F /* NotificationCenter.framework */; };
+		84F5A11B2191DF5700DEC40F /* PhotoEditorWidgetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F5A11A2191DF5700DEC40F /* PhotoEditorWidgetViewController.swift */; };
+		84F5A1222191DF5700DEC40F /* PhotoEditorTodayWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 84F5A1172191DF5700DEC40F /* PhotoEditorTodayWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +40,36 @@
 			remoteGlobalIDString = 8488971F2191A03500D99E91;
 			remoteInfo = PhotoEditor;
 		};
+		84F5A10D2191DC2800DEC40F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848897182191A03500D99E91 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 84F5A1002191DC2800DEC40F;
+			remoteInfo = PhotoEditorEditingExtension;
+		};
+		84F5A1202191DF5700DEC40F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848897182191A03500D99E91 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 84F5A1162191DF5700DEC40F;
+			remoteInfo = PhotoEditorTodayWidget;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		84F5A0FC2191D3FD00DEC40F /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				84F5A1222191DF5700DEC40F /* PhotoEditorTodayWidget.appex in Embed App Extensions */,
+				84F5A10F2191DC2800DEC40F /* PhotoEditorEditingExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0010298A0A3E892190C1A5F4 /* Pods_PhotoEditorTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PhotoEditorTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,6 +93,17 @@
 		8488974F2191A66400D99E91 /* FilterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterState.swift; sourceTree = "<group>"; };
 		848897522191A75300D99E91 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		84F5A0DD2191AEB500DEC40F /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = SOURCE_ROOT; };
+		84F5A0E42191B35800DEC40F /* CropState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropState.swift; sourceTree = "<group>"; };
+		84F5A0E62191B77300DEC40F /* FiltersCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersCollectionViewController.swift; sourceTree = "<group>"; };
+		84F5A0ED2191D3FD00DEC40F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		84F5A1012191DC2800DEC40F /* PhotoEditorEditingExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PhotoEditorEditingExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		84F5A1022191DC2800DEC40F /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
+		84F5A1042191DC2800DEC40F /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		84F5A1072191DC2800DEC40F /* PhotoEditingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditingViewController.swift; sourceTree = "<group>"; };
+		84F5A10C2191DC2800DEC40F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		84F5A1172191DF5700DEC40F /* PhotoEditorTodayWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PhotoEditorTodayWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		84F5A11A2191DF5700DEC40F /* PhotoEditorWidgetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorWidgetViewController.swift; sourceTree = "<group>"; };
+		84F5A11F2191DF5700DEC40F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FEC8DE31BE39C0E7D140411B /* Pods-PhotoEditor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoEditor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoEditor/Pods-PhotoEditor.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -72,6 +121,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				08C1D9FC6AF6DA221365C875 /* Pods_PhotoEditorTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84F5A0FE2191DC2800DEC40F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84F5A1032191DC2800DEC40F /* PhotosUI.framework in Frameworks */,
+				84F5A1052191DC2800DEC40F /* Photos.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84F5A1142191DF5700DEC40F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84F5A1182191DF5700DEC40F /* NotificationCenter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +160,8 @@
 			children = (
 				848897222191A03500D99E91 /* PhotoEditor */,
 				848897372191A03600D99E91 /* PhotoEditorTests */,
+				84F5A1062191DC2800DEC40F /* PhotoEditorEditingExtension */,
+				84F5A1192191DF5700DEC40F /* PhotoEditorTodayWidget */,
 				848897212191A03500D99E91 /* Products */,
 				0089A29F757ABC42C334F16C /* Pods */,
 				EC6E8897C69E8ED6B21F30A8 /* Frameworks */,
@@ -105,6 +173,8 @@
 			children = (
 				848897202191A03500D99E91 /* PhotoEditor.app */,
 				848897342191A03600D99E91 /* PhotoEditorTests.xctest */,
+				84F5A1012191DC2800DEC40F /* PhotoEditorEditingExtension.appex */,
+				84F5A1172191DF5700DEC40F /* PhotoEditorTodayWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -164,6 +234,7 @@
 				848897472191A48800D99E91 /* PhotoView.swift */,
 				8488974B2191A57E00D99E91 /* CropView.swift */,
 				848897512191A6C000D99E91 /* EditingStates */,
+				84F5A0E62191B77300DEC40F /* FiltersCollectionViewController.swift */,
 			);
 			path = MainScene;
 			sourceTree = "<group>";
@@ -173,8 +244,27 @@
 			children = (
 				8488974D2191A62900D99E91 /* EditingState.swift */,
 				8488974F2191A66400D99E91 /* FilterState.swift */,
+				84F5A0E42191B35800DEC40F /* CropState.swift */,
 			);
 			path = EditingStates;
+			sourceTree = "<group>";
+		};
+		84F5A1062191DC2800DEC40F /* PhotoEditorEditingExtension */ = {
+			isa = PBXGroup;
+			children = (
+				84F5A1072191DC2800DEC40F /* PhotoEditingViewController.swift */,
+				84F5A10C2191DC2800DEC40F /* Info.plist */,
+			);
+			path = PhotoEditorEditingExtension;
+			sourceTree = "<group>";
+		};
+		84F5A1192191DF5700DEC40F /* PhotoEditorTodayWidget */ = {
+			isa = PBXGroup;
+			children = (
+				84F5A11A2191DF5700DEC40F /* PhotoEditorWidgetViewController.swift */,
+				84F5A11F2191DF5700DEC40F /* Info.plist */,
+			);
+			path = PhotoEditorTodayWidget;
 			sourceTree = "<group>";
 		};
 		EC6E8897C69E8ED6B21F30A8 /* Frameworks */ = {
@@ -182,6 +272,9 @@
 			children = (
 				2A7C9BD77A3B663A535C5C91 /* Pods_PhotoEditor.framework */,
 				0010298A0A3E892190C1A5F4 /* Pods_PhotoEditorTests.framework */,
+				84F5A0ED2191D3FD00DEC40F /* NotificationCenter.framework */,
+				84F5A1022191DC2800DEC40F /* PhotosUI.framework */,
+				84F5A1042191DC2800DEC40F /* Photos.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -200,10 +293,13 @@
 				8488971D2191A03500D99E91 /* Frameworks */,
 				8488971E2191A03500D99E91 /* Resources */,
 				40FAACCA449BDC9010B0DEAF /* [CP] Embed Pods Frameworks */,
+				84F5A0FC2191D3FD00DEC40F /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				84F5A10E2191DC2800DEC40F /* PBXTargetDependency */,
+				84F5A1212191DF5700DEC40F /* PBXTargetDependency */,
 			);
 			name = PhotoEditor;
 			productName = PhotoEditor;
@@ -230,6 +326,40 @@
 			productReference = 848897342191A03600D99E91 /* PhotoEditorTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		84F5A1002191DC2800DEC40F /* PhotoEditorEditingExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84F5A1102191DC2800DEC40F /* Build configuration list for PBXNativeTarget "PhotoEditorEditingExtension" */;
+			buildPhases = (
+				84F5A0FD2191DC2800DEC40F /* Sources */,
+				84F5A0FE2191DC2800DEC40F /* Frameworks */,
+				84F5A0FF2191DC2800DEC40F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PhotoEditorEditingExtension;
+			productName = PhotoEditorEditingExtension;
+			productReference = 84F5A1012191DC2800DEC40F /* PhotoEditorEditingExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		84F5A1162191DF5700DEC40F /* PhotoEditorTodayWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84F5A1232191DF5700DEC40F /* Build configuration list for PBXNativeTarget "PhotoEditorTodayWidget" */;
+			buildPhases = (
+				84F5A1132191DF5700DEC40F /* Sources */,
+				84F5A1142191DF5700DEC40F /* Frameworks */,
+				84F5A1152191DF5700DEC40F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PhotoEditorTodayWidget;
+			productName = PhotoEditorTodayWidget;
+			productReference = 84F5A1172191DF5700DEC40F /* PhotoEditorTodayWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -246,6 +376,12 @@
 					848897332191A03600D99E91 = {
 						CreatedOnToolsVersion = 10.1;
 						TestTargetID = 8488971F2191A03500D99E91;
+					};
+					84F5A1002191DC2800DEC40F = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					84F5A1162191DF5700DEC40F = {
+						CreatedOnToolsVersion = 10.1;
 					};
 				};
 			};
@@ -264,6 +400,8 @@
 			targets = (
 				8488971F2191A03500D99E91 /* PhotoEditor */,
 				848897332191A03600D99E91 /* PhotoEditorTests */,
+				84F5A1002191DC2800DEC40F /* PhotoEditorEditingExtension */,
+				84F5A1162191DF5700DEC40F /* PhotoEditorTodayWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -279,6 +417,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		848897322191A03600D99E91 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84F5A0FF2191DC2800DEC40F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84F5A1152191DF5700DEC40F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -426,8 +578,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				848897482191A48800D99E91 /* PhotoView.swift in Sources */,
+				84F5A0E72191B77300DEC40F /* FiltersCollectionViewController.swift in Sources */,
 				848897502191A66400D99E91 /* FilterState.swift in Sources */,
 				84F5A0DE2191AEB600DEC40F /* R.generated.swift in Sources */,
+				84F5A0E52191B35800DEC40F /* CropState.swift in Sources */,
 				848897262191A03500D99E91 /* SceneController.swift in Sources */,
 				8488974E2191A62900D99E91 /* EditingState.swift in Sources */,
 				848897242191A03500D99E91 /* AppDelegate.swift in Sources */,
@@ -445,6 +599,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		84F5A0FD2191DC2800DEC40F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84F5A1082191DC2800DEC40F /* PhotoEditingViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84F5A1132191DF5700DEC40F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84F5A11B2191DF5700DEC40F /* PhotoEditorWidgetViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -452,6 +622,16 @@
 			isa = PBXTargetDependency;
 			target = 8488971F2191A03500D99E91 /* PhotoEditor */;
 			targetProxy = 848897352191A03600D99E91 /* PBXContainerItemProxy */;
+		};
+		84F5A10E2191DC2800DEC40F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 84F5A1002191DC2800DEC40F /* PhotoEditorEditingExtension */;
+			targetProxy = 84F5A10D2191DC2800DEC40F /* PBXContainerItemProxy */;
+		};
+		84F5A1212191DF5700DEC40F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 84F5A1162191DF5700DEC40F /* PhotoEditorTodayWidget */;
+			targetProxy = 84F5A1202191DF5700DEC40F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -669,6 +849,82 @@
 			};
 			name = Release;
 		};
+		84F5A1112191DC2800DEC40F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P99EM85EA2;
+				INFOPLIST_FILE = PhotoEditorEditingExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimasno1.PhotoEditor.PhotoEditorEditingExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		84F5A1122191DC2800DEC40F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P99EM85EA2;
+				INFOPLIST_FILE = PhotoEditorEditingExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimasno1.PhotoEditor.PhotoEditorEditingExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		84F5A1242191DF5700DEC40F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P99EM85EA2;
+				INFOPLIST_FILE = PhotoEditorTodayWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimasno1.PhotoEditor.PhotoEditorTodayWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		84F5A1252191DF5700DEC40F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P99EM85EA2;
+				INFOPLIST_FILE = PhotoEditorTodayWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimasno1.PhotoEditor.PhotoEditorTodayWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -695,6 +951,24 @@
 			buildConfigurations = (
 				848897412191A03600D99E91 /* Debug */,
 				848897422191A03600D99E91 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		84F5A1102191DC2800DEC40F /* Build configuration list for PBXNativeTarget "PhotoEditorEditingExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84F5A1112191DC2800DEC40F /* Debug */,
+				84F5A1122191DC2800DEC40F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		84F5A1232191DF5700DEC40F /* Build configuration list for PBXNativeTarget "PhotoEditorTodayWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84F5A1242191DF5700DEC40F /* Debug */,
+				84F5A1252191DF5700DEC40F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

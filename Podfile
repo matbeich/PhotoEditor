@@ -21,5 +21,11 @@ target 'PhotoEditor' do
     inherit! :search_paths
     pod 'iOSSnapshotTestCase'
   end
+  
+  target 'PhotoEditorTodayWidget' do
+      inherit! :search_paths
+      external
+
+  end
 
 end
