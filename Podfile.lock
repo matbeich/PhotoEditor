@@ -1,0 +1,51 @@
+PODS:
+  - AppCraftUtils/Alert (2.0.10):
+    - AppCraftUtils/Core
+    - AppCraftUtils/Resources
+    - R.swift
+  - AppCraftUtils/Core (2.0.10):
+    - SnapKit
+  - AppCraftUtils/Interface (2.0.10):
+    - AppCraftUtils/Alert
+    - DeepDiff
+  - AppCraftUtils/Resources (2.0.10):
+    - R.swift
+  - DeepDiff (1.3.0)
+  - iOSSnapshotTestCase (4.0.0):
+    - iOSSnapshotTestCase/SwiftSupport (= 4.0.0)
+  - iOSSnapshotTestCase/Core (4.0.0)
+  - iOSSnapshotTestCase/SwiftSupport (4.0.0):
+    - iOSSnapshotTestCase/Core
+  - R.swift (4.0.0):
+    - R.swift.Library (~> 4.0.0)
+  - R.swift.Library (4.0.0)
+  - SnapKit (4.2.0)
+
+DEPENDENCIES:
+  - AppCraftUtils/Core
+  - AppCraftUtils/Interface
+  - iOSSnapshotTestCase
+  - R.swift
+  - SnapKit
+
+SPEC REPOS:
+  "git@github.com:app-craft/internal-pods.git":
+    - AppCraftUtils
+  https://github.com/cocoapods/specs.git:
+    - DeepDiff
+    - iOSSnapshotTestCase
+    - R.swift
+    - R.swift.Library
+    - SnapKit
+
+SPEC CHECKSUMS:
+  AppCraftUtils: a8be9ccc0c2f78ba76a14e4efa7f358ca3c4aca0
+  DeepDiff: 0d52be4ac0822b38f1ce1ad1514c841d7166a67b
+  iOSSnapshotTestCase: 711379b19f69a22c131527df862352c877c2773c
+  R.swift: d6a5ec2f55a8441dc0ed9f1f8b37d7d11ae85c66
+  R.swift.Library: c3af34921024333546e23b70e70d0b4e0cffca75
+  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+
+PODFILE CHECKSUM: e05b359e0d0cfc8fd68494861b722553361a0ed3
+
+COCOAPODS: 1.5.3
