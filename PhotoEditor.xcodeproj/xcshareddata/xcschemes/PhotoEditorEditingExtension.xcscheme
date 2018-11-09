@@ -43,13 +43,23 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "844FC8D92195669700E5BD08"
+               BuildableName = "PhotoEditorKitTests.xctest"
+               BlueprintName = "PhotoEditorKitTests"
+               ReferencedContainer = "container:PhotoEditor.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "84F5A1002191DC2800DEC40F"
-            BuildableName = "PhotoEditorEditingExtension.appex"
-            BlueprintName = "PhotoEditorEditingExtension"
+            BlueprintIdentifier = "8488971F2191A03500D99E91"
+            BuildableName = "PhotoEditor.app"
+            BlueprintName = "PhotoEditor"
             ReferencedContainer = "container:PhotoEditor.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

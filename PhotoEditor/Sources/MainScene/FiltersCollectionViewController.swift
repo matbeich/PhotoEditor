@@ -5,4 +5,7 @@
 import UIKit
 
 class FiltersCollectionViewController: UICollectionViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
 }

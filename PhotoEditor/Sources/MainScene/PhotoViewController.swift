@@ -5,5 +5,6 @@
 import UIKit
 
 class PhotoViewController: UIViewController {
-    private let cropView = CropView()
+//    private let photoView: PhotoView
+//    private let cropView: CropView
 }

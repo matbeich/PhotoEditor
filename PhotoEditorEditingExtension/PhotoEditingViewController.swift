@@ -5,6 +5,7 @@
 import UIKit
 import Photos
 import PhotosUI
+import PhotoEditorKit
 
 
 @objc(PhotoEditingViewController)
