@@ -38,6 +38,16 @@
                ReferencedContainer = "container:PhotoEditor.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "844FC8D92195669700E5BD08"
+               BuildableName = "PhotoEditorKitTests.xctest"
+               BlueprintName = "PhotoEditorKitTests"
+               ReferencedContainer = "container:PhotoEditor.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

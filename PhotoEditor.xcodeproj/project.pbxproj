@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		08C1D9FC6AF6DA221365C875 /* Pods_PhotoEditorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0010298A0A3E892190C1A5F4 /* Pods_PhotoEditorTests.framework */; };
 		3E27F794D01F37A002360059 /* Pods_PhotoEditor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A7C9BD77A3B663A535C5C91 /* Pods_PhotoEditor.framework */; };
+		844FC8DB2195669700E5BD08 /* PhotoEditorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */; };
+		844FC8E22195669700E5BD08 /* PhotoEditorKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8E12195669700E5BD08 /* PhotoEditorKitTests.swift */; };
+		844FC8E42195669700E5BD08 /* PhotoEditorKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FC8D42195669700E5BD08 /* PhotoEditorKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		844FC8E72195669700E5BD08 /* PhotoEditorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */; };
+		844FC8E82195669700E5BD08 /* PhotoEditorKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F021956B9A00E5BD08 /* Grid.swift */; };
+		844FC8F421958F6000E5BD08 /* CornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F321958F6000E5BD08 /* CornerView.swift */; };
 		848897242191A03500D99E91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897232191A03500D99E91 /* AppDelegate.swift */; };
 		848897262191A03500D99E91 /* SceneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897252191A03500D99E91 /* SceneController.swift */; };
 		8488972B2191A03600D99E91 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8488972A2191A03600D99E91 /* Assets.xcassets */; };
@@ -33,6 +40,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		844FC8DC2195669700E5BD08 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848897182191A03500D99E91 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 844FC8D12195669700E5BD08;
+			remoteInfo = PhotoEditorKit;
+		};
+		844FC8DE2195669700E5BD08 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848897182191A03500D99E91 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8488971F2191A03500D99E91;
+			remoteInfo = PhotoEditor;
+		};
+		844FC8E52195669700E5BD08 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848897182191A03500D99E91 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 844FC8D12195669700E5BD08;
+			remoteInfo = PhotoEditorKit;
+		};
 		848897352191A03600D99E91 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 848897182191A03500D99E91 /* Project object */;
@@ -57,6 +85,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		844FC8EC2195669700E5BD08 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				844FC8E82195669700E5BD08 /* PhotoEditorKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84F5A0FC2191D3FD00DEC40F /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -77,6 +116,14 @@
 		4C88060D769AAC635C5CBC14 /* Pods-PhotoEditor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoEditor.release.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoEditor/Pods-PhotoEditor.release.xcconfig"; sourceTree = "<group>"; };
 		4E8C4F1E4F25F3740281AA1A /* Pods-PhotoEditorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoEditorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoEditorTests/Pods-PhotoEditorTests.release.xcconfig"; sourceTree = "<group>"; };
 		7FEF036046E6C190B9E6BF50 /* Pods-PhotoEditorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoEditorTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoEditorTests/Pods-PhotoEditorTests.debug.xcconfig"; sourceTree = "<group>"; };
+		844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PhotoEditorKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		844FC8D42195669700E5BD08 /* PhotoEditorKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoEditorKit.h; sourceTree = "<group>"; };
+		844FC8D52195669700E5BD08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		844FC8DA2195669700E5BD08 /* PhotoEditorKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoEditorKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		844FC8E12195669700E5BD08 /* PhotoEditorKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorKitTests.swift; sourceTree = "<group>"; };
+		844FC8E32195669700E5BD08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		844FC8F021956B9A00E5BD08 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		844FC8F321958F6000E5BD08 /* CornerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerView.swift; sourceTree = "<group>"; };
 		848897202191A03500D99E91 /* PhotoEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		848897232191A03500D99E91 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		848897252191A03500D99E91 /* SceneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneController.swift; sourceTree = "<group>"; };
@@ -108,11 +155,27 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		844FC8CF2195669700E5BD08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		844FC8D72195669700E5BD08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				844FC8DB2195669700E5BD08 /* PhotoEditorKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8488971D2191A03500D99E91 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				3E27F794D01F37A002360059 /* Pods_PhotoEditor.framework in Frameworks */,
+				844FC8E72195669700E5BD08 /* PhotoEditorKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,13 +218,41 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		844FC8D32195669700E5BD08 /* PhotoEditorKit */ = {
+			isa = PBXGroup;
+			children = (
+				844FC8D42195669700E5BD08 /* PhotoEditorKit.h */,
+				844FC8D52195669700E5BD08 /* Info.plist */,
+			);
+			path = PhotoEditorKit;
+			sourceTree = "<group>";
+		};
+		844FC8E02195669700E5BD08 /* PhotoEditorKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				844FC8E12195669700E5BD08 /* PhotoEditorKitTests.swift */,
+				844FC8E32195669700E5BD08 /* Info.plist */,
+			);
+			path = PhotoEditorKitTests;
+			sourceTree = "<group>";
+		};
+		844FC8F22195764500E5BD08 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				844FC8F021956B9A00E5BD08 /* Grid.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		848897172191A03500D99E91 = {
 			isa = PBXGroup;
 			children = (
 				848897222191A03500D99E91 /* PhotoEditor */,
-				848897372191A03600D99E91 /* PhotoEditorTests */,
 				84F5A1062191DC2800DEC40F /* PhotoEditorEditingExtension */,
 				84F5A1192191DF5700DEC40F /* PhotoEditorTodayWidget */,
+				848897372191A03600D99E91 /* PhotoEditorTests */,
+				844FC8D32195669700E5BD08 /* PhotoEditorKit */,
+				844FC8E02195669700E5BD08 /* PhotoEditorKitTests */,
 				848897212191A03500D99E91 /* Products */,
 				0089A29F757ABC42C334F16C /* Pods */,
 				EC6E8897C69E8ED6B21F30A8 /* Frameworks */,
@@ -175,6 +266,8 @@
 				848897342191A03600D99E91 /* PhotoEditorTests.xctest */,
 				84F5A1012191DC2800DEC40F /* PhotoEditorEditingExtension.appex */,
 				84F5A1172191DF5700DEC40F /* PhotoEditorTodayWidget.appex */,
+				844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */,
+				844FC8DA2195669700E5BD08 /* PhotoEditorKitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -233,6 +326,8 @@
 				848897492191A4B900D99E91 /* ToolBar.swift */,
 				848897472191A48800D99E91 /* PhotoView.swift */,
 				8488974B2191A57E00D99E91 /* CropView.swift */,
+				844FC8F321958F6000E5BD08 /* CornerView.swift */,
+				844FC8F22195764500E5BD08 /* Model */,
 				848897512191A6C000D99E91 /* EditingStates */,
 				84F5A0E62191B77300DEC40F /* FiltersCollectionViewController.swift */,
 			);
@@ -281,7 +376,55 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		844FC8CD2195669700E5BD08 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				844FC8E42195669700E5BD08 /* PhotoEditorKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		844FC8D12195669700E5BD08 /* PhotoEditorKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 844FC8E92195669700E5BD08 /* Build configuration list for PBXNativeTarget "PhotoEditorKit" */;
+			buildPhases = (
+				844FC8CD2195669700E5BD08 /* Headers */,
+				844FC8CE2195669700E5BD08 /* Sources */,
+				844FC8CF2195669700E5BD08 /* Frameworks */,
+				844FC8D02195669700E5BD08 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PhotoEditorKit;
+			productName = PhotoEditorKit;
+			productReference = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		844FC8D92195669700E5BD08 /* PhotoEditorKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 844FC8ED2195669700E5BD08 /* Build configuration list for PBXNativeTarget "PhotoEditorKitTests" */;
+			buildPhases = (
+				844FC8D62195669700E5BD08 /* Sources */,
+				844FC8D72195669700E5BD08 /* Frameworks */,
+				844FC8D82195669700E5BD08 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				844FC8DD2195669700E5BD08 /* PBXTargetDependency */,
+				844FC8DF2195669700E5BD08 /* PBXTargetDependency */,
+			);
+			name = PhotoEditorKitTests;
+			productName = PhotoEditorKitTests;
+			productReference = 844FC8DA2195669700E5BD08 /* PhotoEditorKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8488971F2191A03500D99E91 /* PhotoEditor */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8488973D2191A03600D99E91 /* Build configuration list for PBXNativeTarget "PhotoEditor" */;
@@ -294,12 +437,14 @@
 				8488971E2191A03500D99E91 /* Resources */,
 				40FAACCA449BDC9010B0DEAF /* [CP] Embed Pods Frameworks */,
 				84F5A0FC2191D3FD00DEC40F /* Embed App Extensions */,
+				844FC8EC2195669700E5BD08 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				84F5A10E2191DC2800DEC40F /* PBXTargetDependency */,
 				84F5A1212191DF5700DEC40F /* PBXTargetDependency */,
+				844FC8E62195669700E5BD08 /* PBXTargetDependency */,
 			);
 			name = PhotoEditor;
 			productName = PhotoEditor;
@@ -370,6 +515,13 @@
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = Admin;
 				TargetAttributes = {
+					844FC8D12195669700E5BD08 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					844FC8D92195669700E5BD08 = {
+						CreatedOnToolsVersion = 10.1;
+						TestTargetID = 8488971F2191A03500D99E91;
+					};
 					8488971F2191A03500D99E91 = {
 						CreatedOnToolsVersion = 10.1;
 					};
@@ -399,14 +551,30 @@
 			projectRoot = "";
 			targets = (
 				8488971F2191A03500D99E91 /* PhotoEditor */,
-				848897332191A03600D99E91 /* PhotoEditorTests */,
-				84F5A1002191DC2800DEC40F /* PhotoEditorEditingExtension */,
+				844FC8D12195669700E5BD08 /* PhotoEditorKit */,
 				84F5A1162191DF5700DEC40F /* PhotoEditorTodayWidget */,
+				84F5A1002191DC2800DEC40F /* PhotoEditorEditingExtension */,
+				848897332191A03600D99E91 /* PhotoEditorTests */,
+				844FC8D92195669700E5BD08 /* PhotoEditorKitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		844FC8D02195669700E5BD08 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		844FC8D82195669700E5BD08 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8488971E2191A03500D99E91 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -573,6 +741,21 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		844FC8CE2195669700E5BD08 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		844FC8D62195669700E5BD08 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				844FC8E22195669700E5BD08 /* PhotoEditorKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8488971C2191A03500D99E91 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -583,11 +766,13 @@
 				84F5A0DE2191AEB600DEC40F /* R.generated.swift in Sources */,
 				84F5A0E52191B35800DEC40F /* CropState.swift in Sources */,
 				848897262191A03500D99E91 /* SceneController.swift in Sources */,
+				844FC8F421958F6000E5BD08 /* CornerView.swift in Sources */,
 				8488974E2191A62900D99E91 /* EditingState.swift in Sources */,
 				848897242191A03500D99E91 /* AppDelegate.swift in Sources */,
 				848897532191A75300D99E91 /* PhotoViewController.swift in Sources */,
 				8488974A2191A4B900D99E91 /* ToolBar.swift in Sources */,
 				8488974C2191A57E00D99E91 /* CropView.swift in Sources */,
+				844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -618,6 +803,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		844FC8DD2195669700E5BD08 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 844FC8D12195669700E5BD08 /* PhotoEditorKit */;
+			targetProxy = 844FC8DC2195669700E5BD08 /* PBXContainerItemProxy */;
+		};
+		844FC8DF2195669700E5BD08 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8488971F2191A03500D99E91 /* PhotoEditor */;
+			targetProxy = 844FC8DE2195669700E5BD08 /* PBXContainerItemProxy */;
+		};
+		844FC8E62195669700E5BD08 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 844FC8D12195669700E5BD08 /* PhotoEditorKit */;
+			targetProxy = 844FC8E52195669700E5BD08 /* PBXContainerItemProxy */;
+		};
 		848897362191A03600D99E91 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8488971F2191A03500D99E91 /* PhotoEditor */;
@@ -647,6 +847,106 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		844FC8EA2195669700E5BD08 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = P99EM85EA2;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PhotoEditorKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimasno1.PhotoEditorKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		844FC8EB2195669700E5BD08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = P99EM85EA2;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PhotoEditorKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimasno1.PhotoEditorKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		844FC8EE2195669700E5BD08 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P99EM85EA2;
+				INFOPLIST_FILE = PhotoEditorKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimasno1.PhotoEditorKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoEditor.app/PhotoEditor";
+			};
+			name = Debug;
+		};
+		844FC8EF2195669700E5BD08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P99EM85EA2;
+				INFOPLIST_FILE = PhotoEditorKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimasno1.PhotoEditorKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoEditor.app/PhotoEditor";
+			};
+			name = Release;
+		};
 		8488973B2191A03600D99E91 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -855,6 +1155,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P99EM85EA2;
 				INFOPLIST_FILE = PhotoEditorEditingExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -874,6 +1175,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P99EM85EA2;
 				INFOPLIST_FILE = PhotoEditorEditingExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -893,6 +1195,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P99EM85EA2;
 				INFOPLIST_FILE = PhotoEditorTodayWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -912,6 +1215,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P99EM85EA2;
 				INFOPLIST_FILE = PhotoEditorTodayWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -928,6 +1232,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		844FC8E92195669700E5BD08 /* Build configuration list for PBXNativeTarget "PhotoEditorKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				844FC8EA2195669700E5BD08 /* Debug */,
+				844FC8EB2195669700E5BD08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		844FC8ED2195669700E5BD08 /* Build configuration list for PBXNativeTarget "PhotoEditorKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				844FC8EE2195669700E5BD08 /* Debug */,
+				844FC8EF2195669700E5BD08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8488971B2191A03500D99E91 /* Build configuration list for PBXProject "PhotoEditor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
