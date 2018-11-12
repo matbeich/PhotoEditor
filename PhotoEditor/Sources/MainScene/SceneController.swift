@@ -2,6 +2,7 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product: PhotoEditor
 //
 
+import SnapKit
 import UIKit
 
 class SceneController: UIViewController {
@@ -9,35 +10,32 @@ class SceneController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .darkGray
+        view.addSubview(photoViewControllerContainer)
+        view.addSubview(toolControlsContainer)
+        view.addSubview(toolBar)
+        setup()
 
-        view.addSubview(cropView)
-        view.addGestureRecognizer(testGestureRecognizer)
-        testGestureRecognizer.addTarget(self, action: #selector(changeSize(with:)))
+        makeConstraints()
     }
 
-    @objc func changeSize(with recognizer: UIPanGestureRecognizer) {
-        switch recognizer.state {
-        case .began:
-            changingCorner = cropView.cornerPosition(at: recognizer.location(in: cropView))
-        case .changed:
-            guard let corner = changingCorner else {
-                return
-            }
+    private func makeConstraints() {
+        toolBar.snp.makeConstraints { make in
+            make.bottom.left.right.equalToSuperview()
+            make.height.equalTo(Config.toolBarHeight)
+        }
 
-            let translation = recognizer.translation(in: view)
-            recognizer.setTranslation(.zero, in: view)
-
-            cropView.changeFrame(using: corner, translation: translation)
-        case .ended, .cancelled, .failed:
-            changingCorner = nil
-        default: break
+        photoViewControllerContainer.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+            make.bottom.equalTo(toolBar.snp.top)
         }
     }
 
-    var changingCorner: Corner?
-    private let testGestureRecognizer = UIPanGestureRecognizer()
-    let cropView = CropView(frame: CGRect(x: 50, y: 50, width: 300, height: 300), grid: Grid(numberOfRows: 5, numberOfColumns: 5))
+    private func setup() {
+        add(fullscreenChild: photoViewController, in: photoViewControllerContainer)
+    }
+
+    private let photoViewController = PhotoViewController()
     private let toolBar = ToolBar()
     private let toolControlsContainer = UIView()
-//    private let photoViewController = PhotoViewController()
+    private let photoViewControllerContainer = UIView()
 }

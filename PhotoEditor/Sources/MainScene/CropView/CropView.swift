@@ -7,14 +7,31 @@ import UIKit
 import Utils
 
 class CropView: UIView {
+    override var frame: CGRect {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+
+    var allowedBounds: CGRect {
+        didSet {
+            guard min(allowedBounds.width, allowedBounds.height) >= Config.cropViewMinDimension else {
+                return
+            }
+
+            fitInAllowedBounds()
+        }
+    }
+
     var showGrid: Bool = true {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    init(frame: CGRect, grid: Grid?) {
+    init(frame: CGRect, grid: Grid? = nil) {
         self.grid = grid
+        self.allowedBounds = frame
         super.init(frame: frame)
 
         backgroundColor = .clear
@@ -26,18 +43,16 @@ class CropView: UIView {
     }
 
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError("Not implemented")
     }
 
     override func draw(_ rect: CGRect) {
-        super.draw(rect)
-
         guard let ctx = UIGraphicsGetCurrentContext() else {
             return
         }
 
         ctx.setStrokeColor(UIColor.lightGray.cgColor)
-        ctx.setLineWidth(1)
+        ctx.setLineWidth(0.3)
 
         let rect = rect.inset(by: UIEdgeInsets(top: -4, left: -4, bottom: 4, right: 4))
 
@@ -46,6 +61,8 @@ class CropView: UIView {
         } else {
             ctx.stroke(rect)
         }
+
+        super.draw(rect)
     }
 
     func cornerPosition(at point: CGPoint) -> Corner? {
@@ -57,8 +74,13 @@ class CropView: UIView {
     func changeFrame(using corner: Corner, translation: CGPoint) {
         let newFrame = frame(for: translation, using: corner)
 
-        let canChangeWidth = newFrame.width > minimuAlowedMagnitude
-        let canChangeHeight = newFrame.height > minimuAlowedMagnitude
+        let canChangeWidth = newFrame.width > Config.cropViewMinDimension
+            && (newFrame.maxX <= allowedBounds.maxX)
+            && (newFrame.minX >= allowedBounds.minX)
+
+        let canChangeHeight = newFrame.height > Config.cropViewMinDimension
+            && (newFrame.maxY <= allowedBounds.maxY)
+            && (newFrame.minY >= allowedBounds.minY)
 
         switch (canChangeHeight, canChangeWidth) {
         case (true, true):
@@ -101,6 +123,13 @@ class CropView: UIView {
         }
     }
 
+    private func fitInAllowedBounds() {
+        if frame.minX < allowedBounds.minX { frame.origin.x = allowedBounds.minX }
+        if frame.minY < allowedBounds.minY { frame.origin.y = allowedBounds.minY }
+        if frame.maxX > allowedBounds.maxX { frame.size.width = allowedBounds.width - frame.width }
+        if frame.maxY > allowedBounds.maxY { frame.size.height -= allowedBounds.height }
+    }
+
     private func setup() {
         cornerViews.forEach { addSubview($0) }
     }
@@ -133,5 +162,4 @@ class CropView: UIView {
     ]
 
     private var grid: Grid?
-    private let minimuAlowedMagnitude: CGFloat = 100.0
 }
