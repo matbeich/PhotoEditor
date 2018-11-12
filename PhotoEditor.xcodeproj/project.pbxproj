@@ -16,6 +16,7 @@
 		844FC8E82195669700E5BD08 /* PhotoEditorKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F021956B9A00E5BD08 /* Grid.swift */; };
 		844FC8F421958F6000E5BD08 /* CornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F321958F6000E5BD08 /* CornerView.swift */; };
+		844FC8F62199670100E5BD08 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F52199670100E5BD08 /* Config.swift */; };
 		848897242191A03500D99E91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897232191A03500D99E91 /* AppDelegate.swift */; };
 		848897262191A03500D99E91 /* SceneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897252191A03500D99E91 /* SceneController.swift */; };
 		8488972B2191A03600D99E91 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8488972A2191A03600D99E91 /* Assets.xcassets */; };
@@ -124,6 +125,7 @@
 		844FC8E32195669700E5BD08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		844FC8F021956B9A00E5BD08 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		844FC8F321958F6000E5BD08 /* CornerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerView.swift; sourceTree = "<group>"; };
+		844FC8F52199670100E5BD08 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		848897202191A03500D99E91 /* PhotoEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		848897232191A03500D99E91 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		848897252191A03500D99E91 /* SceneController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneController.swift; sourceTree = "<group>"; };
@@ -240,8 +242,18 @@
 			isa = PBXGroup;
 			children = (
 				844FC8F021956B9A00E5BD08 /* Grid.swift */,
+				844FC8F52199670100E5BD08 /* Config.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		844FC8F72199693800E5BD08 /* CropView */ = {
+			isa = PBXGroup;
+			children = (
+				8488974B2191A57E00D99E91 /* CropView.swift */,
+				844FC8F321958F6000E5BD08 /* CornerView.swift */,
+			);
+			path = CropView;
 			sourceTree = "<group>";
 		};
 		848897172191A03500D99E91 = {
@@ -313,6 +325,7 @@
 			isa = PBXGroup;
 			children = (
 				848897232191A03500D99E91 /* AppDelegate.swift */,
+				844FC8F22195764500E5BD08 /* Model */,
 				848897462191A0C400D99E91 /* MainScene */,
 			);
 			path = Sources;
@@ -323,12 +336,10 @@
 			children = (
 				848897252191A03500D99E91 /* SceneController.swift */,
 				848897522191A75300D99E91 /* PhotoViewController.swift */,
-				848897492191A4B900D99E91 /* ToolBar.swift */,
 				848897472191A48800D99E91 /* PhotoView.swift */,
-				8488974B2191A57E00D99E91 /* CropView.swift */,
-				844FC8F321958F6000E5BD08 /* CornerView.swift */,
-				844FC8F22195764500E5BD08 /* Model */,
+				844FC8F72199693800E5BD08 /* CropView */,
 				848897512191A6C000D99E91 /* EditingStates */,
+				848897492191A4B900D99E91 /* ToolBar.swift */,
 				84F5A0E62191B77300DEC40F /* FiltersCollectionViewController.swift */,
 			);
 			path = MainScene;
@@ -763,6 +774,7 @@
 				848897482191A48800D99E91 /* PhotoView.swift in Sources */,
 				84F5A0E72191B77300DEC40F /* FiltersCollectionViewController.swift in Sources */,
 				848897502191A66400D99E91 /* FilterState.swift in Sources */,
+				844FC8F62199670100E5BD08 /* Config.swift in Sources */,
 				84F5A0DE2191AEB600DEC40F /* R.generated.swift in Sources */,
 				84F5A0E52191B35800DEC40F /* CropState.swift in Sources */,
 				848897262191A03500D99E91 /* SceneController.swift in Sources */,
