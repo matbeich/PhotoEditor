@@ -54,8 +54,6 @@ class CropView: UIView {
         ctx.setStrokeColor(UIColor.lightGray.cgColor)
         ctx.setLineWidth(0.3)
 
-        let rect = rect.inset(by: UIEdgeInsets(top: -4, left: -4, bottom: 4, right: 4))
-
         if let grid = grid, showGrid {
             grid.draw(with: ctx, in: rect)
         } else {
@@ -68,7 +66,7 @@ class CropView: UIView {
     func cornerPosition(at point: CGPoint) -> Corner? {
         let sortedCorners = cornerViews.sorted { $0.center.distance(to: point) < $1.center.distance(to: point) }
 
-        return sortedCorners.first(where: { $0.frame.center.distance(to: point) < CGFloat(30.0) })?.corner
+        return sortedCorners.first(where: { $0.frame.center.distance(to: point) < CGFloat(50.0) })?.corner
     }
 
     func changeFrame(using corner: Corner, translation: CGPoint) {
@@ -126,19 +124,35 @@ class CropView: UIView {
     private func fitInAllowedBounds() {
         if frame.minX < allowedBounds.minX { frame.origin.x = allowedBounds.minX }
         if frame.minY < allowedBounds.minY { frame.origin.y = allowedBounds.minY }
-        if frame.maxX > allowedBounds.maxX { frame.size.width = allowedBounds.width - frame.width }
-        if frame.maxY > allowedBounds.maxY { frame.size.height -= allowedBounds.height }
+        if frame.maxX > allowedBounds.maxX { frame.size.width = frame.width - (frame.maxX - allowedBounds.maxX) }
+        if frame.maxY > allowedBounds.maxY { frame.size.height = frame.height - (frame.maxY - allowedBounds.maxY) }
     }
 
     private func setup() {
         cornerViews.forEach { addSubview($0) }
     }
 
+//    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+//        return cornerPosition(at: point) != nil
+//    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+
+        showGrid = false
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        next?.touchesBegan(touches, with: event)
+
+        showGrid = true
+    }
+
     private func makeConstraints() {
         cornerViews.forEach { cornerView in
             cornerView.snp.makeConstraints { make in
-                make.height.equalToSuperview().multipliedBy(0.2)
-                make.width.equalToSuperview().multipliedBy(0.2)
+                make.height.width.equalTo(20)
 
                 switch cornerView.corner {
                 case .bottomLeft:

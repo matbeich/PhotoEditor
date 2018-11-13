@@ -7,17 +7,20 @@ import UIKit
 class PhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        let panGestureRecognizer = UIPanGestureRecognizer()
 
+        let panGestureRecognizer = UIPanGestureRecognizer()
         let grid = Grid(numberOfRows: 3, numberOfColumns: 3)
+
         cropView = CropView(frame: view.frame, grid: grid)
+        cropView.showGrid = false
+
+        photoView.set(UIImage(named: "test.png")!)
 
         view.addSubview(photoView)
         view.addSubview(cropView)
         view.addGestureRecognizer(panGestureRecognizer)
 
         makeConstraints()
-
         panGestureRecognizer.addTarget(self, action: #selector(changeSize(with:)))
     }
 
@@ -25,15 +28,17 @@ class PhotoViewController: UIViewController {
         super.viewDidAppear(animated)
 
         cropView.frame = view.frame
-        cropView.allowedBounds = view.frame.inset(by: UIEdgeInsets(repeated: 10))
-        print(view.frame)
-        print(cropView.allowedBounds)
+        cropView.allowedBounds = view.frame.inset(by: UIEdgeInsets(top: UIApplication.shared.statusBarFrame.height,
+                                                                   left: 10,
+                                                                   bottom: 10,
+                                                                   right: 10))
     }
 
     @objc func changeSize(with recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
             changingCorner = cropView.cornerPosition(at: recognizer.location(in: cropView))
+            cropView.showGrid = true
         case .changed:
             guard let corner = changingCorner else {
                 return
@@ -45,6 +50,7 @@ class PhotoViewController: UIViewController {
             cropView.changeFrame(using: corner, translation: translation)
         case .ended, .cancelled, .failed:
             changingCorner = nil
+            cropView.showGrid = false
         default: break
         }
     }

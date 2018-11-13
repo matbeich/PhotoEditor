@@ -13,10 +13,15 @@ class PhotoView: UIView {
         scrollView.addSubview(imageView)
 
         makeConstraints()
+        setup()
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("Not implemented")
+    }
+
+    func set(_ photo: UIImage) {
+        imageView.image = photo
     }
 
     private func makeConstraints() {
@@ -27,6 +32,10 @@ class PhotoView: UIView {
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+
+    private func setup() {
+        scrollView.contentSize = imageView.image?.size ?? imageView.frame.size
     }
 
     private let imageView = UIImageView()
