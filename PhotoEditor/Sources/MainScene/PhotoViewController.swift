@@ -7,31 +7,35 @@ import UIKit
 class PhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+        setup()
 
         let panGestureRecognizer = UIPanGestureRecognizer()
+        panGestureRecognizer.addTarget(self, action: #selector(changeSize(with:)))
+
+        view.addSubview(photoView)
+        view.addSubview(cropView)
+        view.addGestureRecognizer(panGestureRecognizer)
+        makeConstraints()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        photoView.centerImage()
+        cropView.frame = photoView.imageFrame
+        cropView.allowedBounds = view.frame.inset(by: UIEdgeInsets(top: UIApplication.shared.statusBarFrame.height,
+                                                                   left: 10,
+                                                                   bottom: 10,
+                                                                   right: 10))
+    }
+
+    private func setup() {
         let grid = Grid(numberOfRows: 3, numberOfColumns: 3)
 
         cropView = CropView(frame: view.frame, grid: grid)
         cropView.showGrid = false
 
         photoView.set(UIImage(named: "test.png")!)
-
-        view.addSubview(photoView)
-        view.addSubview(cropView)
-        view.addGestureRecognizer(panGestureRecognizer)
-
-        makeConstraints()
-        panGestureRecognizer.addTarget(self, action: #selector(changeSize(with:)))
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        cropView.frame = view.frame
-        cropView.allowedBounds = view.frame.inset(by: UIEdgeInsets(top: UIApplication.shared.statusBarFrame.height,
-                                                                   left: 10,
-                                                                   bottom: 10,
-                                                                   right: 10))
     }
 
     @objc func changeSize(with recognizer: UIPanGestureRecognizer) {
@@ -50,7 +54,13 @@ class PhotoViewController: UIViewController {
             cropView.changeFrame(using: corner, translation: translation)
         case .ended, .cancelled, .failed:
             changingCorner = nil
+
             cropView.showGrid = false
+            cropView.fitInBounds(view.bounds, aspectScaled: true)
+            let rect = photoView.imageFrame.centered(in: cropView.frame)
+
+            photoView.zoomToRect(rect)
+
         default: break
         }
     }

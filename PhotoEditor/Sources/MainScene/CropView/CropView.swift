@@ -63,6 +63,15 @@ class CropView: UIView {
         super.draw(rect)
     }
 
+    func fitInBounds(_ bounds: CGRect, aspectScaled: Bool) {
+        let scale = min(bounds.size.width / frame.size.width, bounds.size.height / frame.size.height)
+
+        self.bounds.size = frame.size.applying(CGAffineTransform(scaleX: scale, y: scale))
+        self.center = bounds.center
+
+        fitInAllowedBounds()
+    }
+
     func cornerPosition(at point: CGPoint) -> Corner? {
         let sortedCorners = cornerViews.sorted { $0.center.distance(to: point) < $1.center.distance(to: point) }
 
@@ -132,21 +141,8 @@ class CropView: UIView {
         cornerViews.forEach { addSubview($0) }
     }
 
-//    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-//        return cornerPosition(at: point) != nil
-//    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-
-        showGrid = false
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        next?.touchesBegan(touches, with: event)
-
-        showGrid = true
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return cornerPosition(at: point) != nil
     }
 
     private func makeConstraints() {
