@@ -21,7 +21,8 @@ class PhotoViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        cropView.frame = view.frame
+        photoView.centerImage()
+        cropView.frame = photoView.imageFrame
         cropView.allowedBounds = view.frame.inset(by: UIEdgeInsets(top: UIApplication.shared.statusBarFrame.height,
                                                                    left: 10,
                                                                    bottom: 10,
@@ -53,7 +54,13 @@ class PhotoViewController: UIViewController {
             cropView.changeFrame(using: corner, translation: translation)
         case .ended, .cancelled, .failed:
             changingCorner = nil
+
             cropView.showGrid = false
+            cropView.fitInBounds(view.bounds, aspectScaled: true)
+            let rect = photoView.imageFrame.centered(in: cropView.frame)
+
+            photoView.zoomToRect(rect)
+
         default: break
         }
     }

@@ -6,9 +6,12 @@ import SnapKit
 import UIKit
 
 class PhotoView: UIView {
+    var imageFrame: CGRect {
+        return CGRect(origin: CGPoint(x: scrollView.contentOffset.x.magnitude, y: scrollView.contentOffset.y.magnitude), size: scrollView.contentSize)
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-
         addSubview(scrollView)
         scrollView.addSubview(imageView)
 
@@ -16,7 +19,7 @@ class PhotoView: UIView {
     }
 
     required init?(coder aDecoder: NSCoder) {
-        fatalError("Not implemented")
+        super.init(coder: aDecoder)
     }
 
     func set(_ photo: UIImage) {
@@ -38,6 +41,16 @@ class PhotoView: UIView {
         super.layoutSubviews()
 
         setZoomScale()
+        centerImage()
+    }
+
+    func centerImage() {
+        scrollView.centerImage()
+    }
+
+    func zoomToRect(_ rect: CGRect, animated: Bool = true) {
+        scrollView.zoom(to: rect, animated: animated)
+        scrollView.scrollRectToVisible(rect, animated: true)
     }
 
     private func setZoomScale() {
@@ -61,6 +74,7 @@ class PhotoView: UIView {
         scrollView.isScrollEnabled = true
 
         setZoomScale()
+        centerImage()
     }
 
     private let imageView = UIImageView()
@@ -70,5 +84,14 @@ class PhotoView: UIView {
 extension PhotoView: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
+    }
+}
+
+extension UIScrollView {
+    func centerImage() {
+        let yOffset = contentSize.height / 2 - center.y
+        let xOffset = contentSize.width / 2 - center.x
+
+        contentOffset = CGPoint(x: xOffset, y: yOffset)
     }
 }
