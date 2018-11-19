@@ -55,7 +55,7 @@ class PhotoEditsView: UIView {
     func layoutCropViewIfNeeded() {
         if cropView.frame.isEmpty {
             cropView.frame = bounds
-            cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 10))
+            cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
         }
     }
 
@@ -91,9 +91,8 @@ class PhotoEditsView: UIView {
         imageView.image = photo
         imageView.center = scrollView.center
         imageView.frame = CGRect(origin: .zero, size: photo.size)
-        scrollView.contentSize = photo.size
+
         setZoomScale()
-        scrollView.centerImage()
     }
 
     func cropViewCorner(at point: CGPoint) -> Corner? {
@@ -124,10 +123,19 @@ class PhotoEditsView: UIView {
 
         let minimumZoomScale = min(scrollView.frame.size.width, scrollView.frame.size.height) / max(size.width, size.height)
 
+        scrollView.contentSize = imageView.frame.size
         scrollView.minimumZoomScale = minimumZoomScale
         scrollView.maximumZoomScale = minimumZoomScale * 10
         scrollView.zoomScale = minimumZoomScale
-        scrollView.centerImage()
+        centerImageView()
+    }
+
+    private func centerImageView() {
+        let xOffset = max((scrollView.bounds.size.width - scrollView.contentSize.width) / 2, 0.0)
+        let yOffset = max((scrollView.bounds.size.height - scrollView.contentSize.height) / 2, 0.0)
+
+        imageView.center = CGPoint(x: scrollView.contentSize.width / 2 + xOffset,
+                                   y: scrollView.contentSize.height / 2 + yOffset)
     }
 
     private func updateMaskPath() {
@@ -182,25 +190,29 @@ extension PhotoEditsView: UIScrollViewDelegate {
         return imageView
     }
 
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        setBlurIsVisible(false)
+        setDimmingViewIsVisible(true)
+    }
+
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        setDimmingViewIsVisible(false)
         setBlurIsVisible(true)
+    }
+
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        centerImageView()
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         setCropViewGridIsVisible(true)
+        setDimmingViewIsVisible(true)
         setBlurIsVisible(false)
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         setCropViewGridIsVisible(false)
-    }
-}
-
-extension UIScrollView {
-    func centerImage(animated: Bool = false) {
-        let yOffset = contentSize.height / 2 - center.y
-        let xOffset = contentSize.width / 2 - center.x
-
-        setContentOffset(CGPoint(x: xOffset, y: yOffset), animated: animated)
+        setDimmingViewIsVisible(false)
+        setBlurIsVisible(true)
     }
 }
