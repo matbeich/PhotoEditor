@@ -19,11 +19,11 @@ class CropView: UIView {
                 return
             }
 
-            fitInAllowedBounds()
+            fitInBounds(allowedBounds, aspectScaled: false)
         }
     }
 
-    var showGrid: Bool = true {
+    var gridIsVisible: Bool = true {
         didSet {
             setNeedsDisplay()
         }
@@ -54,7 +54,7 @@ class CropView: UIView {
         ctx.setStrokeColor(UIColor.lightGray.cgColor)
         ctx.setLineWidth(0.3)
 
-        if let grid = grid, showGrid {
+        if let grid = grid, gridIsVisible {
             grid.draw(with: ctx, in: rect)
         } else {
             ctx.stroke(rect)
@@ -63,10 +63,14 @@ class CropView: UIView {
         super.draw(rect)
     }
 
-    func fitInBounds(_ bounds: CGRect, aspectScaled: Bool) {
-        let scale = min(bounds.size.width / frame.size.width, bounds.size.height / frame.size.height)
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return cornerPosition(at: point) != nil
+    }
 
-        self.bounds.size = frame.size.applying(CGAffineTransform(scaleX: scale, y: scale))
+    func fitInBounds(_ bounds: CGRect, aspectScaled: Bool = false) {
+        let scale = min(bounds.size.height / frame.size.height, bounds.size.width / frame.size.width)
+
+        self.bounds.size = aspectScaled ? frame.size.applying(CGAffineTransform(scaleX: scale, y: scale)) : bounds.size
         self.center = bounds.center
 
         fitInAllowedBounds()
@@ -130,7 +134,7 @@ class CropView: UIView {
         }
     }
 
-    private func fitInAllowedBounds() {
+    func fitInAllowedBounds() {
         if frame.minX < allowedBounds.minX { frame.origin.x = allowedBounds.minX }
         if frame.minY < allowedBounds.minY { frame.origin.y = allowedBounds.minY }
         if frame.maxX > allowedBounds.maxX { frame.size.width = frame.width - (frame.maxX - allowedBounds.maxX) }
@@ -139,10 +143,6 @@ class CropView: UIView {
 
     private func setup() {
         cornerViews.forEach { addSubview($0) }
-    }
-
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return cornerPosition(at: point) != nil
     }
 
     private func makeConstraints() {

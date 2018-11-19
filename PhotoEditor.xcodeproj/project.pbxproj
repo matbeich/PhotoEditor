@@ -23,7 +23,7 @@
 		8488972B2191A03600D99E91 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8488972A2191A03600D99E91 /* Assets.xcassets */; };
 		8488972E2191A03600D99E91 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8488972C2191A03600D99E91 /* LaunchScreen.storyboard */; };
 		848897392191A03600D99E91 /* PhotoEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897382191A03600D99E91 /* PhotoEditorTests.swift */; };
-		848897482191A48800D99E91 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897472191A48800D99E91 /* PhotoView.swift */; };
+		848897482191A48800D99E91 /* PhotoEditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897472191A48800D99E91 /* PhotoEditsView.swift */; };
 		8488974A2191A4B900D99E91 /* ToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897492191A4B900D99E91 /* ToolBar.swift */; };
 		8488974C2191A57E00D99E91 /* CropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488974B2191A57E00D99E91 /* CropView.swift */; };
 		8488974E2191A62900D99E91 /* EditingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488974D2191A62900D99E91 /* EditingState.swift */; };
@@ -137,7 +137,7 @@
 		848897342191A03600D99E91 /* PhotoEditorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoEditorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		848897382191A03600D99E91 /* PhotoEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorTests.swift; sourceTree = "<group>"; };
 		8488973A2191A03600D99E91 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		848897472191A48800D99E91 /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
+		848897472191A48800D99E91 /* PhotoEditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditsView.swift; sourceTree = "<group>"; };
 		848897492191A4B900D99E91 /* ToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBar.swift; sourceTree = "<group>"; };
 		8488974B2191A57E00D99E91 /* CropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropView.swift; sourceTree = "<group>"; };
 		8488974D2191A62900D99E91 /* EditingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingState.swift; sourceTree = "<group>"; };
@@ -339,7 +339,7 @@
 			children = (
 				848897252191A03500D99E91 /* SceneController.swift */,
 				848897522191A75300D99E91 /* PhotoViewController.swift */,
-				848897472191A48800D99E91 /* PhotoView.swift */,
+				848897472191A48800D99E91 /* PhotoEditsView.swift */,
 				844FC8F72199693800E5BD08 /* CropView */,
 				848897512191A6C000D99E91 /* EditingStates */,
 				848897492191A4B900D99E91 /* ToolBar.swift */,
@@ -775,7 +775,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				848897482191A48800D99E91 /* PhotoView.swift in Sources */,
+				848897482191A48800D99E91 /* PhotoEditsView.swift in Sources */,
 				84F5A0E72191B77300DEC40F /* FiltersCollectionViewController.swift in Sources */,
 				848897502191A66400D99E91 /* FilterState.swift in Sources */,
 				844FC8F62199670100E5BD08 /* Config.swift in Sources */,
