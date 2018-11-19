@@ -12,37 +12,27 @@ class PhotoViewController: UIViewController {
         let panGestureRecognizer = UIPanGestureRecognizer()
         panGestureRecognizer.addTarget(self, action: #selector(changeSize(with:)))
 
-        view.addSubview(photoView)
-        view.addSubview(cropView)
+        view.addSubview(photoEditsView)
         view.addGestureRecognizer(panGestureRecognizer)
+
         makeConstraints()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        photoView.centerImage()
-        cropView.frame = photoView.imageFrame
-        cropView.allowedBounds = view.frame.inset(by: UIEdgeInsets(top: UIApplication.shared.statusBarFrame.height,
-                                                                   left: 10,
-                                                                   bottom: 10,
-                                                                   right: 10))
+    private func setup() {
+        photoEditsView.set(UIImage(named: "test.png")!)
     }
 
-    private func setup() {
-        let grid = Grid(numberOfRows: 3, numberOfColumns: 3)
-
-        cropView = CropView(frame: view.frame, grid: grid)
-        cropView.showGrid = false
-
-        photoView.set(UIImage(named: "test.png")!)
+    private func makeConstraints() {
+        photoEditsView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 
     @objc func changeSize(with recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
-            changingCorner = cropView.cornerPosition(at: recognizer.location(in: cropView))
-            cropView.showGrid = true
+            changingCorner = photoEditsView.cropViewCorner(at: recognizer.location(in: view))
+
         case .changed:
             guard let corner = changingCorner else {
                 return
@@ -51,27 +41,24 @@ class PhotoViewController: UIViewController {
             let translation = recognizer.translation(in: view)
             recognizer.setTranslation(.zero, in: view)
 
-            cropView.changeFrame(using: corner, translation: translation)
+            photoEditsView.setCropViewGridIsVisible(true)
+            photoEditsView.setBlurIsVisible(false)
+            photoEditsView.setDimmingViewIsVisible(true)
+            photoEditsView.changeCropViewFrame(using: corner, translation: translation)
+
         case .ended, .cancelled, .failed:
-            changingCorner = nil
-
-            cropView.showGrid = false
-            cropView.fitInBounds(view.bounds, aspectScaled: true)
-            let rect = photoView.imageFrame.centered(in: cropView.frame)
-
-            photoView.zoomToRect(rect)
+            if changingCorner != nil {
+                photoEditsView.setCropViewGridIsVisible(false)
+                photoEditsView.fitCropView()
+                photoEditsView.setDimmingViewIsVisible(false)
+                photoEditsView.setBlurIsVisible(true)
+                changingCorner = nil
+            }
 
         default: break
         }
     }
 
-    private func makeConstraints() {
-        photoView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-    }
-
-    private var cropView = CropView(frame: .zero)
     private var changingCorner: Corner?
-    private let photoView = PhotoView()
+    private let photoEditsView = PhotoEditsView()
 }
