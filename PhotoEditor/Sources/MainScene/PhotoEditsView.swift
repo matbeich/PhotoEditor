@@ -6,16 +6,26 @@ import SnapKit
 import UIKit
 
 class PhotoEditsView: UIView {
+    var allowedBounds: CGRect {
+        return cropView.allowedBounds
+    }
+
+    var visibleRect: CGRect {
+        return convert(scrollView.frame, to: imageView)
+    }
+
+    var scrollViewState = ScrollViewState(scale: 1, visibleFrame: .zero)
+
     var image: UIImage? {
         return imageView.image
     }
 
     init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
+        self.cropView = CropView(grid: Grid(numberOfRows: 3, numberOfColumns: 3))
         super.init(frame: frame)
 
         setup()
-
         addSubview(scrollView)
         addSubview(maskingViewsContainer)
         addSubview(cropView)
@@ -31,40 +41,53 @@ class PhotoEditsView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        setZoomScale()
         layoutCropViewIfNeeded()
         updateMaskPath()
     }
 
     private func setup() {
-        cropView = CropView(frame: bounds, grid: Grid(numberOfRows: 3, numberOfColumns: 3))
         setBlurIsVisible(true)
         setCropViewGridIsVisible(false)
 
-        imageView.contentMode = .scaleAspectFit
-        imageView.frame = scrollView.frame
-        imageView.bounds.size = scrollView.bounds.size
-
         scrollView.delegate = self
-        scrollView.maximumZoomScale = 2
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.isScrollEnabled = true
+        scrollView.minimumZoomScale = 0.1
+        scrollView.maximumZoomScale = 1
     }
 
-    func layoutCropViewIfNeeded() {
-        if cropView.frame.isEmpty {
-            cropView.frame = bounds
-            cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
+    private func updateScrollViewInsets() {
+        let top = imageView.frame.minY.distance(to: cropView.frame.minY)
+
+        guard let img = image else {
+            return
         }
+
+        let shouldChange = cropView.frame.isOutOfBounds(imageView.frame)
+
+        if shouldChange {
+            let zoomScale = cropView.frame.height / img.size.height
+            scrollView.zoomScale = zoomScale
+            scrollView.contentOffset = CGPoint(x: 0, y: -top)
+        }
+
+        print(cropView.frame.minY.distance(to: scrollView.frame.minY))
+        print(cropView.frame.minX.distance(to: scrollView.frame.minX))
+        print(cropView.frame.maxY.distance(to: scrollView.frame.maxY))
+        print(cropView.frame.maxX.distance(to: scrollView.frame.maxX))
+
+        print(scrollView.contentInset)
     }
 
     func changeCropViewFrame(using corner: Corner, translation: CGPoint) {
         cropView.changeFrame(using: corner, translation: translation)
+        updateScrollViewInsets()
     }
 
     func fitCropView() {
-        cropView.fitInBounds(bounds, aspectScaled: true)
+        cropView.clipToBounds(bounds, aspectScaled: true)
+        cropView.frame.fitInBounds(allowedBounds)
     }
 
     func setDimmingViewIsVisible(_ visible: Bool) {
@@ -90,9 +113,10 @@ class PhotoEditsView: UIView {
     func set(_ photo: UIImage) {
         imageView.image = photo
         imageView.center = scrollView.center
-        imageView.frame = CGRect(origin: .zero, size: photo.size)
+        imageView.bounds.size = photo.size
 
-        setZoomScale()
+        scrollView.centerContentView(imageView)
+        scrollView.contentSize = photo.size
     }
 
     func cropViewCorner(at point: CGPoint) -> Corner? {
@@ -113,29 +137,18 @@ class PhotoEditsView: UIView {
         }
 
         dimmingView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.edges.equalToSuperview()
         }
     }
 
-    private func setZoomScale() {
-        let size = CGSize(width: imageView.image?.size.width ?? imageView.frame.size.width,
-                          height: imageView.image?.size.height ?? imageView.frame.size.height)
-
-        let minimumZoomScale = min(scrollView.frame.size.width, scrollView.frame.size.height) / max(size.width, size.height)
-
-        scrollView.contentSize = imageView.frame.size
-        scrollView.minimumZoomScale = minimumZoomScale
-        scrollView.maximumZoomScale = minimumZoomScale * 10
-        scrollView.zoomScale = minimumZoomScale
-        centerImageView()
-    }
-
-    private func centerImageView() {
-        let xOffset = max((scrollView.bounds.size.width - scrollView.contentSize.width) / 2, 0.0)
-        let yOffset = max((scrollView.bounds.size.height - scrollView.contentSize.height) / 2, 0.0)
-
-        imageView.center = CGPoint(x: scrollView.contentSize.width / 2 + xOffset,
-                                   y: scrollView.contentSize.height / 2 + yOffset)
+    private func layoutCropViewIfNeeded() {
+        if cropView.frame == .zero {
+            cropView.bounds.size = imageView.image?.size ?? .zero
+            cropView.center = center
+            cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
+            cropView.clipToBounds(bounds, aspectScaled: true)
+            cropView.frame.fitInBounds(bounds)
+        }
     }
 
     private func updateMaskPath() {
@@ -201,7 +214,7 @@ extension PhotoEditsView: UIScrollViewDelegate {
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        centerImageView()
+        scrollView.centerContentView(imageView)
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -214,5 +227,35 @@ extension PhotoEditsView: UIScrollViewDelegate {
         setCropViewGridIsVisible(false)
         setDimmingViewIsVisible(false)
         setBlurIsVisible(true)
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    }
+}
+
+extension UIScrollView {
+    func centerContentView(_ view: UIView) {
+        guard let index = subviews.firstIndex(of: view) else {
+            return
+        }
+
+        let xOffset = max((bounds.width - contentSize.width) / 2, 0)
+        let yOffset = max((bounds.height - contentSize.height) / 2, 0)
+
+        subviews[index].center = CGPoint(x: contentSize.width / 2 + xOffset,
+                                         y: contentSize.height / 2 + yOffset)
+    }
+}
+
+extension CGRect {
+    var area: CGFloat {
+        return width * height
+    }
+
+    func isOutOfBounds(_ bounds: CGRect) -> Bool {
+        return bounds.minX - minX > 1
+            || bounds.maxX - maxX < -1
+            || bounds.minY - minY > 1
+            || bounds.maxY - maxY < -1
     }
 }

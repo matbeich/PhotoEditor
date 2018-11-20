@@ -18,8 +18,9 @@ class CropView: UIView {
             guard min(allowedBounds.width, allowedBounds.height) >= Config.cropViewMinDimension else {
                 return
             }
-
-            fitInBounds(allowedBounds, aspectScaled: false)
+//
+//            clipToBounds(allowedBounds, aspectScaled: false)
+//            frame.fitInBounds(allowedBounds)
         }
     }
 
@@ -29,7 +30,7 @@ class CropView: UIView {
         }
     }
 
-    init(frame: CGRect, grid: Grid? = nil) {
+    init(frame: CGRect = .zero, grid: Grid? = nil) {
         self.grid = grid
         self.allowedBounds = frame
         super.init(frame: frame)
@@ -65,15 +66,6 @@ class CropView: UIView {
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         return cornerPosition(at: point) != nil
-    }
-
-    func fitInBounds(_ bounds: CGRect, aspectScaled: Bool = false) {
-        let scale = min(bounds.size.height / frame.size.height, bounds.size.width / frame.size.width)
-
-        self.bounds.size = aspectScaled ? frame.size.applying(CGAffineTransform(scaleX: scale, y: scale)) : bounds.size
-        self.center = bounds.center
-
-        fitInAllowedBounds()
     }
 
     func cornerPosition(at point: CGPoint) -> Corner? {
@@ -134,13 +126,6 @@ class CropView: UIView {
         }
     }
 
-    func fitInAllowedBounds() {
-        if frame.minX < allowedBounds.minX { frame.origin.x = allowedBounds.minX }
-        if frame.minY < allowedBounds.minY { frame.origin.y = allowedBounds.minY }
-        if frame.maxX > allowedBounds.maxX { frame.size.width = frame.width - (frame.maxX - allowedBounds.maxX) }
-        if frame.maxY > allowedBounds.maxY { frame.size.height = frame.height - (frame.maxY - allowedBounds.maxY) }
-    }
-
     private func setup() {
         cornerViews.forEach { addSubview($0) }
     }
@@ -172,4 +157,22 @@ class CropView: UIView {
     ]
 
     private var grid: Grid?
+}
+
+extension CGRect {
+    mutating func fitInBounds(_ bounds: CGRect) {
+        if minX < bounds.minX { origin.x = bounds.minX }
+        if minY < bounds.minY { origin.y = bounds.minY }
+        if maxX > bounds.maxX { size.width = width - (maxX - bounds.maxX) }
+        if maxY > bounds.maxY { size.height = height - (maxY - bounds.maxY) }
+    }
+}
+
+extension UIView {
+    func clipToBounds(_ bounds: CGRect, aspectScaled: Bool = false) {
+        let scale = min(bounds.size.height / frame.size.height, bounds.size.width / frame.size.width)
+
+        self.bounds.size = aspectScaled ? frame.size.applying(CGAffineTransform(scaleX: scale, y: scale)) : bounds.size
+        self.center = bounds.center
+    }
 }
