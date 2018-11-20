@@ -71,13 +71,6 @@ class PhotoEditsView: UIView {
             scrollView.zoomScale = zoomScale
             scrollView.contentOffset = CGPoint(x: 0, y: -top)
         }
-
-        print(cropView.frame.minY.distance(to: scrollView.frame.minY))
-        print(cropView.frame.minX.distance(to: scrollView.frame.minX))
-        print(cropView.frame.maxY.distance(to: scrollView.frame.maxY))
-        print(cropView.frame.maxX.distance(to: scrollView.frame.maxX))
-
-        print(scrollView.contentInset)
     }
 
     func changeCropViewFrame(using corner: Corner, translation: CGPoint) {
