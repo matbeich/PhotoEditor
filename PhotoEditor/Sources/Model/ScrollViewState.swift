@@ -6,5 +6,6 @@ import UIKit
 
 struct ScrollViewState {
     let scale: CGFloat
-    let visibleFrame: CGRect
+    let scrollFrame: CGRect
+    let visibleContentFrame: CGRect
 }

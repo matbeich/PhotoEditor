@@ -18,6 +18,10 @@ class SceneController: UIViewController {
         makeConstraints()
     }
 
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+
     private func makeConstraints() {
         toolBar.snp.makeConstraints { make in
             make.bottom.left.right.equalToSuperview()
