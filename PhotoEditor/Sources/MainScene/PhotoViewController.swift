@@ -49,11 +49,13 @@ class PhotoViewController: UIViewController {
 
         case .ended, .cancelled, .failed:
             if changingCorner != nil {
-                photoEditsView.setCropViewGridIsVisible(false)
                 photoEditsView.fitCropView()
                 photoEditsView.restoreScrollViewState()
+
+                photoEditsView.setCropViewGridIsVisible(false)
                 photoEditsView.setDimmingViewIsVisible(false)
                 photoEditsView.setBlurIsVisible(true)
+
                 changingCorner = nil
             }
 
