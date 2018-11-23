@@ -5,5 +5,9 @@
 import Foundation
 
 class CropState: EditingState {
+    var showBlur: Bool = false
+    var showDimming: Bool = true
+    var showGrid: Bool = true
+    var showCrop: Bool = true
     var canScroll: Bool = true
 }

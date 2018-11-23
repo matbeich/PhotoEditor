@@ -18,6 +18,7 @@
 		844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F021956B9A00E5BD08 /* Grid.swift */; };
 		844FC8F421958F6000E5BD08 /* CornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F321958F6000E5BD08 /* CornerView.swift */; };
 		844FC8F62199670100E5BD08 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F52199670100E5BD08 /* Config.swift */; };
+		846E574321A7F9D100D24473 /* NormalState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574221A7F9D100D24473 /* NormalState.swift */; };
 		8478BC0E21A40F9F00D39C2D /* ScrollViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8478BC0D21A40F9F00D39C2D /* ScrollViewState.swift */; };
 		8478BC1021A53B6B00D39C2D /* EffectsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8478BC0F21A53B6B00D39C2D /* EffectsView.swift */; };
 		8478BC1321A590D000D39C2D /* TestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8478BC1221A590D000D39C2D /* TestVC.swift */; };
@@ -131,6 +132,7 @@
 		844FC8F021956B9A00E5BD08 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		844FC8F321958F6000E5BD08 /* CornerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerView.swift; sourceTree = "<group>"; };
 		844FC8F52199670100E5BD08 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		846E574221A7F9D100D24473 /* NormalState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalState.swift; sourceTree = "<group>"; };
 		8478BC0D21A40F9F00D39C2D /* ScrollViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScrollViewState.swift; path = PhotoEditor/Sources/Model/ScrollViewState.swift; sourceTree = SOURCE_ROOT; };
 		8478BC0F21A53B6B00D39C2D /* EffectsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectsView.swift; sourceTree = "<group>"; };
 		8478BC1221A590D000D39C2D /* TestVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestVC.swift; sourceTree = "<group>"; };
@@ -371,6 +373,7 @@
 				8488974D2191A62900D99E91 /* EditingState.swift */,
 				8488974F2191A66400D99E91 /* FilterState.swift */,
 				84F5A0E42191B35800DEC40F /* CropState.swift */,
+				846E574221A7F9D100D24473 /* NormalState.swift */,
 			);
 			path = EditingStates;
 			sourceTree = "<group>";
@@ -806,6 +809,7 @@
 				8488974E2191A62900D99E91 /* EditingState.swift in Sources */,
 				848897242191A03500D99E91 /* AppDelegate.swift in Sources */,
 				848897532191A75300D99E91 /* PhotoViewController.swift in Sources */,
+				846E574321A7F9D100D24473 /* NormalState.swift in Sources */,
 				8488974A2191A4B900D99E91 /* ToolBar.swift in Sources */,
 				8488974C2191A57E00D99E91 /* CropView.swift in Sources */,
 				844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */,
