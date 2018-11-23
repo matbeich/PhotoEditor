@@ -52,7 +52,7 @@ class PhotoEditsView: UIView {
 
         scrollView.frame = bounds
         scrollView.centerWithView(cropView)
-        scrollView.setMinimumZoomScaleToFit(cropView, animated: false)
+        scrollView.setMinimumZoomScaleToFit(cropView)
         scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
 
         updateMaskPath()
@@ -110,9 +110,11 @@ class PhotoEditsView: UIView {
             .applying(CGAffineTransform(scaleX: scale, y: scale))
             .applying(CGAffineTransform(translationX: cropViewOffset.x, y: cropViewOffset.y))
 
-        scrollView.setMinimumZoomScaleToFit(cropView, animated: false)
+        scrollView.setMinimumZoomScaleToFit(cropView)
         scrollView.setZoomScale(scale, animated: false)
         scrollView.setContentOffset(offset, animated: false)
+
+        updateInsets()
     }
 
     private func updateInsets() {
@@ -121,9 +123,10 @@ class PhotoEditsView: UIView {
         let left = imageView.frame.minX.distance(to: cropView.frame.minX)
         let right = imageView.frame.maxX.distance(to: cropView.frame.maxX)
 
-        scrollView.contentInset = UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
+        let vertical = max(top, bottom)
+        let horizontal = max(left, right)
 
-        print(scrollView.contentInset)
+        scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }
 
     private func makeConstraints() {
@@ -141,6 +144,14 @@ class PhotoEditsView: UIView {
         }
     }
 
+    private func scaleToFitImage(_ image: UIImage?) -> CGFloat {
+        guard let image = image else {
+            return 0
+        }
+
+        return max(cropView.frame.height / image.size.height, cropView.frame.width / image.size.width)
+    }
+
     private func setupScrollView() {
         guard let image = imageView.image else {
             return
@@ -155,7 +166,7 @@ class PhotoEditsView: UIView {
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.isScrollEnabled = true
         scrollView.maximumZoomScale = 5
-        scrollView.setMinimumZoomScaleToFit(cropView, animated: false)
+        scrollView.setMinimumZoomScaleToFit(cropView)
         scrollView.zoomScale = scrollView.minimumZoomScale
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.addSubview(imageView)
@@ -189,7 +200,6 @@ extension PhotoEditsView: UIScrollViewDelegate {
     }
 
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        updateInsets()
         setBlurIsVisible(false)
         setDimmingViewIsVisible(true)
     }
@@ -200,10 +210,7 @@ extension PhotoEditsView: UIScrollViewDelegate {
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        scrollView.centerWithView(cropView)
-
-        if imageViewNotInCropView {
-        }
+        updateInsets()
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -220,14 +227,14 @@ extension PhotoEditsView: UIScrollViewDelegate {
 }
 
 private extension UIScrollView {
-    func centerWithView(_ view: UIView) {
+    func centerWithView(_ view: UIView, animated: Bool = false) {
         let xOf = contentSize.width / 2 + view.center.x.distance(to: frame.minX)
         let yOf = contentSize.height / 2 + view.center.y.distance(to: frame.minY)
 
-        setContentOffset(CGPoint(x: xOf, y: yOf), animated: false)
+        setContentOffset(CGPoint(x: xOf, y: yOf), animated: animated)
     }
 
-    func setMinimumZoomScaleToFit(_ view: UIView, animated: Bool) {
+    func setMinimumZoomScaleToFit(_ view: UIView, animated: Bool = false) {
         guard
             let imageView = subviews.first as? UIImageView,
             let image = imageView.image
