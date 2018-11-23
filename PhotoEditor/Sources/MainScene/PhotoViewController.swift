@@ -14,7 +14,6 @@ class PhotoViewController: UIViewController {
 
         view.addSubview(photoEditsView)
         view.addGestureRecognizer(panGestureRecognizer)
-
         makeConstraints()
     }
 
@@ -41,19 +40,16 @@ class PhotoViewController: UIViewController {
             let translation = recognizer.translation(in: view)
             recognizer.setTranslation(.zero, in: view)
 
-            photoEditsView.setCropViewGridIsVisible(true)
-            photoEditsView.setBlurIsVisible(false)
-            photoEditsView.setDimmingViewIsVisible(true)
+            photoEditsView.state = .crop
             photoEditsView.changeCropViewFrame(using: corner, translation: translation)
-            photoEditsView.saveScrollViewState()
+            photoEditsView.saveCropedRect()
 
         case .ended, .cancelled, .failed:
             if changingCorner != nil {
-                photoEditsView.setCropViewGridIsVisible(false)
                 photoEditsView.fitCropView()
-                photoEditsView.restoreScrollViewState()
-                photoEditsView.setDimmingViewIsVisible(false)
-                photoEditsView.setBlurIsVisible(true)
+                photoEditsView.fitSavedRectToCropView()
+                photoEditsView.state = .normal
+
                 changingCorner = nil
             }
 

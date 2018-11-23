@@ -47,7 +47,11 @@ class TestVC: UIViewController {
     }
 
     @objc private func tap() {
-        scrollView.scrollRectToVisible(CGRect(origin: CGPoint(x: 50, y: 50), size: CGSize(width: 20, height: 20)), animated: true)
+//        scrollView.scrollRectToVisible(CGRect(origin: CGPoint(x: 50, y: 50), size: CGSize(width: 20, height: 20)), animated: true)
+//
+//        scrollView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+//        scrollView.center()
+        print(scrollView.contentOffset)
     }
 
     let slider = UISlider()

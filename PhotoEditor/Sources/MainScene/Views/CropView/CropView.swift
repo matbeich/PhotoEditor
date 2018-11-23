@@ -7,24 +7,15 @@ import UIKit
 import Utils
 
 class CropView: UIView {
-    override var frame: CGRect {
+    var allowedBounds: CGRect
+
+    var gridIsVisible: Bool = true {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    var allowedBounds: CGRect {
-        didSet {
-            guard min(allowedBounds.width, allowedBounds.height) >= Config.cropViewMinDimension else {
-                return
-            }
-//
-//            clipToBounds(allowedBounds, aspectScaled: false)
-//            frame.fitInBounds(allowedBounds)
-        }
-    }
-
-    var gridIsVisible: Bool = true {
+    override var frame: CGRect {
         didSet {
             setNeedsDisplay()
         }

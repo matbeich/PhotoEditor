@@ -5,7 +5,20 @@
 import SnapKit
 import UIKit
 
-class PhotoEditsView: UIView {
+final class PhotoEditsView: UIView {
+    enum State {
+        case crop
+        case normal
+    }
+
+    var state: State = .normal {
+        didSet {
+            if state != oldValue {
+                changeAppearence()
+            }
+        }
+    }
+
     var allowedBounds: CGRect {
         return cropView.allowedBounds
     }
@@ -20,50 +33,40 @@ class PhotoEditsView: UIView {
 
     init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
+        self.scrollView = UIScrollView(frame: frame)
         self.cropView = CropView(grid: Grid(numberOfRows: 3, numberOfColumns: 3))
+        self.visibleContentFrame = .zero
+
         super.init(frame: frame)
 
-        setup()
-
+        setupScrollView()
         addSubview(scrollView)
-//        addSubview(effectsView)
+        addSubview(effectsView)
         addSubview(cropView)
-        scrollView.addSubview(imageView)
 
+        changeAppearence()
         makeConstraints()
     }
 
     required init?(coder aDecoder: NSCoder) {
-        self.imageView = UIImageView()
-        super.init(coder: aDecoder)
+        fatalError("Not implemented")
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
 
         layoutCropViewIfNeeded()
+
+        scrollView.frame = bounds
+        scrollView.centerWithView(cropView)
+        scrollView.minimumZoomScale = fitScaleForImage(photo)
+        scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
+
         updateMaskPath()
     }
 
-    private func setup() {
-//        setBlurIsVisible(true)
-//        setCropViewGridIsVisible(false)
-    }
-
     func set(_ photo: UIImage) {
-        imageView.image = photo
-        imageView.center = scrollView.center
-        imageView.bounds.size = photo.size
-
-        scrollView.centerContentView(imageView)
-        scrollView.contentSize = photo.size
-        updateScrollView()
-    }
-
-    func changeCropViewFrame(using corner: Corner, translation: CGPoint) {
-        cropView.changeFrame(using: corner, translation: translation)
-        saveScrollViewState()
-        updateScrollViewInsets()
+        imageView = UIImageView(image: photo)
     }
 
     func fitCropView() {
@@ -71,100 +74,116 @@ class PhotoEditsView: UIView {
     }
 
     func setDimmingViewIsVisible(_ visible: Bool) {
-//        updateMaskPath()
-//        effectsView.setDimmingViewIsVisible(visible)
+        updateMaskPath()
+        effectsView.setDimmingViewIsVisible(visible)
     }
 
     func setBlurIsVisible(_ visible: Bool) {
-//        updateMaskPath()
-//        effectsView.setBlurIsVisible(visible)
+        updateMaskPath()
+        effectsView.setBlurIsVisible(visible)
     }
 
     func setCropViewGridIsVisible(_ visible: Bool) {
         cropView.gridIsVisible = visible
     }
 
-    func cropViewCorner(at point: CGPoint) -> Corner? {
-        return cropView.cornerPosition(at: convert(point, to: cropView))
+    func setCropViewIsVisible(_ visible: Bool) {
+        cropView.isHidden = !visible
     }
 
-    func saveScrollViewState() {
-        scrollViewState = ScrollViewState(scale: scrollView.zoomScale,
-                                          scrollFrame: .zero,
-                                          visibleContentFrame: visibleRect)
+    func saveCropedRect() {
+        visibleContentFrame = visibleRect
     }
 
-    func restoreScrollViewState() {
-        let scale = min(cropView.frame.height / scrollViewState.visibleContentFrame.size.height,
-                        cropView.frame.width / scrollViewState.visibleContentFrame.size.width)
+    func fitSavedRectToCropView() {
+        let scale = min(cropView.frame.height / visibleContentFrame.size.height,
+                        cropView.frame.width / visibleContentFrame.size.width)
 
-        let rect = CGRect(origin: scrollViewState.visibleContentFrame.origin, size: CGSize(width: 5, height: 5))
-            .applying(CGAffineTransform(translationX: cropView.frame.minX.distance(to: scrollView.frame.minX) * scale,
-                                        y: cropView.frame.minY.distance(to: scrollView.frame.minY) * scale))
+        let cropViewOffset = CGPoint(x: cropView.frame.origin.x.distance(to: scrollView.frame.origin.x),
+                                     y: cropView.frame.origin.y.distance(to: scrollView.frame.origin.y))
 
+        let offset = visibleContentFrame.origin
+            .applying(CGAffineTransform(scaleX: scale, y: scale))
+            .applying(CGAffineTransform(translationX: cropViewOffset.x, y: cropViewOffset.y))
+
+        scrollView.minimumZoomScale = fitScaleForImage(photo)
         scrollView.setZoomScale(scale, animated: false)
-        scrollView.scrollRectToVisible(rect, animated: false)
-        print(scrollView.bounds)
+        scrollView.setContentOffset(offset, animated: false)
 
-        let testview = UIView(frame: rect)
-        testview.backgroundColor = .red
-
-//        scrollView.contentOffset = CGPoint(x: testview.frame.origin.x, y: testview.frame.origin.y)
-
-        let second = UIView(frame: CGRect(origin: scrollViewState.visibleContentFrame.origin, size: CGSize(width: 5, height: 5)))
-        second.backgroundColor = .yellow
-
-        imageView.addSubview(second)
-        imageView.addSubview(testview)
+        updateInsets()
     }
 
-    private func updateScrollView(animated: Bool = false) {
-        guard let image = photo else {
-            return
+    func changeCropViewFrame(using corner: Corner, translation: CGPoint) {
+        cropView.changeFrame(using: corner, translation: translation)
+    }
+
+    private func updateInsets() {
+        let top = imageView.frame.minY.distance(to: cropView.frame.minY)
+        let bottom = imageView.frame.maxY.distance(to: cropView.frame.maxY)
+        let left = imageView.frame.minX.distance(to: cropView.frame.minX)
+        let right = imageView.frame.maxX.distance(to: cropView.frame.maxX)
+
+        let vertical = max(top, bottom)
+        let horizontal = max(left, right)
+
+        scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
+    }
+
+    private func changeAppearence() {
+        let flags: Flags
+
+        switch state {
+        case .crop: flags = Flags(true, true, false)
+        case .normal: flags = Flags(false, false, true)
         }
 
-        scrollView.setZoomScale(cropView.frame.height / image.size.height, animated: animated)
-        scrollView.scrollRectToVisible(scrollViewState.scrollFrame, animated: false)
+        setCropViewGridIsVisible(flags.grid)
+        setDimmingViewIsVisible(flags.dimming)
+        setBlurIsVisible(flags.blur)
     }
 
     private func makeConstraints() {
-        scrollView.snp.makeConstraints { make in
+        effectsView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-//
-//        effectsView.snp.makeConstraints { make in
-//            make.edges.equalToSuperview()
-//        }
-    }
-
-    private func updateScrollViewInsets() {
-        let top = imageView.frame.minY.distance(to: cropView.frame.minY)
-        let bottom = imageView.frame.maxY.distance(to: cropView.frame.maxY)
-//        let left = imageView.frame.minX.distance(to: cropView.frame.minX)
-//        let right = imageView.frame.maxX.distance(to: cropView.frame.maxX)
-        print(scrollView.contentSize)
-//        scrollView.contentSize = CGSize(width: scrollView.contentSize.width + top + bottom, height: scrollView.contentSize.height + left + right)
-        print(scrollView.contentSize)
-
-        let shouldChange = cropView.frame.isOutOfBounds(imageView.frame)
-
-        if shouldChange {
-            updateScrollView()
-            scrollView.contentInset.top = top
-            scrollView.contentInset.bottom = bottom
         }
     }
 
     private func layoutCropViewIfNeeded() {
-        if cropView.frame == .zero {
+        if cropView.frame.isEmpty {
             cropView.bounds.size = imageView.image?.size ?? .zero
             cropView.center = center
             cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
-            cropView.clipToBounds(bounds, aspectScaled: true)
-            cropView.frame.fitInBounds(bounds)
-
-            scrollView.centerContentView(imageView)
+            cropView.clipToBounds(allowedBounds, aspectScaled: true)
         }
+    }
+
+    private func fitScaleForImage(_ image: UIImage?) -> CGFloat {
+        guard let image = image else {
+            return 0
+        }
+
+        return max(cropView.frame.height / image.size.height, cropView.frame.width / image.size.width)
+    }
+
+    private func setupScrollView() {
+        guard let image = imageView.image else {
+            return
+        }
+
+        scrollView.removeFromSuperview()
+        scrollView = UIScrollView(frame: bounds)
+        scrollView.contentSize = image.size
+        scrollView.delegate = self
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.isScrollEnabled = true
+        scrollView.maximumZoomScale = 5
+        scrollView.minimumZoomScale = fitScaleForImage(image)
+        scrollView.zoomScale = scrollView.minimumZoomScale
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.addSubview(imageView)
+
+        insertSubview(scrollView, belowSubview: effectsView)
     }
 
     private func updateMaskPath() {
@@ -175,23 +194,31 @@ class PhotoEditsView: UIView {
         effectsView.setMaskPath(path)
     }
 
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
+    private var imageView: UIImageView {
+        didSet {
+            setupScrollView()
+        }
+    }
 
-        scrollView.delegate = self
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.isScrollEnabled = true
-        scrollView.minimumZoomScale = 0.1
-        scrollView.maximumZoomScale = 5
+    private var imageViewOutOfBounds: Bool {
+        let rect = CGRect(origin: CGPoint(x: -scrollView.contentOffset.x, y: -scrollView.contentOffset.y),
+                          size: scrollView.contentSize)
 
-        return scrollView
-    }()
+        return !rect.contains(cropView.frame)
+    }
 
-    private let imageView: UIImageView
+    private var scrollView: UIScrollView
     private let effectsView = EffectsView()
     private var cropView = CropView(frame: .zero)
-    private var scrollViewState = ScrollViewState(scale: 1, scrollFrame: .zero, visibleContentFrame: .zero)
+    private var visibleContentFrame: CGRect
+}
+
+extension PhotoEditsView {
+    func cropViewCorner(at point: CGPoint) -> Corner? {
+        return cropView.cornerPosition(at: convert(point, to: cropView))
+    }
+
+    private typealias Flags = (grid: Bool, dimming: Bool, blur: Bool)
 }
 
 extension PhotoEditsView: UIScrollViewDelegate {
@@ -200,71 +227,31 @@ extension PhotoEditsView: UIScrollViewDelegate {
     }
 
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        setBlurIsVisible(false)
-        setDimmingViewIsVisible(true)
+        state = .crop
     }
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        setDimmingViewIsVisible(false)
-        setBlurIsVisible(true)
-        saveScrollViewState()
+        state = .normal
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        scrollView.centerContentView(imageView)
+        updateInsets()
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        setCropViewGridIsVisible(true)
-        setDimmingViewIsVisible(true)
-        setBlurIsVisible(false)
+        state = .crop
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        setCropViewGridIsVisible(false)
-        setDimmingViewIsVisible(false)
-        setBlurIsVisible(true)
-        saveScrollViewState()
-    }
-
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        state = .normal
     }
 }
 
 private extension UIScrollView {
-    func centerContentView(_ view: UIView, at point: CGPoint? = nil) {
-        guard let index = subviews.firstIndex(of: view) else {
-            return
-        }
+    func centerWithView(_ view: UIView, animated: Bool = false) {
+        let xOf = contentSize.width / 2 + view.center.x.distance(to: frame.minX)
+        let yOf = contentSize.height / 2 + view.center.y.distance(to: frame.minY)
 
-        let xOffset = max((bounds.width - contentSize.width) / 2, 0)
-        let yOffset = max((bounds.height - contentSize.height) / 2, 0)
-
-        subviews[index].center = CGPoint(x: contentSize.width / 2 + xOffset,
-                                         y: contentSize.height / 2 + yOffset)
-    }
-
-    func scrollRect(_ rect: CGRect, toBeVisibleInView view: UIView) {
-//            let diffrence = bo
-
-    }
-}
-
-extension CGRect {
-    var area: CGFloat {
-        return width * height
-    }
-
-    func isOutOfBounds(_ bounds: CGRect) -> Bool {
-        return bounds.minX - minX > 1
-            || bounds.maxX - maxX < -1
-            || bounds.minY - minY > 1
-            || bounds.maxY - maxY < -1
-    }
-}
-
-extension CGPoint {
-    func diffrence(with point: CGPoint) -> CGPoint {
-        return CGPoint(x: x - point.x, y: y - point.y)
+        setContentOffset(CGPoint(x: xOf, y: yOf), animated: animated)
     }
 }
