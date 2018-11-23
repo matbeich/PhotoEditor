@@ -6,15 +6,10 @@ import SnapKit
 import UIKit
 
 final class PhotoEditsView: UIView {
-    enum State {
-        case crop
-        case normal
-    }
-
-    var state: State = .normal {
+    var mode: EditMode = .normal {
         didSet {
-            if state != oldValue {
-                changeAppearence()
+            if mode != oldValue {
+                applyMode()
             }
         }
     }
@@ -44,7 +39,7 @@ final class PhotoEditsView: UIView {
         addSubview(effectsView)
         addSubview(cropView)
 
-        changeAppearence()
+        applyMode()
         makeConstraints()
     }
 
@@ -129,17 +124,12 @@ final class PhotoEditsView: UIView {
         scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }
 
-    private func changeAppearence() {
-        let flags: Flags
-
-        switch state {
-        case .crop: flags = Flags(true, true, false)
-        case .normal: flags = Flags(false, false, true)
-        }
-
-        setCropViewGridIsVisible(flags.grid)
-        setDimmingViewIsVisible(flags.dimming)
-        setBlurIsVisible(flags.blur)
+    private func applyMode() {
+        setCropViewGridIsVisible(mode.state.showGrid)
+        setDimmingViewIsVisible(mode.state.showDimming)
+        setBlurIsVisible(mode.state.showBlur)
+        setCropViewIsVisible(mode.state.showCrop)
+        scrollView.isScrollEnabled = mode.state.canScroll
     }
 
     private func makeConstraints() {
@@ -217,8 +207,22 @@ extension PhotoEditsView {
     func cropViewCorner(at point: CGPoint) -> Corner? {
         return cropView.cornerPosition(at: convert(point, to: cropView))
     }
+}
 
-    private typealias Flags = (grid: Bool, dimming: Bool, blur: Bool)
+extension PhotoEditsView {
+    enum EditMode {
+        case crop
+        case filter
+        case normal
+
+        var state: EditingState {
+            switch self {
+            case .crop: return CropState()
+            case .filter: return FilterState()
+            case .normal: return NormalState()
+            }
+        }
+    }
 }
 
 extension PhotoEditsView: UIScrollViewDelegate {
@@ -227,11 +231,11 @@ extension PhotoEditsView: UIScrollViewDelegate {
     }
 
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        state = .crop
+        mode = .crop
     }
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        state = .normal
+        mode = .normal
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
@@ -239,11 +243,11 @@ extension PhotoEditsView: UIScrollViewDelegate {
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        state = .crop
+        mode = .crop
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        state = .normal
+        mode = .normal
     }
 }
 
