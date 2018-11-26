@@ -5,36 +5,57 @@
 import UIKit
 
 protocol PhotoEditorServiceType {
-    func cropedFrom(_ image: UIImage, rect: CGRect) -> UIImage?
-    func rotate()
-    func applyFilter() -> UIImage
-    func changeColor()
-    func changeBrightness()
+    func cropeZone(_ zone: CGRect, of image: UIImage) -> UIImage?
+    func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat, clockwise: Bool) -> UIImage?
+    func filterImage(_ image: UIImage, withFilterNamed name: String) -> UIImage?
+    func changeColor(of image: UIImage, withValue value: CGFloat) -> UIImage?
+    func changedBrightness(of image: UIImage, withValue value: CGFloat) -> UIImage?
 }
 
-final class PhotoEditorService: PhotoEditorServiceType {
-    init(options: [CIContextOption : Any]? = nil) {
+final class PhotoEditorService {
+    init(options: [CIContextOption: Any]? = nil) {
         self.context = CIContext(options: options)
     }
 
-    func cropImage(_ image: UIImage, rect: CGRect) -> UIImage? {
-        return image.cropedZone(rect)
+    func cropeZone(_ zone: CGRect, of image: UIImage) -> UIImage? {
+        return nil
     }
 
-    func rotate() {}
-
-    func applyFilter() -> UIImage {
-        let image = UIImage(named: "test.png")!
-
-        let ciImage = CIImage(image: image)!
-        let filter = CIFilter(name: "CISepiaTone")!
-        filter.setIntensity(3)
-
-        return UIImage()
+    func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat, clockwise: Bool) -> UIImage? {
+        return nil
     }
 
-    func changeColor() {}
-    func changeBrightness() {}
+    func filterImage(_ image: UIImage, withFilterNamed name: String) -> UIImage? {
+        guard let filter = CIFilter(name: name), let ciImage = CIImage(image: image) else {
+            return nil
+        }
+
+        filter.setValue(ciImage, forKey: kCIInputImageKey)
+
+        guard let outputImg = filter.outputImage, let cgResult = context.createCGImage(outputImg, from: ciImage.extent) else {
+            return nil
+        }
+
+        return UIImage(cgImage: cgResult)
+    }
+
+    func changeColor(of image: UIImage, withValue value: CGFloat) -> UIImage? {
+        return nil
+    }
+
+    func changedBrightness(of image: UIImage, withValue value: CGFloat) -> UIImage? {
+        return nil
+    }
+
+    func asyncApplyFilterNamed(_ name: String, to image: UIImage, with callback: @escaping (UIImage?) -> Void) {
+        DispatchQueue.global().async { [weak self] in
+            let img = self?.filterImage(image, withFilterNamed: name)
+
+            DispatchQueue.main.async {
+                callback(img)
+            }
+        }
+    }
 
     private let context: CIContext
 }
@@ -46,16 +67,5 @@ extension UIImage {
         }
 
         return UIImage(cgImage: cutImageRef)
-    }
-}
-
-extension CIFilter {
-    func setIntensity(_ intensity: CGFloat) {
-        setValue(intensity, forKey: kCIInputIntensityKey)
-    }
-
-    func apply(to image: CIImage, intensity: CGFloat) {
-        setValue(image, forKey: kCIInputImageKey)
-
     }
 }

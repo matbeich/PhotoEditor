@@ -18,10 +18,15 @@
 		844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F021956B9A00E5BD08 /* Grid.swift */; };
 		844FC8F421958F6000E5BD08 /* CornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F321958F6000E5BD08 /* CornerView.swift */; };
 		844FC8F62199670100E5BD08 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F52199670100E5BD08 /* Config.swift */; };
+		84662DB221ABF6CD00852812 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 84662DB121ABF6CD00852812 /* 1.png */; };
+		84662DB521ABFD2E00852812 /* BarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DB321ABFD2E00852812 /* BarButtonItem.swift */; };
+		84662DB621ABFD2E00852812 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DB421ABFD2E00852812 /* Toolbar.swift */; };
+		84662DED21AC333700852812 /* StateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DEC21AC333700852812 /* StateStore.swift */; };
 		846E574321A7F9D100D24473 /* NormalState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574221A7F9D100D24473 /* NormalState.swift */; };
 		846E574721A8009600D24473 /* PhotoEditorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574621A8009600D24473 /* PhotoEditorService.swift */; };
 		846E574A21A8111700D24473 /* FilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574921A8111700D24473 /* FilterCollectionViewCell.swift */; };
 		846E574D21A811EC00D24473 /* AppWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574C21A811EC00D24473 /* AppWorld.swift */; };
+		846E574F21ABE2B400D24473 /* FilterMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574E21ABE2B400D24473 /* FilterMixer.swift */; };
 		8478BC1021A53B6B00D39C2D /* EffectsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8478BC0F21A53B6B00D39C2D /* EffectsView.swift */; };
 		848897242191A03500D99E91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897232191A03500D99E91 /* AppDelegate.swift */; };
 		848897262191A03500D99E91 /* SceneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897252191A03500D99E91 /* SceneController.swift */; };
@@ -29,7 +34,6 @@
 		8488972E2191A03600D99E91 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8488972C2191A03600D99E91 /* LaunchScreen.storyboard */; };
 		848897392191A03600D99E91 /* PhotoEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897382191A03600D99E91 /* PhotoEditorTests.swift */; };
 		848897482191A48800D99E91 /* PhotoEditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897472191A48800D99E91 /* PhotoEditsView.swift */; };
-		8488974A2191A4B900D99E91 /* ToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897492191A4B900D99E91 /* ToolBar.swift */; };
 		8488974C2191A57E00D99E91 /* CropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488974B2191A57E00D99E91 /* CropView.swift */; };
 		8488974E2191A62900D99E91 /* EditingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488974D2191A62900D99E91 /* EditingState.swift */; };
 		848897502191A66400D99E91 /* FilterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488974F2191A66400D99E91 /* FilterState.swift */; };
@@ -133,10 +137,15 @@
 		844FC8F021956B9A00E5BD08 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		844FC8F321958F6000E5BD08 /* CornerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerView.swift; sourceTree = "<group>"; };
 		844FC8F52199670100E5BD08 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		84662DB121ABF6CD00852812 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
+		84662DB321ABFD2E00852812 /* BarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarButtonItem.swift; sourceTree = "<group>"; };
+		84662DB421ABFD2E00852812 /* Toolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
+		84662DEC21AC333700852812 /* StateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateStore.swift; sourceTree = "<group>"; };
 		846E574221A7F9D100D24473 /* NormalState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalState.swift; sourceTree = "<group>"; };
 		846E574621A8009600D24473 /* PhotoEditorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorService.swift; sourceTree = "<group>"; };
 		846E574921A8111700D24473 /* FilterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionViewCell.swift; sourceTree = "<group>"; };
 		846E574C21A811EC00D24473 /* AppWorld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWorld.swift; sourceTree = "<group>"; };
+		846E574E21ABE2B400D24473 /* FilterMixer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterMixer.swift; sourceTree = "<group>"; };
 		8478BC0F21A53B6B00D39C2D /* EffectsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectsView.swift; sourceTree = "<group>"; };
 		848897202191A03500D99E91 /* PhotoEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		848897232191A03500D99E91 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -148,7 +157,6 @@
 		848897382191A03600D99E91 /* PhotoEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorTests.swift; sourceTree = "<group>"; };
 		8488973A2191A03600D99E91 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		848897472191A48800D99E91 /* PhotoEditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditsView.swift; sourceTree = "<group>"; };
-		848897492191A4B900D99E91 /* ToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBar.swift; sourceTree = "<group>"; };
 		8488974B2191A57E00D99E91 /* CropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropView.swift; sourceTree = "<group>"; };
 		8488974D2191A62900D99E91 /* EditingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingState.swift; sourceTree = "<group>"; };
 		8488974F2191A66400D99E91 /* FilterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterState.swift; sourceTree = "<group>"; };
@@ -269,10 +277,21 @@
 			path = CropView;
 			sourceTree = "<group>";
 		};
+		84662DB721ABFD6700852812 /* Toolbar */ = {
+			isa = PBXGroup;
+			children = (
+				84662DB321ABFD2E00852812 /* BarButtonItem.swift */,
+				84662DB421ABFD2E00852812 /* Toolbar.swift */,
+			);
+			path = Toolbar;
+			sourceTree = "<group>";
+		};
 		846E574821A8009A00D24473 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				846E574621A8009600D24473 /* PhotoEditorService.swift */,
+				846E574E21ABE2B400D24473 /* FilterMixer.swift */,
+				84662DEC21AC333700852812 /* StateStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -292,7 +311,7 @@
 				844FC8F72199693800E5BD08 /* CropView */,
 				8478BC0F21A53B6B00D39C2D /* EffectsView.swift */,
 				848897472191A48800D99E91 /* PhotoEditsView.swift */,
-				848897492191A4B900D99E91 /* ToolBar.swift */,
+				84662DB721ABFD6700852812 /* Toolbar */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -357,6 +376,7 @@
 			isa = PBXGroup;
 			children = (
 				844E3A80219AA868003FEC4E /* test.png */,
+				84662DB121ABF6CD00852812 /* 1.png */,
 				84F5A0DD2191AEB500DEC40F /* R.generated.swift */,
 				8488972A2191A03600D99E91 /* Assets.xcassets */,
 			);
@@ -633,6 +653,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				844E3A81219AA868003FEC4E /* test.png in Resources */,
+				84662DB221ABF6CD00852812 /* 1.png in Resources */,
 				8488972E2191A03600D99E91 /* LaunchScreen.storyboard in Resources */,
 				8488972B2191A03600D99E91 /* Assets.xcassets in Resources */,
 			);
@@ -815,22 +836,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				848897482191A48800D99E91 /* PhotoEditsView.swift in Sources */,
+				84662DED21AC333700852812 /* StateStore.swift in Sources */,
 				846E574D21A811EC00D24473 /* AppWorld.swift in Sources */,
 				8478BC1021A53B6B00D39C2D /* EffectsView.swift in Sources */,
 				84F5A0E72191B77300DEC40F /* FiltersCollectionViewController.swift in Sources */,
 				848897502191A66400D99E91 /* FilterState.swift in Sources */,
 				844FC8F62199670100E5BD08 /* Config.swift in Sources */,
 				84F5A0DE2191AEB600DEC40F /* R.generated.swift in Sources */,
+				846E574F21ABE2B400D24473 /* FilterMixer.swift in Sources */,
 				84F5A0E52191B35800DEC40F /* CropState.swift in Sources */,
 				848897262191A03500D99E91 /* SceneController.swift in Sources */,
 				844FC8F421958F6000E5BD08 /* CornerView.swift in Sources */,
 				846E574A21A8111700D24473 /* FilterCollectionViewCell.swift in Sources */,
 				846E574721A8009600D24473 /* PhotoEditorService.swift in Sources */,
 				8488974E2191A62900D99E91 /* EditingState.swift in Sources */,
+				84662DB521ABFD2E00852812 /* BarButtonItem.swift in Sources */,
 				848897242191A03500D99E91 /* AppDelegate.swift in Sources */,
+				84662DB621ABFD2E00852812 /* Toolbar.swift in Sources */,
 				848897532191A75300D99E91 /* PhotoViewController.swift in Sources */,
 				846E574321A7F9D100D24473 /* NormalState.swift in Sources */,
-				8488974A2191A4B900D99E91 /* ToolBar.swift in Sources */,
 				8488974C2191A57E00D99E91 /* CropView.swift in Sources */,
 				844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */,
 			);

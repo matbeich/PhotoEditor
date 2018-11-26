@@ -20,6 +20,9 @@ class PhotoViewController: UIViewController {
 
     private func setup() {
         photoEditsView.set(UIImage(named: "test.png")!)
+        photoEditsView.subscribe(to: Current.stateStore) { [weak self] state in
+            self?.photoEditsView.mode = state.editMode
+        }
     }
 
     private func makeConstraints() {

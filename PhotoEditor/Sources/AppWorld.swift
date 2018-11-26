@@ -4,10 +4,11 @@
 
 import UIKit
 
-
 struct AppWorld {
     var dateProvider = { Date() }
     var photoEditService = PhotoEditorService()
+    var filterMixer = FilterMixer()
+    var stateStore = StateStore.shared
 }
 
 extension AppWorld {
