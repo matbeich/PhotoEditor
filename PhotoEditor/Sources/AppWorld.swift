@@ -8,7 +8,7 @@ struct AppWorld {
     var dateProvider = { Date() }
     var photoEditService = PhotoEditorService()
     var filterMixer = FilterMixer()
-    var stateStore = StateStore.shared
+    var stateStore: StateStore = StateStore(State<AppState>(.initial))
 }
 
 extension AppWorld {

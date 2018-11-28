@@ -40,17 +40,35 @@ class SceneController: UIViewController {
         }
     }
 
+    private func changeAppearenceOfTools(for mode: EditMode) {
+        switch mode {
+        case .crop:
+            toolControlsContainer.isHidden = true
+        case .filter:
+            toolControlsContainer.isHidden = false
+            add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
+        case .normal:
+            toolControlsContainer.isHidden = true
+            filtersCollectionViewController.removeFromParent()
+        }
+    }
+
     private func setup() {
         add(fullscreenChild: photoViewController, in: photoViewControllerContainer)
-        add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
+
+        Current.stateStore.bindSubscriber(with: id) { [weak self] state in
+            self?.photoViewController.mode = state.value.editMode
+            self?.changeAppearenceOfTools(for: state.value.editMode)
+        }
     }
 
     private lazy var filtersCollectionViewController: FiltersCollectionViewController = {
-        let filters = ["CIToneCurve", "CIPointillize", "CISpotColor", "CIPhotoEffectNoir", "CIBumpDistortion", "CITorusLensDistortion", "CIConvolution9Horizontal"]
-        let image = UIImage(named: "1.png")!
-        let controller = FiltersCollectionViewController(image: image, filterNames: filters)
+        let filters = [
+            "CIToneCurve", "CIPointillize", "CISpotColor",
+            "CIPhotoEffectNoir", "CIBumpDistortion", "CITorusLensDistortion", "CIConvolution9Horizontal"
+        ]
 
-        return controller
+        return FiltersCollectionViewController(filterNames: filters)
     }()
 
     private lazy var toolBar: Toolbar = {
@@ -72,9 +90,11 @@ class SceneController: UIViewController {
 extension SceneController: ToolbarDelegate {
     func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
         if itemTapped.tag == 1 {
-            Current.stateStore.appstate.editMode = .filter
+            filtersCollectionViewController.image = Current.photoEditService.resize(photoViewController.photo!, to: CGSize(width: 50, height: 50))
+
+            Current.stateStore.state.value.editMode = .filter
         } else {
-            Current.stateStore.appstate.editMode = .crop
+            Current.stateStore.state.value.editMode = .crop
         }
     }
 }

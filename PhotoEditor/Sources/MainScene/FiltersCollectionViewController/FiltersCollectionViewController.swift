@@ -5,7 +5,7 @@
 import UIKit
 
 class FiltersCollectionViewController: UIViewController {
-    var image: UIImage {
+    var image: UIImage? {
         didSet {
             collectionView.reloadData()
         }
@@ -17,26 +17,21 @@ class FiltersCollectionViewController: UIViewController {
         }
     }
 
-    init(image: UIImage, filterNames: [String] = []) {
+    init(image: UIImage? = nil, filterNames: [String] = []) {
         self.filterNames = filterNames
         self.image = image
 
         super.init(nibName: nil, bundle: nil)
+        view.addSubview(collectionView)
+        setup()
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("Not implemented")
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        view.addSubview(collectionView)
-        setup()
-    }
-
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
     }
 
@@ -54,8 +49,33 @@ class FiltersCollectionViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
 
-        return UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        let view = UICollectionView(frame: self.view.bounds, collectionViewLayout: layout)
+
+        return view
     }()
+}
+
+extension FiltersCollectionViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return filterNames.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.identifier, for: indexPath)
+
+        guard let filterCell = cell as? FilterCollectionViewCell, let image = image else {
+            return cell
+        }
+
+        let filterName = filterNames[indexPath.row]
+
+        Current.photoEditService.asyncApplyFilterNamed(filterName, to: image) {
+            filterCell.image = $0
+            filterCell.filterName = filterName
+        }
+
+        return filterCell
+    }
 }
 
 extension FiltersCollectionViewController: UICollectionViewDelegate {
@@ -70,26 +90,5 @@ extension FiltersCollectionViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 5
-    }
-}
-
-extension FiltersCollectionViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filterNames.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.identifier, for: indexPath)
-
-        guard let filterCell = cell as? FilterCollectionViewCell else {
-            return cell
-        }
-
-        let name = filterNames[indexPath.row]
-        filterCell.filterName = name
-
-        Current.photoEditService.asyncApplyFilterNamed(name, to: image) { filterCell.image = $0 }
-
-        return filterCell
     }
 }

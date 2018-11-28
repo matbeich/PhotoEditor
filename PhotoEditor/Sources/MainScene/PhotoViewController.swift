@@ -5,24 +5,30 @@
 import UIKit
 
 class PhotoViewController: UIViewController {
+    var photo: UIImage? {
+        return photoEditsView.cropedPhoto
+    }
+
+    var mode: EditMode = Current.stateStore.state.value.editMode {
+        didSet {
+            photoEditsView.mode = mode
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
 
         let panGestureRecognizer = UIPanGestureRecognizer()
         panGestureRecognizer.addTarget(self, action: #selector(changeSize(with:)))
 
+        setup()
         view.addSubview(photoEditsView)
         view.addGestureRecognizer(panGestureRecognizer)
-
         makeConstraints()
     }
 
     private func setup() {
         photoEditsView.set(UIImage(named: "test.png")!)
-        photoEditsView.subscribe(to: Current.stateStore) { [weak self] state in
-            self?.photoEditsView.mode = state.editMode
-        }
     }
 
     private func makeConstraints() {

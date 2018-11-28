@@ -13,20 +13,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = SceneController()
         window?.makeKeyAndVisible()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: { Current.stateStore.appstate.appState = .inactive })
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: { Current.stateStore.state.value.appState = .inactive })
 
         return true
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
-        Current.stateStore.appstate.appState = .active
+        Current.stateStore.state.value.appState = .active
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        Current.stateStore.appstate.appState = .background
+        Current.stateStore.state.value.appState = .background
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        Current.stateStore.appstate.appState = .inactive
+        Current.stateStore.state.value.appState = .inactive
     }
 }

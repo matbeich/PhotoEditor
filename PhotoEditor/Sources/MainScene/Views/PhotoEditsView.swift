@@ -22,10 +22,12 @@ enum EditMode {
 final class PhotoEditsView: UIView {
     var mode: EditMode = .normal {
         didSet {
-            if mode != oldValue {
-                applyMode()
-            }
+            applyMode()
         }
+    }
+
+    var cropedPhoto: UIImage? {
+        return photo?.cropedZone(visibleRect)
     }
 
     var allowedBounds: CGRect {
