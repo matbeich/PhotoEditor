@@ -5,13 +5,29 @@
 import SnapKit
 import UIKit
 
+enum EditMode {
+    case crop
+    case filter
+    case normal
+
+    var state: EditingState {
+        switch self {
+        case .crop: return CropState()
+        case .filter: return FilterState()
+        case .normal: return NormalState()
+        }
+    }
+}
+
 final class PhotoEditsView: UIView {
     var mode: EditMode = .normal {
         didSet {
-            if mode != oldValue {
-                applyMode()
-            }
+            applyMode()
         }
+    }
+
+    var cropedPhoto: UIImage? {
+        return photo?.cropedZone(visibleRect)
     }
 
     var allowedBounds: CGRect {
@@ -206,22 +222,6 @@ final class PhotoEditsView: UIView {
 extension PhotoEditsView {
     func cropViewCorner(at point: CGPoint) -> Corner? {
         return cropView.cornerPosition(at: convert(point, to: cropView))
-    }
-}
-
-extension PhotoEditsView {
-    enum EditMode {
-        case crop
-        case filter
-        case normal
-
-        var state: EditingState {
-            switch self {
-            case .crop: return CropState()
-            case .filter: return FilterState()
-            case .normal: return NormalState()
-            }
-        }
     }
 }
 
