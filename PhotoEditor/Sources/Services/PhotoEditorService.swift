@@ -7,7 +7,7 @@ import ImageIO
 import UIKit
 
 protocol PhotoEditorServiceType {
-    func resize(_ image: UIImage, to size: CGSize) -> UIImage?
+    func resize(_ image: UIImage, to size: CGSize, callback: (UIImage?) -> Void)
     func cropeZone(_ zone: CGRect, of image: UIImage) -> UIImage?
     func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat, clockwise: Bool) -> UIImage?
     func filterImage(_ image: UIImage, withFilterNamed name: String) -> UIImage?
@@ -20,20 +20,31 @@ final class PhotoEditorService {
         self.context = CIContext(options: options)
     }
 
-    func resize(_ image: UIImage, to size: CGSize) -> UIImage? {
-        guard
-            let image = image.cgImage,
-            let data = image.dataProvider?.data,
-            let imageSource = CGImageSourceCreateWithData(data, nil),
-            let oneMoreSource = CGImageSourceCreateWithDataProvider(image.dataProvider!, nil)
-        else {
-            return nil
+    func resize(_ image: UIImage, to size: CGSize, callback: @escaping (UIImage?) -> Void) {
+        guard let image = image.cgImage else {
+            callback(nil)
+            return
         }
 
-        let some = CGImageSourceCreateImageAtIndex(oneMoreSource, 0, [kCGImageSourceCreateThumbnailFromImageAlways: true] as CFDictionary)
-        let img = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [kCGImageSourceCreateThumbnailFromImageAlways: true] as CFDictionary)
+        DispatchQueue.global().async {
+            let scale = min(size.width / CGFloat(image.size.width),
+                            size.height / CGFloat(image.size.height))
 
-        return UIImage(cgImage: img!)
+            let size = CGSize(width: CGFloat(image.size.width) * scale,
+                              height: CGFloat(image.size.height) * scale)
+
+            let renderer = UIGraphicsImageRenderer(size: size)
+            let img = renderer.image {
+                $0.cgContext.saveGState()
+                $0.cgContext.draw(image, in: CGRect(origin: .zero, size: size))
+                $0.cgContext.restoreGState()
+            }
+
+            DispatchQueue.main.async {
+                print(img.size)
+                callback(img)
+            }
+        }
     }
 
     func cropeZone(_ zone: CGRect, of image: UIImage) -> UIImage? {
@@ -44,7 +55,7 @@ final class PhotoEditorService {
         return nil
     }
 
-    func filterImage(_ image: UIImage, withFilterNamed name: String, options: [String: Any] = [:]) -> UIImage? {
+    func applyFilter(named name: String, to image: UIImage, withOptions options: [String: Any] = [:]) -> UIImage? {
         guard let filter = CIFilter(name: name), let ciImage = CIImage(image: image) else {
             return nil
         }
@@ -69,7 +80,7 @@ final class PhotoEditorService {
 
     func asyncApplyFilterNamed(_ name: String, to image: UIImage, with callback: @escaping (UIImage?) -> Void) {
         DispatchQueue.global().async { [weak self] in
-            let img = self?.filterImage(image, withFilterNamed: name)
+            let img = self?.applyFilter(named: name, to: image)
 
             DispatchQueue.main.async {
                 callback(img)

@@ -90,9 +90,10 @@ class SceneController: UIViewController {
 extension SceneController: ToolbarDelegate {
     func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
         if itemTapped.tag == 1 {
-            filtersCollectionViewController.image = Current.photoEditService.resize(photoViewController.photo!, to: CGSize(width: 50, height: 50))
-
             Current.stateStore.state.value.editMode = .filter
+            Current.photoEditService.resize(photoViewController.photo!, to: CGSize(width: 50, height: 50)) { [weak self] in
+                self?.filtersCollectionViewController.image = $0
+            }
         } else {
             Current.stateStore.state.value.editMode = .crop
         }
