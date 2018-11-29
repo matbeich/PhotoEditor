@@ -20,14 +20,8 @@ enum EditMode {
 }
 
 final class PhotoEditsView: UIView {
-    var mode: EditMode = .normal {
-        didSet {
-            applyMode()
-        }
-    }
-
-    var cropedPhoto: UIImage? {
-        return photo?.cropedZone(visibleRect)
+    var photo: UIImage? {
+        return imageView.image
     }
 
     var allowedBounds: CGRect {
@@ -38,8 +32,10 @@ final class PhotoEditsView: UIView {
         return convert(cropView.frame, to: imageView)
     }
 
-    var photo: UIImage? {
-        return imageView.image
+    var mode: EditMode = .normal {
+        didSet {
+            applyMode()
+        }
     }
 
     init(frame: CGRect = .zero, image: UIImage? = nil) {
@@ -117,6 +113,7 @@ final class PhotoEditsView: UIView {
         scrollView.minimumZoomScale = fitScaleForImage(photo)
         scrollView.setZoomScale(scale, animated: false)
         scrollView.setContentOffset(offset, animated: false)
+        scrollView.isUserInteractionEnabled = mode.state.canScroll
 
         updateInsets()
     }
@@ -217,13 +214,6 @@ final class PhotoEditsView: UIView {
         didSet {
             setupScrollView()
         }
-    }
-
-    private var imageViewOutOfBounds: Bool {
-        let rect = CGRect(origin: CGPoint(x: -scrollView.contentOffset.x, y: -scrollView.contentOffset.y),
-                          size: scrollView.contentSize)
-
-        return !rect.contains(cropView.frame)
     }
 
     private var scrollView: UIScrollView
