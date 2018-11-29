@@ -8,13 +8,12 @@ import UIKit
 class SceneController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = .darkGray
-        view.addSubview(toolBar)
         view.addSubview(photoViewControllerContainer)
         view.addSubview(toolControlsContainer)
-        setup()
+        view.addSubview(toolBar)
 
+        setup()
         makeConstraints()
     }
 
@@ -28,47 +27,53 @@ class SceneController: UIViewController {
             make.height.equalTo(Config.toolBarHeight)
         }
 
-        photoViewControllerContainer.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
-            make.bottom.equalTo(toolBar.snp.top)
-        }
-
         toolControlsContainer.snp.makeConstraints { make in
-            make.bottom.equalTo(toolBar.snp.top)
+            self.toolControlsConstainerTop = make.top.equalTo(toolBar.snp.top).constraint
             make.left.right.equalToSuperview()
             make.height.equalToSuperview().multipliedBy(0.15)
         }
+
+        photoViewControllerContainer.snp.remakeConstraints { make in
+            make.top.left.right.equalToSuperview()
+            make.bottom.equalTo(toolControlsContainer.snp.top)
+        }
     }
+
+    var toolControlsConstainerTop: Constraint?
 
     private func changeAppearenceOfTools(for mode: EditMode) {
         switch mode {
         case .crop:
-            toolControlsContainer.isHidden = true
+            toolControlsConstainerTop?.update(offset: 0)
+
         case .filter:
-            toolControlsContainer.isHidden = false
-            add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
+            toolControlsConstainerTop?.update(offset: -toolControlsContainer.bounds.height)
+
         case .normal:
-            toolControlsContainer.isHidden = true
             filtersCollectionViewController.removeFromParent()
         }
     }
 
     private func setup() {
         add(fullscreenChild: photoViewController, in: photoViewControllerContainer)
+        add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
 
         Current.stateStore.bindSubscriber(with: id) { [weak self] state in
-            self?.photoViewController.mode = state.value.editMode
             self?.changeAppearenceOfTools(for: state.value.editMode)
+            self?.photoViewController.mode = state.value.editMode
         }
+
+        photoViewController.originalPhoto = UIImage(named: "test.jpg")!
     }
 
     private lazy var filtersCollectionViewController: FiltersCollectionViewController = {
-        let filters = [
-            "CIToneCurve", "CIPointillize", "CISpotColor",
-            "CIPhotoEffectNoir", "CIBumpDistortion", "CITorusLensDistortion", "CIConvolution9Horizontal"
-        ]
+        let filters = Array(AppFilters.allCases).compactMap { CIFilter(name: $0.rawValue) }
+        let controller = FiltersCollectionViewController(filters: filters)
 
-        return FiltersCollectionViewController(filterNames: filters)
+        controller.delegate = self
+        controller.view.backgroundColor = .lightGray
+
+        return controller
     }()
 
     private lazy var toolBar: Toolbar = {
@@ -78,6 +83,7 @@ class SceneController: UIViewController {
         ]
         let toolbar = Toolbar(frame: .zero, barItems: barItems)
         toolbar.delegate = self
+        toolbar.backgroundColor = .white
 
         return toolbar
     }()
@@ -90,12 +96,28 @@ class SceneController: UIViewController {
 extension SceneController: ToolbarDelegate {
     func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
         if itemTapped.tag == 1 {
+            guard let photo = photoViewController.cropedOriginal else {
+                return
+            }
+
             Current.stateStore.state.value.editMode = .filter
-            Current.photoEditService.resize(photoViewController.photo!, to: CGSize(width: 50, height: 50)) { [weak self] in
+            Current.photoEditService.resize(photo, to: CGSize(width: 150, height: 150)) { [weak self] in
                 self?.filtersCollectionViewController.image = $0
             }
         } else {
             Current.stateStore.state.value.editMode = .crop
+        }
+    }
+}
+
+extension SceneController: FiltersCollectionViewControllerDelegate {
+    func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter) {
+        Current.photoEditService.asyncApplyFilter(filter, to: photoViewController.originalPhoto!) { [weak self] image in
+            guard let image = image else {
+                return
+            }
+
+            self?.photoViewController.setPhoto(image)
         }
     }
 }
