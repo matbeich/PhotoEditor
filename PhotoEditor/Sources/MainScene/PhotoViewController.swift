@@ -43,6 +43,12 @@ class PhotoViewController: UIViewController {
 
     private func setup() {
         photoEditsView.set(originalPhoto ?? UIImage())
+
+        Current.stateStore.addSubscriber(with: id) { [weak self] state in
+            if state.value.editMode != self?.photoEditsView.mode {
+                self?.photoEditsView.saveCropedRect()
+            }
+        }
     }
 
     private func makeConstraints() {
