@@ -66,18 +66,15 @@ final class PhotoEditsView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        layoutCropViewIfNeeded()
-
-        scrollView.frame = bounds
-        scrollView.centerWithView(cropView)
-        scrollView.minimumZoomScale = fitScaleForImage(photo)
-        scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
-
+        print("layout subviews")
+        layoutSubviewsIfNeeded()
         updateMaskPath()
     }
 
     func set(_ photo: UIImage) {
+        saveCropedRect()
         imageView = UIImageView(image: photo)
+        setNeedsDisplay()
     }
 
     func fitCropView() {
@@ -154,12 +151,27 @@ final class PhotoEditsView: UIView {
         }
     }
 
-    private func layoutCropViewIfNeeded() {
-        if cropView.frame.isEmpty {
-            cropView.bounds.size = imageView.image?.size ?? .zero
+    private func layoutSubviewsIfNeeded() {
+        let shouldLayout = !bounds.isEmpty
+
+        if shouldLayout {
+            guard let size = visibleContentFrame.isEmpty ? photo?.size : visibleContentFrame.size else {
+                return
+            }
+
+            scrollView.frame = bounds
+            cropView.bounds.size = size
             cropView.center = center
             cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
             cropView.clipToBounds(allowedBounds, aspectScaled: true)
+        }
+
+        if visibleContentFrame.isEmpty {
+            scrollView.centerWithView(cropView)
+            scrollView.minimumZoomScale = fitScaleForImage(photo)
+            scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
+        } else {
+            fitSavedRectToCropView()
         }
     }
 
