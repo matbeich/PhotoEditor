@@ -163,6 +163,10 @@ extension UIView {
     func clipToBounds(_ bounds: CGRect, aspectScaled: Bool = false) {
         let scale = min(bounds.size.height / frame.size.height, bounds.size.width / frame.size.width)
 
+        guard scale.isFinite else {
+            return
+        }
+
         self.bounds.size = aspectScaled ? frame.size.applying(CGAffineTransform(scaleX: scale, y: scale)) : bounds.size
         self.center = bounds.center
     }

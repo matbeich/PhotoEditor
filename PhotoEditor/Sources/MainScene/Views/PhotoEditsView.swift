@@ -67,17 +67,14 @@ final class PhotoEditsView: UIView {
         super.layoutSubviews()
 
         layoutCropViewIfNeeded()
-
-        scrollView.frame = bounds
-        scrollView.centerWithView(cropView)
-        scrollView.minimumZoomScale = fitScaleForImage(photo)
-        scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
-
+        layoutScrollViewIfNeeded()
         updateMaskPath()
     }
 
     func set(_ photo: UIImage) {
+        saveCropedRect()
         imageView = UIImageView(image: photo)
+        setNeedsDisplay()
     }
 
     func fitCropView() {
@@ -155,11 +152,27 @@ final class PhotoEditsView: UIView {
     }
 
     private func layoutCropViewIfNeeded() {
-        if cropView.frame.isEmpty {
-            cropView.bounds.size = imageView.image?.size ?? .zero
+        if !bounds.isEmpty {
+            guard let size = visibleContentFrame.isEmpty ? photo?.size : visibleContentFrame.size else {
+                return
+            }
+
+            cropView.bounds.size = size
             cropView.center = center
             cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
             cropView.clipToBounds(allowedBounds, aspectScaled: true)
+        }
+    }
+
+    private func layoutScrollViewIfNeeded() {
+        scrollView.frame = bounds
+
+        if visibleContentFrame.isEmpty {
+            scrollView.centerWithView(cropView)
+            scrollView.minimumZoomScale = fitScaleForImage(photo)
+            scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
+        } else {
+            fitSavedRectToCropView()
         }
     }
 

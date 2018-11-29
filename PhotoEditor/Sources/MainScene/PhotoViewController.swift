@@ -5,8 +5,18 @@
 import UIKit
 
 class PhotoViewController: UIViewController {
-    var photo: UIImage? {
-        return photoEditsView.cropedPhoto
+    var originalPhoto: UIImage? {
+        didSet {
+            guard let photo = originalPhoto else {
+                return
+            }
+
+            photoEditsView.set(photo)
+        }
+    }
+
+    var cropedOriginal: UIImage? {
+        return originalPhoto?.cropedZone(photoEditsView.visibleRect)
     }
 
     var mode: EditMode = Current.stateStore.state.value.editMode {
@@ -27,8 +37,18 @@ class PhotoViewController: UIViewController {
         makeConstraints()
     }
 
+    func setPhoto(_ photo: UIImage) {
+        photoEditsView.set(photo)
+    }
+
     private func setup() {
-        photoEditsView.set(UIImage(named: "test.png")!)
+        photoEditsView.set(originalPhoto ?? UIImage())
+
+        Current.stateStore.addSubscriber(with: id) { [weak self] state in
+            if state.value.editMode != self?.photoEditsView.mode {
+                self?.photoEditsView.saveCropedRect()
+            }
+        }
     }
 
     private func makeConstraints() {

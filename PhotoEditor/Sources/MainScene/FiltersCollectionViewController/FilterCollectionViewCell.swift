@@ -40,7 +40,8 @@ class FilterCollectionViewCell: UICollectionViewCell {
     }
 
     private func setup() {
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
         textLabel.adjustsFontSizeToFitWidth = true
 
         contentView.addSubview(imageView)

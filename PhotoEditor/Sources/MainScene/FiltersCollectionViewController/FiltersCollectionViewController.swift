@@ -4,21 +4,27 @@
 
 import UIKit
 
+protocol FiltersCollectionViewControllerDelegate: AnyObject {
+    func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter)
+}
+
 class FiltersCollectionViewController: UIViewController {
+    weak var delegate: FiltersCollectionViewControllerDelegate?
+
     var image: UIImage? {
         didSet {
             collectionView.reloadData()
         }
     }
 
-    var filterNames: [String] {
+    var filters: [EditFilter] {
         didSet {
             collectionView.reloadData()
         }
     }
 
-    init(image: UIImage? = nil, filterNames: [String] = []) {
-        self.filterNames = filterNames
+    init(image: UIImage? = nil, filters: [EditFilter] = []) {
+        self.filters = filters
         self.image = image
 
         super.init(nibName: nil, bundle: nil)
@@ -45,7 +51,7 @@ class FiltersCollectionViewController: UIViewController {
         collectionView.register(FilterCollectionViewCell.self, forCellWithReuseIdentifier: FilterCollectionViewCell.identifier)
     }
 
-    private lazy var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
 
@@ -57,7 +63,7 @@ class FiltersCollectionViewController: UIViewController {
 
 extension FiltersCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filterNames.count
+        return filters.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -67,11 +73,11 @@ extension FiltersCollectionViewController: UICollectionViewDataSource {
             return cell
         }
 
-        let filterName = filterNames[indexPath.row]
+        let filter = filters[indexPath.row]
 
-        Current.photoEditService.asyncApplyFilterNamed(filterName, to: image) {
+        Current.photoEditService.asyncApplyFilter(filter, to: image) {
             filterCell.image = $0
-            filterCell.filterName = filterName
+            filterCell.filterName = filter.name
         }
 
         return filterCell
@@ -79,6 +85,9 @@ extension FiltersCollectionViewController: UICollectionViewDataSource {
 }
 
 extension FiltersCollectionViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.filtersCollectionViewController(self, didSelectFilter: filters[indexPath.row])
+    }
 }
 
 extension FiltersCollectionViewController: UICollectionViewDelegateFlowLayout {

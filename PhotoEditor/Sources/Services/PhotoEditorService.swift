@@ -3,21 +3,29 @@
 //
 
 import CoreImage
-import ImageIO
 import UIKit
 
 typealias EditCallback = (UIImage?) -> Void
 
-protocol PhotoEditorServiceType {
-    func resize(_ image: UIImage, to size: CGSize, callback: @escaping EditCallback)
-    func cropeZone(_ zone: CGRect, of image: UIImage) -> UIImage?
-    func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat, clockwise: Bool) -> UIImage?
-    func applyFilterNamed(_ name: String, to image: UIImage, withOptions options: [String: Any]) -> UIImage?
-    func changeColor(of image: UIImage, withValue value: CGFloat) -> UIImage?
-    func changedBrightness(of image: UIImage, withValue value: CGFloat) -> UIImage?
+protocol EditFilter {
+    var name: String { get }
+    func applied(to image: CIImage, in context: CIContext, withOptions options: [String: Any]) -> CGImage?
 }
 
-final class PhotoEditorService: PhotoEditorServiceType {
+extension CIFilter: EditFilter {
+    func applied(to image: CIImage, in context: CIContext, withOptions options: [String: Any]) -> CGImage? {
+        setValue(image, forKey: kCIInputImageKey)
+        options.forEach { setValue($0.value, forKey: $0.key) }
+
+        guard let outputImg = outputImage, let cgResult = context.createCGImage(outputImg, from: image.extent) else {
+            return nil
+        }
+
+        return cgResult
+    }
+}
+
+final class PhotoEditorService {
     init(options: [CIContextOption: Any]? = [.useSoftwareRenderer: false]) {
         self.context = CIContext(options: options)
     }
@@ -26,9 +34,9 @@ final class PhotoEditorService: PhotoEditorServiceType {
         return image.cropedZone(zone)
     }
 
-    func asyncApplyFilterNamed(_ name: String, to image: UIImage, with callback: @escaping EditCallback) {
+    func asyncApplyFilter(_ filter: EditFilter, to image: UIImage, with callback: @escaping EditCallback) {
         DispatchQueue.global().async { [weak self] in
-            let img = self?.applyFilterNamed(name, to: image)
+            let img = self?.applyFilter(filter, to: image)
 
             DispatchQueue.main.async {
                 callback(img)
@@ -36,19 +44,12 @@ final class PhotoEditorService: PhotoEditorServiceType {
         }
     }
 
-    func applyFilterNamed(_ name: String, to image: UIImage, withOptions options: [String: Any] = [:]) -> UIImage? {
-        guard let filter = CIFilter(name: name), let ciImage = CIImage(image: image) else {
+    func applyFilter(_ filter: EditFilter, to image: UIImage, withOptions options: [String: Any] = [:]) -> UIImage? {
+        guard let ciImage = CIImage(image: image) else {
             return nil
         }
 
-        filter.setValue(ciImage, forKey: kCIInputImageKey)
-        options.forEach { filter.setValue($0.value, forKey: $0.key) }
-
-        guard let outputImg = filter.outputImage, let cgResult = context.createCGImage(outputImg, from: ciImage.extent) else {
-            return nil
-        }
-
-        return UIImage(cgImage: cgResult)
+        return filter.applied(to: ciImage, in: context, withOptions: options).flatMap { UIImage(cgImage: $0) }
     }
 
     func resize(_ image: UIImage, to size: CGSize, callback: @escaping EditCallback) {
@@ -66,11 +67,9 @@ final class PhotoEditorService: PhotoEditorServiceType {
 
             let renderer = UIGraphicsImageRenderer(size: size)
             let img = renderer.image {
-//                $0.cgContext.saveGState()
                 $0.cgContext.translateBy(x: 0, y: size.height)
                 $0.cgContext.scaleBy(x: 1.0, y: -1.0)
                 $0.cgContext.draw(image, in: CGRect(origin: .zero, size: size))
-//                $0.cgContext.restoreGState()
             }
 
             DispatchQueue.main.async {
