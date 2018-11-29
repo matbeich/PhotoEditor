@@ -162,7 +162,7 @@ extension CGRect {
 extension UIView {
     func clipToBounds(_ bounds: CGRect, aspectScaled: Bool = false) {
         let scale = min(bounds.size.height / frame.size.height, bounds.size.width / frame.size.width)
-        print(scale)
+
         guard scale.isFinite else {
             return
         }

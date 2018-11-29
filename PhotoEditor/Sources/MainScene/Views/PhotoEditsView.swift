@@ -66,8 +66,8 @@ final class PhotoEditsView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        print("layout subviews")
-        layoutSubviewsIfNeeded()
+        layoutCropViewIfNeeded()
+        layoutScrollViewIfNeeded()
         updateMaskPath()
     }
 
@@ -151,20 +151,21 @@ final class PhotoEditsView: UIView {
         }
     }
 
-    private func layoutSubviewsIfNeeded() {
-        let shouldLayout = !bounds.isEmpty
-
-        if shouldLayout {
+    private func layoutCropViewIfNeeded() {
+        if !bounds.isEmpty {
             guard let size = visibleContentFrame.isEmpty ? photo?.size : visibleContentFrame.size else {
                 return
             }
 
-            scrollView.frame = bounds
             cropView.bounds.size = size
             cropView.center = center
             cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
             cropView.clipToBounds(allowedBounds, aspectScaled: true)
         }
+    }
+
+    private func layoutScrollViewIfNeeded() {
+        scrollView.frame = bounds
 
         if visibleContentFrame.isEmpty {
             scrollView.centerWithView(cropView)
