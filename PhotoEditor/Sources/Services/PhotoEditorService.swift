@@ -102,16 +102,8 @@ extension UIImage {
 
 extension UIImage {
     func fixOrientation() -> UIImage? {
-        var flipsize: CGSize = size
-        switch imageOrientation {
-        case .left, .leftMirrored, .right, .rightMirrored:
-            flipsize = CGSize(width: size.height, height: size.width)
-        default:
-            break
-        }
-
         guard
-            let cg = self.cgImage,
+            let cg = cgImage,
             let colorSpace = cg.colorSpace,
             let ctx = CGContext(data: nil,
                                 width: Int(size.width),
@@ -124,9 +116,12 @@ extension UIImage {
             return nil
         }
 
+        let shouldFlip = imageOrientation == .left || imageOrientation == .leftMirrored || imageOrientation == .right || imageOrientation == .rightMirrored
+        let imgSize: CGSize = shouldFlip ? CGSize(width: size.height, height: size.width) : size
+
         ctx.saveGState()
-        ctx.flip(for: imageOrientation, withSize: flipsize)
-        ctx.draw(cg, in: CGRect(origin: .zero, size: flipsize))
+        ctx.flip(for: imageOrientation, withSize: imgSize)
+        ctx.draw(cg, in: CGRect(origin: .zero, size: imgSize))
         ctx.restoreGState()
 
         guard let img = ctx.makeImage() else {
@@ -180,15 +175,16 @@ extension CGContext {
 
 extension UIImage {
     func resizeVI(size: CGSize) -> UIImage? {
-        let cgImage = self.cgImage!
+        guard let cgImage = self.cgImage else {
+            return nil
+        }
 
+        var sourceBuffer = vImage_Buffer()
         var format = vImage_CGImageFormat(bitsPerComponent: 8, bitsPerPixel: 32, colorSpace: nil,
                                           bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
                                           version: 0, decode: nil, renderingIntent: CGColorRenderingIntent.defaultIntent)
-        var sourceBuffer = vImage_Buffer()
-        defer {
-            sourceBuffer.data.deallocate() // (Int(sourceBuffer.height) * Int(sourceBuffer.height) * 4)
-        }
+
+        defer { sourceBuffer.data.deallocate() }
 
         var error = vImageBuffer_InitWithCGImage(&sourceBuffer, &format, nil, cgImage, numericCast(kvImageNoFlags))
         guard error == kvImageNoError else { return nil }
@@ -199,9 +195,9 @@ extension UIImage {
         let bytesPerPixel = cgImage.bitsPerPixel / 8
         let destBytesPerRow = destWidth * bytesPerPixel
         let destData = UnsafeMutablePointer<UInt8>.allocate(capacity: destHeight * destBytesPerRow)
-        defer {
-            destData.deallocate()
-        }
+
+        defer { destData.deallocate() }
+
         var destBuffer = vImage_Buffer(data: destData, height: vImagePixelCount(destHeight), width: vImagePixelCount(destWidth), rowBytes: destBytesPerRow)
 
         // scale the image
@@ -213,7 +209,6 @@ extension UIImage {
         guard error == kvImageNoError else { return nil }
 
         // create a UIImage
-        let resizedImage = destCGImage.flatMap { UIImage(cgImage: $0, scale: scale, orientation: self.imageOrientation) }
-        return resizedImage
+        return destCGImage.flatMap { UIImage(cgImage: $0, scale: scale, orientation: self.imageOrientation) }
     }
 }
