@@ -10,10 +10,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = SceneController()
+        window?.rootViewController = navigator.rootViewController
         window?.makeKeyAndVisible()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: { Current.stateStore.state.value.appState = .inactive })
 
         return true
     }
@@ -29,4 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         Current.stateStore.state.value.appState = .inactive
     }
+
+    let navigator = AppNavigator()
 }

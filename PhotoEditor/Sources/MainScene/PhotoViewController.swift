@@ -19,7 +19,7 @@ class PhotoViewController: UIViewController {
         return originalPhoto?.cropedZone(photoEditsView.visibleRect)
     }
 
-    var mode: EditMode = Current.stateStore.state.value.editMode {
+    var mode: EditMode = .crop {
         didSet {
             photoEditsView.mode = mode
         }
@@ -45,7 +45,7 @@ class PhotoViewController: UIViewController {
         photoEditsView.set(originalPhoto ?? UIImage())
 
         Current.stateStore.addSubscriber(with: id) { [weak self] state in
-            if state.value.editMode != self?.photoEditsView.mode {
+            if state.value.editMode != .crop {
                 self?.photoEditsView.saveCropedRect()
             }
         }
@@ -60,7 +60,7 @@ class PhotoViewController: UIViewController {
     @objc func changeSize(with recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
-            changingCorner = photoEditsView.cropViewCorner(at: recognizer.location(in: view))
+            changingCorner = photoEditsView.canCrop ? photoEditsView.cropViewCorner(at: recognizer.location(in: view)) : nil
 
         case .changed:
             guard let corner = changingCorner else {
@@ -70,7 +70,7 @@ class PhotoViewController: UIViewController {
             let translation = recognizer.translation(in: view)
             recognizer.setTranslation(.zero, in: view)
 
-            photoEditsView.mode = .crop
+            photoEditsView.showMask()
             photoEditsView.changeCropViewFrame(using: corner, translation: translation)
             photoEditsView.saveCropedRect()
 
@@ -78,13 +78,17 @@ class PhotoViewController: UIViewController {
             if changingCorner != nil {
                 photoEditsView.fitCropView()
                 photoEditsView.fitSavedRectToCropView()
-                photoEditsView.mode = .normal
+                photoEditsView.hideMask()
 
                 changingCorner = nil
             }
 
         default: break
         }
+    }
+
+    deinit {
+        Current.stateStore.unsubscribeSubscriber(with: id)
     }
 
     private var changingCorner: Corner?

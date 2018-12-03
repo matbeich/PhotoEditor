@@ -20,6 +20,10 @@ enum EditMode {
 }
 
 final class PhotoEditsView: UIView {
+    var canCrop: Bool {
+        return mode.state.showCrop
+    }
+
     var photo: UIImage? {
         return imageView.image
     }
@@ -67,6 +71,20 @@ final class PhotoEditsView: UIView {
         updateMaskPath()
     }
 
+    func showMask() {
+        setBlurIsVisible(false)
+        setDimmingViewIsVisible(true)
+        setCropViewIsVisible(true)
+        setCropViewGridIsVisible(true)
+    }
+
+    func hideMask() {
+        setBlurIsVisible(true)
+        setDimmingViewIsVisible(false)
+        setCropViewIsVisible(true)
+        setCropViewGridIsVisible(false)
+    }
+
     func set(_ photo: UIImage) {
         saveCropedRect()
         imageView = UIImageView(image: photo)
@@ -93,6 +111,7 @@ final class PhotoEditsView: UIView {
 
     func setCropViewIsVisible(_ visible: Bool) {
         cropView.isHidden = !visible
+        cropView.isUserInteractionEnabled = visible
     }
 
     func saveCropedRect() {
@@ -158,6 +177,7 @@ final class PhotoEditsView: UIView {
             cropView.center = center
             cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
             cropView.clipToBounds(allowedBounds, aspectScaled: true)
+            setCropViewIsVisible(mode.state.showCrop)
         }
     }
 
@@ -234,11 +254,11 @@ extension PhotoEditsView: UIScrollViewDelegate {
     }
 
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        mode = .crop
+        showMask()
     }
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        mode = .normal
+        hideMask()
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
@@ -246,11 +266,11 @@ extension PhotoEditsView: UIScrollViewDelegate {
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        mode = .crop
+        showMask()
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        mode = .normal
+        hideMask()
     }
 }
 

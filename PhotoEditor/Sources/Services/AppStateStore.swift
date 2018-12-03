@@ -21,12 +21,12 @@ enum AppMode {
 
 struct AppState {
     var appState: UIApplication.State
-    var mode: AppMode
+    var image: UIImage?
     var editMode: EditMode
 }
 
 extension AppState {
-    static var initial = AppState(appState: .active, mode: .normal, editMode: .crop)
+    static var initial = AppState(appState: .active, image: nil, editMode: .crop)
 }
 
 struct State<T> {

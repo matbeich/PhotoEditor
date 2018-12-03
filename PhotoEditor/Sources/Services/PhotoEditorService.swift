@@ -2,6 +2,7 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product:PhotoEditor
 //
 
+import Accelerate
 import CoreImage
 import UIKit
 
@@ -52,32 +53,6 @@ final class PhotoEditorService {
         return filter.applied(to: ciImage, in: context, withOptions: options).flatMap { UIImage(cgImage: $0) }
     }
 
-    func resize(_ image: UIImage, to size: CGSize, callback: @escaping EditCallback) {
-        guard let image = image.cgImage else {
-            callback(nil)
-            return
-        }
-
-        DispatchQueue.global().async {
-            let scale = min(size.width / CGFloat(image.size.width),
-                            size.height / CGFloat(image.size.height))
-
-            let size = CGSize(width: CGFloat(image.size.width) * scale,
-                              height: CGFloat(image.size.height) * scale)
-
-            let renderer = UIGraphicsImageRenderer(size: size)
-            let img = renderer.image {
-                $0.cgContext.translateBy(x: 0, y: size.height)
-                $0.cgContext.scaleBy(x: 1.0, y: -1.0)
-                $0.cgContext.draw(image, in: CGRect(origin: .zero, size: size))
-            }
-
-            DispatchQueue.main.async {
-                callback(img)
-            }
-        }
-    }
-
     // FIXME: Add logic
 
     func changeColor(of image: UIImage, withValue value: CGFloat) -> UIImage? {
@@ -99,12 +74,146 @@ final class PhotoEditorService {
     private let context: CIContext
 }
 
+extension UIImage.Orientation {
+    var description: String {
+        switch self {
+        case .down: return "DOWN"
+        case .downMirrored: return "DOWN MIRRORED"
+        case .left: return "LEFT"
+        case .leftMirrored: return "LEFTY MIRRORED"
+        case .right: return "RIGHT"
+        case .rightMirrored: return "RIGHT MIRRORED"
+        case .up: return "UP"
+        case .upMirrored: return "UP MIRRORED"
+        }
+    }
+}
+
 extension UIImage {
     func cropedZone(_ zone: CGRect) -> UIImage? {
-        guard let cutImageRef = cgImage?.cropping(to: zone) else {
+        let fixed = self.fixOrientation()
+        guard let cutImageRef = fixed?.cgImage?.cropping(to: zone) else {
             return nil
         }
 
         return UIImage(cgImage: cutImageRef)
+    }
+}
+
+extension UIImage {
+    func fixOrientation() -> UIImage? {
+        var flipsize: CGSize = size
+        switch imageOrientation {
+        case .left, .leftMirrored, .right, .rightMirrored:
+            flipsize = CGSize(width: size.height, height: size.width)
+        default:
+            break
+        }
+
+        guard
+            let cg = self.cgImage,
+            let colorSpace = cg.colorSpace,
+            let ctx = CGContext(data: nil,
+                                width: Int(size.width),
+                                height: Int(size.height),
+                                bitsPerComponent: cg.bitsPerComponent,
+                                bytesPerRow: cg.bytesPerRow,
+                                space: colorSpace,
+                                bitmapInfo: cg.bitmapInfo.rawValue)
+        else {
+            return nil
+        }
+
+        ctx.saveGState()
+        ctx.flip(for: imageOrientation, withSize: flipsize)
+        ctx.draw(cg, in: CGRect(origin: .zero, size: flipsize))
+        ctx.restoreGState()
+
+        guard let img = ctx.makeImage() else {
+            return nil
+        }
+
+        return UIImage(cgImage: img)
+    }
+}
+
+extension CGContext {
+    func flip(for imageOrientation: UIImage.Orientation, withSize size: CGSize) {
+        var degrees: CGFloat = 90
+        var translateValues: (x: CGFloat, y: CGFloat) = (x: 0, y: 0)
+        var scaleValues: (x: CGFloat, y: CGFloat) = (x: 1.0, y: 1.0)
+
+        switch imageOrientation {
+        case .up:
+            degrees = 0
+        case .down:
+            translateValues = (x: size.width, y: size.height)
+            degrees = 180
+        case .left:
+            translateValues = (x: size.height, y: 0)
+        case .right:
+            translateValues = (x: 0, y: size.width)
+            degrees = -90
+        case .leftMirrored:
+            scaleValues = (x: -1.0, y: 1.0)
+            degrees = -90
+        case .rightMirrored:
+            scaleValues = (x: -1.0, y: 1.0)
+            translateValues = (x: size.width + size.height, y: 0)
+        case .downMirrored:
+            scaleValues = (x: 1.0, y: -1.0)
+            translateValues = (x: 0.0, y: size.height)
+            degrees = 0
+        case .upMirrored:
+            scaleValues = (x: -1.0, y: 1.0)
+            translateValues = (x: size.width, y: 0)
+            degrees = 0
+        }
+
+        let radians = 2 * CGFloat.pi * (degrees / 360)
+
+        scaleBy(x: scaleValues.x, y: scaleValues.y)
+        translateBy(x: translateValues.x, y: translateValues.y)
+        rotate(by: radians)
+    }
+}
+
+extension UIImage {
+    func resizeVI(size: CGSize) -> UIImage? {
+        let cgImage = self.cgImage!
+
+        var format = vImage_CGImageFormat(bitsPerComponent: 8, bitsPerPixel: 32, colorSpace: nil,
+                                          bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
+                                          version: 0, decode: nil, renderingIntent: CGColorRenderingIntent.defaultIntent)
+        var sourceBuffer = vImage_Buffer()
+        defer {
+            sourceBuffer.data.deallocate() // (Int(sourceBuffer.height) * Int(sourceBuffer.height) * 4)
+        }
+
+        var error = vImageBuffer_InitWithCGImage(&sourceBuffer, &format, nil, cgImage, numericCast(kvImageNoFlags))
+        guard error == kvImageNoError else { return nil }
+
+        let scale = self.scale
+        let destWidth = Int(size.width)
+        let destHeight = Int(size.height)
+        let bytesPerPixel = cgImage.bitsPerPixel / 8
+        let destBytesPerRow = destWidth * bytesPerPixel
+        let destData = UnsafeMutablePointer<UInt8>.allocate(capacity: destHeight * destBytesPerRow)
+        defer {
+            destData.deallocate()
+        }
+        var destBuffer = vImage_Buffer(data: destData, height: vImagePixelCount(destHeight), width: vImagePixelCount(destWidth), rowBytes: destBytesPerRow)
+
+        // scale the image
+        error = vImageScale_ARGB8888(&sourceBuffer, &destBuffer, nil, numericCast(kvImageHighQualityResampling))
+        guard error == kvImageNoError else { return nil }
+
+        // create a CGImage from vImage_Buffer
+        let destCGImage = vImageCreateCGImageFromBuffer(&destBuffer, &format, nil, nil, numericCast(kvImageNoFlags), &error)?.takeRetainedValue()
+        guard error == kvImageNoError else { return nil }
+
+        // create a UIImage
+        let resizedImage = destCGImage.flatMap { UIImage(cgImage: $0, scale: scale, orientation: self.imageOrientation) }
+        return resizedImage
     }
 }

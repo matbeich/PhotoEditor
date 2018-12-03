@@ -56,7 +56,7 @@ class CropView: UIView {
     }
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return cornerPosition(at: point) != nil
+        return cornerPosition(at: point) != nil && isUserInteractionEnabled
     }
 
     func cornerPosition(at point: CGPoint) -> Corner? {
@@ -66,6 +66,10 @@ class CropView: UIView {
     }
 
     func changeFrame(using corner: Corner, translation: CGPoint) {
+        guard !isHidden && isUserInteractionEnabled else {
+            return
+        }
+
         let newFrame = frame(for: translation, using: corner)
 
         let canChangeWidth = newFrame.width > Config.cropViewMinDimension
