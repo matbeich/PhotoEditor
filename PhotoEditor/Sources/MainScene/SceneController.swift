@@ -17,8 +17,23 @@ class SceneController: UIViewController {
         makeConstraints()
     }
 
+    deinit {
+        Current.stateStore.unsubscribeSubscriber(with: id)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        changeAppearenceOfTools(for: photoViewController.mode)
+        updateFiltersPhoto()
+    }
+
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+
+    func setImage(_ image: UIImage) {
+        photoViewController.originalPhoto = image
     }
 
     private func makeConstraints() {
@@ -39,8 +54,6 @@ class SceneController: UIViewController {
         }
     }
 
-    var toolControlsConstainerTop: Constraint?
-
     private func changeAppearenceOfTools(for mode: EditMode) {
         switch mode {
         case .crop:
@@ -50,7 +63,7 @@ class SceneController: UIViewController {
             toolControlsConstainerTop?.update(offset: -toolControlsContainer.bounds.height)
 
         case .normal:
-            filtersCollectionViewController.removeFromParent()
+            break
         }
     }
 
@@ -62,8 +75,21 @@ class SceneController: UIViewController {
             self?.changeAppearenceOfTools(for: state.value.editMode)
             self?.photoViewController.mode = state.value.editMode
         }
+    }
 
-        photoViewController.originalPhoto = UIImage(named: "test.jpg")!
+    private func updateFiltersPhoto() {
+        guard let photo = photoViewController.cropedOriginal else {
+            return
+        }
+
+        DispatchQueue.global().async { [weak self] in
+            let rect = photo.size.applying(CGAffineTransform(scaleX: 0.2, y: 0.2))
+            let pht = photo.resizeVI(size: rect)
+
+            DispatchQueue.main.async {
+                self?.filtersCollectionViewController.image = pht
+            }
+        }
     }
 
     private lazy var filtersCollectionViewController: FiltersCollectionViewController = {
@@ -91,20 +117,16 @@ class SceneController: UIViewController {
     private let photoViewController = PhotoViewController()
     private let toolControlsContainer = UIView()
     private let photoViewControllerContainer = UIView()
+    private var toolControlsConstainerTop: Constraint?
 }
 
 extension SceneController: ToolbarDelegate {
     func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
         if itemTapped.tag == 1 {
-            guard let photo = photoViewController.cropedOriginal else {
-                return
-            }
-
+            updateFiltersPhoto()
             Current.stateStore.state.value.editMode = .filter
-            Current.photoEditService.resize(photo, to: CGSize(width: 150, height: 150)) { [weak self] in
-                self?.filtersCollectionViewController.image = $0
-            }
-        } else {
+
+        } else if itemTapped.tag == 0 {
             Current.stateStore.state.value.editMode = .crop
         }
     }

@@ -8,6 +8,7 @@ struct AppWorld {
     var dateProvider = { Date() }
     var photoEditService = PhotoEditorService()
     var filterMixer = FilterMixer()
+    var appNavigator = AppNavigator()
     var stateStore: StateStore = StateStore(State<AppState>(.initial))
 }
 
