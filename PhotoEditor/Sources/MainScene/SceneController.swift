@@ -2,6 +2,7 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product: PhotoEditor
 //
 
+import PhotoEditorKit
 import SnapKit
 import UIKit
 
@@ -105,7 +106,8 @@ class SceneController: UIViewController {
     private lazy var toolBar: Toolbar = {
         let barItems = [
             BarButtonItem(title: "Crop", image: nil),
-            BarButtonItem(title: "Filter", image: nil)
+            BarButtonItem(title: "Filter", image: nil),
+            BarButtonItem(title: "WaterMark", image: nil)
         ]
         let toolbar = Toolbar(frame: .zero, barItems: barItems)
         toolbar.delegate = self
@@ -122,7 +124,8 @@ class SceneController: UIViewController {
 
 extension SceneController: ToolbarDelegate {
     func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
-        if itemTapped.tag == 1 {
+        if itemTapped.tag == 2 {
+        } else if itemTapped.tag == 1 {
             updateFiltersPhoto()
             Current.stateStore.state.value.editMode = .filter
 

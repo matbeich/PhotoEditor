@@ -6,7 +6,7 @@ import UIKit
 import Accelerate
 import CoreImage
 
-extension CGContext {
+public extension CGContext {
     func flip(for imageOrientation: UIImage.Orientation, withSize size: CGSize) {
         var degrees: CGFloat = 90
         var translateValues: (x: CGFloat, y: CGFloat) = (x: 0, y: 0)
@@ -31,11 +31,11 @@ extension CGContext {
             translateValues = (x: size.width + size.height, y: 0)
         case .downMirrored:
             scaleValues = (x: 1.0, y: -1.0)
-            translateValues = (x: 0.0, y: size.height)
+            translateValues = (x: 0, y: -size.height)
             degrees = 0
         case .upMirrored:
             scaleValues = (x: -1.0, y: 1.0)
-            translateValues = (x: size.width, y: 0)
+            translateValues = (x: -size.width, y: 0)
             degrees = 0
         }
 
@@ -47,7 +47,7 @@ extension CGContext {
     }
 }
 
-extension UIImage {
+public extension UIImage {
     func cropedZone(_ zone: CGRect) -> UIImage? {
         let fixed = fixOrientation()
         guard let cutImageRef = fixed?.cgImage?.cropping(to: zone) else {
@@ -71,6 +71,8 @@ extension UIImage {
             else {
                 return self
         }
+
+        print(self.imageOrientation.description)
 
         let imgSize: CGSize = imageOrientation.isFlipped ? CGSize(width: size.height, height: size.width) : size
 
@@ -123,7 +125,14 @@ extension UIImage {
     }
 }
 
-extension UIImage.Orientation {
+
+public extension FloatingPoint {
+    func inRadians() -> Self {
+        return 2 * Self.pi * (self / 360)
+    }
+}
+
+private extension UIImage.Orientation {
     var isFlipped: Bool {
         switch self {
         case .leftMirrored, .left, .rightMirrored, .right:

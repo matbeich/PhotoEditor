@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import PhotoEditorKit
 
 class PhotoViewController: UIViewController {
     var originalPhoto: UIImage? {

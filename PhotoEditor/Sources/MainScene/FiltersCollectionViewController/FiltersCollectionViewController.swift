@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import PhotoEditorKit
 
 protocol FiltersCollectionViewControllerDelegate: AnyObject {
     func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter)
