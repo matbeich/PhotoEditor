@@ -4,7 +4,7 @@
 
 import CoreGraphics
 
-struct Config {
+enum Config {
     static let cropViewMinDimension: CGFloat = 100.0
     static let toolBarHeight: CGFloat = 59.0
 }

@@ -4,7 +4,6 @@
 
 import CoreImage
 
-
 protocol EditFilter {
     var name: String { get }
     func applied(to image: CIImage, in context: CIContext, withOptions options: [String: Any]) -> CGImage?
