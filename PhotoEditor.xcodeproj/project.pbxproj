@@ -35,10 +35,10 @@
 		844102D121B7FB7500695AC9 /* BarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DB321ABFD2E00852812 /* BarButtonItem.swift */; };
 		844102D221B7FB7500695AC9 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DB421ABFD2E00852812 /* Toolbar.swift */; };
 		844102D321B7FDE300695AC9 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F021956B9A00E5BD08 /* Grid.swift */; };
+		844102D621B8002300695AC9 /* AppStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DEC21AC333700852812 /* AppStateStore.swift */; };
 		844FC8DB2195669700E5BD08 /* PhotoEditorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */; };
 		844FC8E22195669700E5BD08 /* PhotoEditorKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8E12195669700E5BD08 /* PhotoEditorKitTests.swift */; };
 		844FC8E42195669700E5BD08 /* PhotoEditorKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FC8D42195669700E5BD08 /* PhotoEditorKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		84662DED21AC333700852812 /* AppStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DEC21AC333700852812 /* AppStateStore.swift */; };
 		846E574A21A8111700D24473 /* FilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574921A8111700D24473 /* FilterCollectionViewCell.swift */; };
 		846E574D21A811EC00D24473 /* AppWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574C21A811EC00D24473 /* AppWorld.swift */; };
 		848897242191A03500D99E91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897232191A03500D99E91 /* AppDelegate.swift */; };
@@ -277,6 +277,7 @@
 		8413020121B7F21200908E58 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				84662DEC21AC333700852812 /* AppStateStore.swift */,
 				846E574621A8009600D24473 /* PhotoEditorService.swift */,
 				843F78DA21B6A9B20028C43A /* WatermarkRenderer.swift */,
 			);
@@ -340,9 +341,26 @@
 			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
+		844102D421B7FFF600695AC9 /* StickersCollectionViewController */ = {
+			isa = PBXGroup;
+			children = (
+				8415EC1421B7D4A600246BF3 /* StickersCollectionViewController.swift */,
+				849CC7DE21B7D6020018A08A /* StickerCollectionViewCell.swift */,
+			);
+			path = StickersCollectionViewController;
+			sourceTree = "<group>";
+		};
+		844102D521B8000C00695AC9 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		844FC8D32195669700E5BD08 /* PhotoEditorKit */ = {
 			isa = PBXGroup;
 			children = (
+				844102D521B8000C00695AC9 /* Controllers */,
 				8478BC1121A5404100D39C2D /* Views */,
 				8413020221B7F21D00908E58 /* Common */,
 				8413020121B7F21200908E58 /* Services */,
@@ -359,13 +377,6 @@
 				844FC8E32195669700E5BD08 /* Info.plist */,
 			);
 			path = PhotoEditorKitTests;
-			sourceTree = "<group>";
-		};
-		844FC8F22195764500E5BD08 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		844FC8F72199693800E5BD08 /* CropView */ = {
@@ -389,7 +400,6 @@
 		846E574821A8009A00D24473 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				84662DEC21AC333700852812 /* AppStateStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -485,7 +495,6 @@
 			children = (
 				848897232191A03500D99E91 /* AppDelegate.swift */,
 				8415EC1321B7D46F00246BF3 /* App */,
-				844FC8F22195764500E5BD08 /* Model */,
 				848897462191A0C400D99E91 /* MainScene */,
 				846E574821A8009A00D24473 /* Services */,
 				8422C96421B5325400F281A9 /* Common */,
@@ -498,8 +507,7 @@
 			children = (
 				848897252191A03500D99E91 /* SceneController.swift */,
 				848897522191A75300D99E91 /* PhotoViewController.swift */,
-				8415EC1421B7D4A600246BF3 /* StickersCollectionViewController.swift */,
-				849CC7DE21B7D6020018A08A /* StickerCollectionViewCell.swift */,
+				844102D421B7FFF600695AC9 /* StickersCollectionViewController */,
 				846E574B21A8111E00D24473 /* FiltersCollectionViewController */,
 			);
 			path = MainScene;
@@ -981,6 +989,7 @@
 				8413020921B7F7BF00908E58 /* AppFilters.swift in Sources */,
 				844102CA21B7FA0A00695AC9 /* State.swift in Sources */,
 				8413020621B7F25000908E58 /* NormalState.swift in Sources */,
+				844102D621B8002300695AC9 /* AppStateStore.swift in Sources */,
 				844102CD21B7FB6A00695AC9 /* EffectsView.swift in Sources */,
 				844102D021B7FB6F00695AC9 /* CornerView.swift in Sources */,
 				8413020D21B7F89700908E58 /* AppState.swift in Sources */,
@@ -1002,7 +1011,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84662DED21AC333700852812 /* AppStateStore.swift in Sources */,
 				84AE3F8421B047C7004E142D /* AppNavigator.swift in Sources */,
 				846E574D21A811EC00D24473 /* AppWorld.swift in Sources */,
 				84F5A0E72191B77300DEC40F /* FiltersCollectionViewController.swift in Sources */,

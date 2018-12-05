@@ -2,13 +2,12 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product:PhotoEditor
 //
 
-import PhotoEditorKit
-import UIKit
+import Foundation
 
-final class StateStore<T> {
-    typealias SubscriberAction = (State<T>) -> Void
+public final class StateStore<T> {
+    public typealias SubscriberAction = (State<T>) -> Void
 
-    var state: State<T> {
+    public var state: State<T> {
         didSet {
             subscribers.keys.forEach {
                 informSubscriber(with: $0)
@@ -16,17 +15,17 @@ final class StateStore<T> {
         }
     }
 
-    init(_ value: State<T>) {
+    public init(_ value: State<T>) {
         self.state = value
     }
 
-    func bindSubscriber(with id: SubscriberID, whenChangesPerform action: @escaping SubscriberAction) {
+    public func bindSubscriber(with id: SubscriberID, whenChangesPerform action: @escaping SubscriberAction) {
         action(state)
 
         addSubscriber(with: id, whenChangesPerform: action)
     }
 
-    func addSubscriber(with id: SubscriberID, whenChangesPerform action: @escaping SubscriberAction) {
+    public func addSubscriber(with id: SubscriberID, whenChangesPerform action: @escaping SubscriberAction) {
         if subscribers[id] != nil {
             return
         }
@@ -34,7 +33,7 @@ final class StateStore<T> {
         self.subscribers[id] = action
     }
 
-    func unsubscribeSubscriber(with id: SubscriberID, fireAction: Bool = false) {
+    public func unsubscribeSubscriber(with id: SubscriberID, fireAction: Bool = false) {
         guard let action = subscribers[id] else {
             return
         }
@@ -59,5 +58,5 @@ final class StateStore<T> {
         subscribers.removeAll()
     }
 
-    var subscribers: [SubscriberID: SubscriberAction] = [:]
+    public var subscribers: [SubscriberID: SubscriberAction] = [:]
 }
