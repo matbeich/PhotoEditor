@@ -4,13 +4,13 @@
 
 import Foundation
 
-typealias SubscriberID = ObjectIdentifier
+public typealias SubscriberID = ObjectIdentifier
 
-protocol Subscriber: AnyObject {
+public protocol Subscriber: AnyObject {
     var id: SubscriberID { get }
 }
 
-extension Subscriber {
+public extension Subscriber {
     var id: SubscriberID {
         return ObjectIdentifier(self)
     }

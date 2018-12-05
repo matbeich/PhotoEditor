@@ -4,12 +4,12 @@
 
 import UIKit
 
-struct AppState {
-    var appState: UIApplication.State
-    var image: UIImage?
-    var editMode: EditMode
+public struct AppState {
+    public var appState: UIApplication.State
+    public var image: UIImage?
+    public var editMode: EditMode
 }
 
-extension AppState {
+public extension AppState {
     static var initial = AppState(appState: .active, image: nil, editMode: .crop)
 }

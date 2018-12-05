@@ -5,14 +5,14 @@
 import SnapKit
 import UIKit
 
-protocol ToolbarDelegate: AnyObject {
+public protocol ToolbarDelegate: AnyObject {
     func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem)
 }
 
-class Toolbar: UIView {
-    weak var delegate: ToolbarDelegate?
+public class Toolbar: UIView {
+    public weak var delegate: ToolbarDelegate?
 
-    init(frame: CGRect = .zero, barItems: [BarButtonItem] = []) {
+    public init(frame: CGRect = .zero, barItems: [BarButtonItem] = []) {
         self.barItems = barItems
         super.init(frame: frame)
 
@@ -29,7 +29,7 @@ class Toolbar: UIView {
         fatalError("Not implemented")
     }
 
-    func addCollageBarItem(_ item: BarButtonItem) {
+    public func addCollageBarItem(_ item: BarButtonItem) {
         item.tag = buttonsStackView.arrangedSubviews.count
         buttonsStackView.addArrangedSubview(item)
     }

@@ -13,9 +13,17 @@ def internal
     pod 'AppCraftUtils/Interface'
 end
 
+def defaults
+    external
+    internal
+end
+
 target 'PhotoEditor' do
-  internal
-  external
+  defaults
+
+  target 'PhotoEditorKit' do
+      inherit! :search_paths
+  end
 
   target 'PhotoEditorTests' do
     inherit! :search_paths
@@ -24,8 +32,6 @@ target 'PhotoEditor' do
   
   target 'PhotoEditorTodayWidget' do
       inherit! :search_paths
-      external
-
   end
-
 end
+

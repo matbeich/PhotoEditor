@@ -4,11 +4,11 @@
 
 import UIKit
 
-struct Grid: Drawable {
+public struct Grid: Drawable {
     let numberOfRows: Int
     let numberOfColumns: Int
 
-    init?(numberOfRows: Int, numberOfColumns: Int) {
+    public init?(numberOfRows: Int, numberOfColumns: Int) {
         guard numberOfRows > 0 && numberOfColumns > 0 else {
             return nil
         }
@@ -17,7 +17,7 @@ struct Grid: Drawable {
         self.numberOfRows = numberOfRows
     }
 
-    func draw(with renderer: Renderer, in rect: CGRect) {
+    public func draw(with renderer: Renderer, in rect: CGRect) {
         var points = [CGPoint]()
         let squareWidth = rect.width / CGFloat(numberOfColumns)
         let squareHeight = rect.height / CGFloat(numberOfRows)
@@ -34,11 +34,11 @@ struct Grid: Drawable {
     }
 }
 
-protocol Drawable {
+public protocol Drawable {
     func draw(with renderer: Renderer, in rect: CGRect)
 }
 
-protocol Renderer {
+public protocol Renderer {
     func square(at point: CGPoint, with size: CGSize)
 }
 
