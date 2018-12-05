@@ -2,24 +2,9 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product: PhotoEditor
 //
 
+import PhotoEditorKit
 import SnapKit
 import UIKit
-import PhotoEditorKit
-
-enum EditMode {
-    case crop
-    case filter
-    case normal
-//    case stickers
-
-    var state: EditingState {
-        switch self {
-        case .crop: return CropState()
-        case .filter: return FilterState()
-        case .normal: return NormalState()
-        }
-    }
-}
 
 final class PhotoEditsView: UIView {
     var canCrop: Bool {

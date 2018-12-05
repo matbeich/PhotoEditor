@@ -18,14 +18,15 @@
 		8413020621B7F25000908E58 /* NormalState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574221A7F9D100D24473 /* NormalState.swift */; };
 		8413020721B7F79100908E58 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F52199670100E5BD08 /* Config.swift */; };
 		8413020921B7F7BF00908E58 /* AppFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413020821B7F7BF00908E58 /* AppFilters.swift */; };
+		8413020B21B7F88A00908E58 /* Subscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D421B6A5DA0028C43A /* Subscriber.swift */; };
+		8413020D21B7F89700908E58 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D221B6A5AF0028C43A /* AppState.swift */; };
 		8415EC1621B7D4B400246BF3 /* StickersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8415EC1421B7D4A600246BF3 /* StickersCollectionViewController.swift */; };
-		843F78D121B6A58E0028C43A /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D021B6A58E0028C43A /* State.swift */; };
-		843F78D321B6A5AF0028C43A /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D221B6A5AF0028C43A /* AppState.swift */; };
-		843F78D521B6A5DA0028C43A /* Subscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D421B6A5DA0028C43A /* Subscriber.swift */; };
 		843F78D721B6A7100028C43A /* PhotoEditorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574621A8009600D24473 /* PhotoEditorService.swift */; };
 		843F78D821B6A71C0028C43A /* EditFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96821B532E600F281A9 /* EditFilter.swift */; };
 		843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96621B5327400F281A9 /* CGContext + UIImage.swift */; };
 		843F78DB21B6A9B20028C43A /* WatermarkRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78DA21B6A9B20028C43A /* WatermarkRenderer.swift */; };
+		844102CA21B7FA0A00695AC9 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D021B6A58E0028C43A /* State.swift */; };
+		844102CC21B7FA4200695AC9 /* EditMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844102CB21B7FA4200695AC9 /* EditMode.swift */; };
 		844FC8DB2195669700E5BD08 /* PhotoEditorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */; };
 		844FC8E22195669700E5BD08 /* PhotoEditorKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8E12195669700E5BD08 /* PhotoEditorKitTests.swift */; };
 		844FC8E42195669700E5BD08 /* PhotoEditorKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FC8D42195669700E5BD08 /* PhotoEditorKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -148,6 +149,7 @@
 		843F78D221B6A5AF0028C43A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		843F78D421B6A5DA0028C43A /* Subscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
 		843F78DA21B6A9B20028C43A /* WatermarkRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkRenderer.swift; sourceTree = "<group>"; };
+		844102CB21B7FA4200695AC9 /* EditMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMode.swift; sourceTree = "<group>"; };
 		844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PhotoEditorKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		844FC8D42195669700E5BD08 /* PhotoEditorKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoEditorKit.h; sourceTree = "<group>"; };
 		844FC8D52195669700E5BD08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -277,12 +279,24 @@
 		8413020221B7F21D00908E58 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				8413020A21B7F87900908E58 /* AppStates */,
 				848897512191A6C000D99E91 /* EditingStates */,
 				8422C96821B532E600F281A9 /* EditFilter.swift */,
 				8413020821B7F7BF00908E58 /* AppFilters.swift */,
 				844FC8F52199670100E5BD08 /* Config.swift */,
+				843F78D421B6A5DA0028C43A /* Subscriber.swift */,
+				844102CB21B7FA4200695AC9 /* EditMode.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		8413020A21B7F87900908E58 /* AppStates */ = {
+			isa = PBXGroup;
+			children = (
+				843F78D021B6A58E0028C43A /* State.swift */,
+				843F78D221B6A5AF0028C43A /* AppState.swift */,
+			);
+			path = AppStates;
 			sourceTree = "<group>";
 		};
 		8415EC1321B7D46F00246BF3 /* App */ = {
@@ -297,9 +311,6 @@
 		8422C96421B5325400F281A9 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				843F78D021B6A58E0028C43A /* State.swift */,
-				843F78D221B6A5AF0028C43A /* AppState.swift */,
-				843F78D421B6A5DA0028C43A /* Subscriber.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -928,11 +939,15 @@
 				843F78D721B6A7100028C43A /* PhotoEditorService.swift in Sources */,
 				8413020721B7F79100908E58 /* Config.swift in Sources */,
 				843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */,
+				8413020B21B7F88A00908E58 /* Subscriber.swift in Sources */,
 				8413020321B7F24900908E58 /* EditingState.swift in Sources */,
 				8413020421B7F25000908E58 /* FilterState.swift in Sources */,
 				843F78D821B6A71C0028C43A /* EditFilter.swift in Sources */,
 				8413020921B7F7BF00908E58 /* AppFilters.swift in Sources */,
+				844102CA21B7FA0A00695AC9 /* State.swift in Sources */,
 				8413020621B7F25000908E58 /* NormalState.swift in Sources */,
+				8413020D21B7F89700908E58 /* AppState.swift in Sources */,
+				844102CC21B7FA4200695AC9 /* EditMode.swift in Sources */,
 				843F78DB21B6A9B20028C43A /* WatermarkRenderer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -952,11 +967,9 @@
 				848897482191A48800D99E91 /* PhotoEditsView.swift in Sources */,
 				84662DED21AC333700852812 /* AppStateStore.swift in Sources */,
 				84AE3F8421B047C7004E142D /* AppNavigator.swift in Sources */,
-				843F78D321B6A5AF0028C43A /* AppState.swift in Sources */,
 				846E574D21A811EC00D24473 /* AppWorld.swift in Sources */,
 				8478BC1021A53B6B00D39C2D /* EffectsView.swift in Sources */,
 				84F5A0E72191B77300DEC40F /* FiltersCollectionViewController.swift in Sources */,
-				843F78D121B6A58E0028C43A /* State.swift in Sources */,
 				84F5A0DE2191AEB600DEC40F /* R.generated.swift in Sources */,
 				8415EC1621B7D4B400246BF3 /* StickersCollectionViewController.swift in Sources */,
 				848897262191A03500D99E91 /* SceneController.swift in Sources */,
@@ -969,7 +982,6 @@
 				848897532191A75300D99E91 /* PhotoViewController.swift in Sources */,
 				8488974C2191A57E00D99E91 /* CropView.swift in Sources */,
 				844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */,
-				843F78D521B6A5DA0028C43A /* Subscriber.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

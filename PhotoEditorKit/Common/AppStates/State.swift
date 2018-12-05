@@ -4,10 +4,10 @@
 
 import Foundation
 
-struct State<T> {
-    var value: T
+public struct State<T> {
+    public var value: T
 
-    init(_ value: T) {
+    public init(_ value: T) {
         self.value = value
     }
 }
