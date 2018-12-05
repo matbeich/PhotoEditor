@@ -3,30 +3,30 @@
 //
 
 import UIKit
-import PhotoEditorKit
 
-protocol FiltersCollectionViewControllerDelegate: AnyObject {
+public protocol FiltersCollectionViewControllerDelegate: AnyObject {
     func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter)
 }
 
-class FiltersCollectionViewController: UIViewController {
-    weak var delegate: FiltersCollectionViewControllerDelegate?
+public class FiltersCollectionViewController: UIViewController {
+    public weak var delegate: FiltersCollectionViewControllerDelegate?
 
-    var image: UIImage? {
+    public var image: UIImage? {
         didSet {
             collectionView.reloadData()
         }
     }
 
-    var filters: [EditFilter] {
+    public var filters: [EditFilter] {
         didSet {
             collectionView.reloadData()
         }
     }
 
-    init(image: UIImage? = nil, filters: [EditFilter] = []) {
+    public init(context: AppContext,image: UIImage? = nil, filters: [EditFilter] = []) {
         self.filters = filters
         self.image = image
+        self.context = context
 
         super.init(nibName: nil, bundle: nil)
         view.addSubview(collectionView)
@@ -37,7 +37,7 @@ class FiltersCollectionViewController: UIViewController {
         fatalError("Not implemented")
     }
 
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
     }
@@ -52,7 +52,7 @@ class FiltersCollectionViewController: UIViewController {
         collectionView.register(FilterCollectionViewCell.self, forCellWithReuseIdentifier: FilterCollectionViewCell.identifier)
     }
 
-    lazy var collectionView: UICollectionView = {
+    public lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
 
@@ -60,14 +60,16 @@ class FiltersCollectionViewController: UIViewController {
 
         return view
     }()
+
+    private let context: AppContext
 }
 
 extension FiltersCollectionViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return filters.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.identifier, for: indexPath)
 
         guard let filterCell = cell as? FilterCollectionViewCell, let image = image else {
@@ -76,7 +78,7 @@ extension FiltersCollectionViewController: UICollectionViewDataSource {
 
         let filter = filters[indexPath.row]
 
-        Current.photoEditService.asyncApplyFilter(filter, to: image) {
+        context.photoEditService.asyncApplyFilter(filter, to: image) {
             filterCell.image = $0
             filterCell.filterName = filter.name
         }
@@ -86,19 +88,19 @@ extension FiltersCollectionViewController: UICollectionViewDataSource {
 }
 
 extension FiltersCollectionViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         delegate?.filtersCollectionViewController(self, didSelectFilter: filters[indexPath.row])
     }
 }
 
 extension FiltersCollectionViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let value = min(collectionView.frame.height, collectionView.frame.width)
 
         return CGSize(width: value * 0.75, height: value)
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 5
     }
 }

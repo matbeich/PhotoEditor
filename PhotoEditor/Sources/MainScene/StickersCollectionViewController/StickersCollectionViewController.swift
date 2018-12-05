@@ -62,13 +62,13 @@ extension StickersCollectionViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.identifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StickerCollectionViewCell.identifier, for: indexPath)
 
         guard let stickerCell = cell as? StickerCollectionViewCell else {
             return cell
         }
 
-        let sticker = stickers[indexPath.row]
+//        let sticker = stickers[indexPath.row]
 
         return stickerCell
     }
