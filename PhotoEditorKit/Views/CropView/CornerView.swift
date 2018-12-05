@@ -4,17 +4,17 @@
 
 import UIKit
 
-enum Corner {
+public enum Corner {
     case topLeft
     case topRight
     case bottomLeft
     case bottomRight
 }
 
-class CornerView: UIView {
-    let corner: Corner
+public class CornerView: UIView {
+    public let corner: Corner
 
-    init(frame: CGRect = .zero, corner: Corner) {
+    public init(frame: CGRect = .zero, corner: Corner) {
         self.corner = corner
 
         super.init(frame: frame)
@@ -26,7 +26,7 @@ class CornerView: UIView {
         fatalError()
     }
 
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         shapeLayer.frame = bounds

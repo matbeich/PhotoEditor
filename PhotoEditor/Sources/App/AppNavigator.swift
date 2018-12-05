@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import Utils
 
 class AppNavigator: NSObject {
     enum Destination {

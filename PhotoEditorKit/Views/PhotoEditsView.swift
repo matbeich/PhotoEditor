@@ -6,30 +6,30 @@ import PhotoEditorKit
 import SnapKit
 import UIKit
 
-final class PhotoEditsView: UIView {
-    var canCrop: Bool {
+public final class PhotoEditsView: UIView {
+    public var canCrop: Bool {
         return mode.state.showCrop
     }
 
-    var photo: UIImage? {
+    public var photo: UIImage? {
         return imageView.image
     }
 
-    var allowedBounds: CGRect {
+    public var allowedBounds: CGRect {
         return cropView.allowedBounds
     }
 
-    var visibleRect: CGRect {
+    public var visibleRect: CGRect {
         return convert(cropView.frame, to: imageView)
     }
 
-    var mode: EditMode = .normal {
+    public var mode: EditMode = .normal {
         didSet {
             applyMode()
         }
     }
 
-    init(frame: CGRect = .zero, image: UIImage? = nil) {
+    public init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
         self.scrollView = UIScrollView(frame: frame)
         self.cropView = CropView(grid: Grid(numberOfRows: 3, numberOfColumns: 3))
@@ -50,7 +50,7 @@ final class PhotoEditsView: UIView {
         fatalError("Not implemented")
     }
 
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         layoutCropViewIfNeeded()
@@ -58,54 +58,54 @@ final class PhotoEditsView: UIView {
         updateMaskPath()
     }
 
-    func showMask() {
+    public func showMask() {
         setBlurIsVisible(false)
         setDimmingViewIsVisible(true)
         setCropViewIsVisible(true)
         setCropViewGridIsVisible(true)
     }
 
-    func hideMask() {
+    public func hideMask() {
         setBlurIsVisible(true)
         setDimmingViewIsVisible(false)
         setCropViewIsVisible(true)
         setCropViewGridIsVisible(false)
     }
 
-    func set(_ photo: UIImage) {
+    public func set(_ photo: UIImage) {
         saveCropedRect()
         imageView = UIImageView(image: photo)
         setNeedsDisplay()
     }
 
-    func fitCropView() {
+    public func fitCropView() {
         cropView.clipToBounds(allowedBounds, aspectScaled: true)
     }
 
-    func setDimmingViewIsVisible(_ visible: Bool) {
+    public func setDimmingViewIsVisible(_ visible: Bool) {
         updateMaskPath()
         effectsView.setDimmingViewIsVisible(visible)
     }
 
-    func setBlurIsVisible(_ visible: Bool) {
+    public func setBlurIsVisible(_ visible: Bool) {
         updateMaskPath()
         effectsView.setBlurIsVisible(visible)
     }
 
-    func setCropViewGridIsVisible(_ visible: Bool) {
+    public func setCropViewGridIsVisible(_ visible: Bool) {
         cropView.gridIsVisible = visible
     }
 
-    func setCropViewIsVisible(_ visible: Bool) {
+    public func setCropViewIsVisible(_ visible: Bool) {
         cropView.isHidden = !visible
         cropView.isUserInteractionEnabled = visible
     }
 
-    func saveCropedRect() {
+    public func saveCropedRect() {
         visibleContentFrame = visibleRect
     }
 
-    func fitSavedRectToCropView() {
+    public func fitSavedRectToCropView() {
         let scale = min(cropView.frame.height / visibleContentFrame.size.height,
                         cropView.frame.width / visibleContentFrame.size.width)
 
@@ -124,7 +124,7 @@ final class PhotoEditsView: UIView {
         updateInsets()
     }
 
-    func changeCropViewFrame(using corner: Corner, translation: CGPoint) {
+    public func changeCropViewFrame(using corner: Corner, translation: CGPoint) {
         cropView.changeFrame(using: corner, translation: translation)
     }
 
@@ -229,34 +229,34 @@ final class PhotoEditsView: UIView {
     private var visibleContentFrame: CGRect
 }
 
-extension PhotoEditsView {
+public extension PhotoEditsView {
     func cropViewCorner(at point: CGPoint) -> Corner? {
         return cropView.cornerPosition(at: convert(point, to: cropView))
     }
 }
 
 extension PhotoEditsView: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
 
-    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+    public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         showMask()
     }
 
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         hideMask()
     }
 
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
         updateInsets()
     }
 
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         showMask()
     }
 
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         hideMask()
     }
 }

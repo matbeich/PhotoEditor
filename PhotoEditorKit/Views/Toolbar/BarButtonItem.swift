@@ -5,19 +5,19 @@
 import SnapKit
 import UIKit
 
-class BarButtonItem: UIControl {
-    override var isHighlighted: Bool {
+public class BarButtonItem: UIControl {
+    override public var isHighlighted: Bool {
         didSet {
             layer.opacity = isHighlighted ? 0.5 : 1
             imageView.image = isHighlighted ? tappedStateImage : normalStateImage
         }
     }
 
-    let title: String
-    let normalStateImage: UIImage?
-    let tappedStateImage: UIImage?
+    public let title: String
+    public let normalStateImage: UIImage?
+    public let tappedStateImage: UIImage?
 
-    init(title: String, image: UIImage?, tappedImage: UIImage? = nil) {
+    public init(title: String, image: UIImage?, tappedImage: UIImage? = nil) {
         self.title = title
         self.normalStateImage = image
 

@@ -2,7 +2,6 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product: PhotoEditor
 //
 
-import PhotoEditorKit
 import SnapKit
 import UIKit
 import Utils
