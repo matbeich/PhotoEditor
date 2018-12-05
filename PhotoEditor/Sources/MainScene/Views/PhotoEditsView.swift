@@ -4,11 +4,13 @@
 
 import SnapKit
 import UIKit
+import PhotoEditorKit
 
 enum EditMode {
     case crop
     case filter
     case normal
+//    case stickers
 
     var state: EditingState {
         switch self {

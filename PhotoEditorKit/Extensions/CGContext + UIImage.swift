@@ -72,8 +72,6 @@ public extension UIImage {
                 return self
         }
 
-        print(self.imageOrientation.description)
-
         let imgSize: CGSize = imageOrientation.isFlipped ? CGSize(width: size.height, height: size.width) : size
 
         ctx.saveGState()

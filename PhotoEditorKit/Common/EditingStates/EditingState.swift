@@ -4,7 +4,7 @@
 
 import Foundation
 
-protocol EditingState {
+public protocol EditingState {
     var canScroll: Bool { get }
     var showBlur: Bool { get }
     var showDimming: Bool { get }

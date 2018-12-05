@@ -107,7 +107,7 @@ class SceneController: UIViewController {
         let barItems = [
             BarButtonItem(title: "Crop", image: nil),
             BarButtonItem(title: "Filter", image: nil),
-            BarButtonItem(title: "WaterMark", image: nil)
+            BarButtonItem(title: "Add Sticker", image: nil)
         ]
         let toolbar = Toolbar(frame: .zero, barItems: barItems)
         toolbar.delegate = self
@@ -125,6 +125,7 @@ class SceneController: UIViewController {
 extension SceneController: ToolbarDelegate {
     func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
         if itemTapped.tag == 2 {
+//            Current.stateStore.state.value.editMode = .stickers
         } else if itemTapped.tag == 1 {
             updateFiltersPhoto()
             Current.stateStore.state.value.editMode = .filter
