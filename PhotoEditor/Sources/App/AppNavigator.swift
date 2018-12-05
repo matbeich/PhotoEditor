@@ -2,6 +2,7 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product:PhotoEditor
 //
 
+import PhotoEditorKit
 import UIKit
 import Utils
 
@@ -13,7 +14,7 @@ class AppNavigator: NSObject {
     func navigateTo(destination: Destination) {
         switch destination {
         case .scene:
-            let vc = SceneController()
+            let vc = SceneController(context: context)
 
             rootViewController.push(vc, animated: true)
             guard let img = image?.fixOrientation() else {
@@ -34,6 +35,7 @@ class AppNavigator: NSObject {
     }()
 
     private var image: UIImage?
+    private let context = AppContext()
 }
 
 extension AppNavigator: UIImagePickerControllerDelegate & UINavigationControllerDelegate {

@@ -2,12 +2,25 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product: PhotoEditor
 //
 
-import PhotoEditorKit
+import Photos
+import PhotosUI
 import SnapKit
 import UIKit
 
-class SceneController: UIViewController {
-    override func viewDidLoad() {
+
+open class SceneController: UIViewController {
+    public init(context: AppContext) {
+        self.context = context
+        self.photoViewController = PhotoViewController(context: context)
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("Not implemented")
+    }
+
+    override open func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .darkGray
         view.addSubview(photoViewControllerContainer)
@@ -19,21 +32,21 @@ class SceneController: UIViewController {
     }
 
     deinit {
-        Current.stateStore.unsubscribeSubscriber(with: id)
+        context.stateStore.unsubscribeSubscriber(with: id)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         changeAppearenceOfTools(for: photoViewController.mode)
         updateFiltersPhoto()
     }
 
-    override var prefersStatusBarHidden: Bool {
+    override open var prefersStatusBarHidden: Bool {
         return true
     }
 
-    func setImage(_ image: UIImage) {
+    public func setImage(_ image: UIImage) {
         photoViewController.originalPhoto = image
     }
 
@@ -72,7 +85,7 @@ class SceneController: UIViewController {
         add(fullscreenChild: photoViewController, in: photoViewControllerContainer)
         add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
 
-        Current.stateStore.bindSubscriber(with: id) { [weak self] state in
+        context.stateStore.bindSubscriber(with: id) { [weak self] state in
             self?.changeAppearenceOfTools(for: state.value.editMode)
             self?.photoViewController.mode = state.value.editMode
         }
@@ -95,7 +108,7 @@ class SceneController: UIViewController {
 
     private lazy var filtersCollectionViewController: FiltersCollectionViewController = {
         let filters = Array(AppFilters.allCases).compactMap { CIFilter(name: $0.rawValue) }
-        let controller = FiltersCollectionViewController(filters: filters)
+        let controller = FiltersCollectionViewController(context: context, filters: filters)
 
         controller.delegate = self
         controller.view.backgroundColor = .lightGray
@@ -116,29 +129,31 @@ class SceneController: UIViewController {
         return toolbar
     }()
 
-    private let photoViewController = PhotoViewController()
+    private let context: AppContext
+    private var photoViewController: PhotoViewController
     private let toolControlsContainer = UIView()
     private let photoViewControllerContainer = UIView()
     private var toolControlsConstainerTop: Constraint?
 }
 
 extension SceneController: ToolbarDelegate {
-    func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
+    public func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
         if itemTapped.tag == 2 {
-//            Current.stateStore.state.value.editMode = .stickers
+            // FIXME: add stickers mode
+            // Current.stateStore.state.value.editMode = .stickers
         } else if itemTapped.tag == 1 {
             updateFiltersPhoto()
-            Current.stateStore.state.value.editMode = .filter
+            context.stateStore.state.value.editMode = .filter
 
         } else if itemTapped.tag == 0 {
-            Current.stateStore.state.value.editMode = .crop
+            context.stateStore.state.value.editMode = .crop
         }
     }
 }
 
 extension SceneController: FiltersCollectionViewControllerDelegate {
-    func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter) {
-        Current.photoEditService.asyncApplyFilter(filter, to: photoViewController.originalPhoto!) { [weak self] image in
+    public func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter) {
+        context.photoEditService.asyncApplyFilter(filter, to: photoViewController.originalPhoto!) { [weak self] image in
             guard let image = image else {
                 return
             }

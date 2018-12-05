@@ -3,10 +3,9 @@
 //
 
 import UIKit
-import PhotoEditorKit
 
-class PhotoViewController: UIViewController {
-    var originalPhoto: UIImage? {
+public class PhotoViewController: UIViewController {
+    public var originalPhoto: UIImage? {
         didSet {
             guard let photo = originalPhoto else {
                 return
@@ -16,17 +15,27 @@ class PhotoViewController: UIViewController {
         }
     }
 
-    var cropedOriginal: UIImage? {
+    public var cropedOriginal: UIImage? {
         return originalPhoto?.cropedZone(photoEditsView.visibleRect)
     }
 
-    var mode: EditMode = .crop {
+    public var mode: EditMode = .crop {
         didSet {
             photoEditsView.mode = mode
         }
     }
 
-    override func viewDidLoad() {
+    public init(context: AppContext) {
+        self.context = context
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("Not implememnted")
+    }
+
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         let panGestureRecognizer = UIPanGestureRecognizer()
@@ -38,14 +47,14 @@ class PhotoViewController: UIViewController {
         makeConstraints()
     }
 
-    func setPhoto(_ photo: UIImage) {
+    public func setPhoto(_ photo: UIImage) {
         photoEditsView.set(photo)
     }
 
     private func setup() {
         photoEditsView.set(originalPhoto ?? UIImage())
 
-        Current.stateStore.addSubscriber(with: id) { [weak self] state in
+        context.stateStore.addSubscriber(with: id) { [weak self] state in
             if state.value.editMode != .crop {
                 self?.photoEditsView.saveCropedRect()
             }
@@ -58,7 +67,7 @@ class PhotoViewController: UIViewController {
         }
     }
 
-    @objc func changeSize(with recognizer: UIPanGestureRecognizer) {
+    @objc public func changeSize(with recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
             changingCorner = photoEditsView.canCrop ? photoEditsView.cropViewCorner(at: recognizer.location(in: view)) : nil
@@ -89,9 +98,10 @@ class PhotoViewController: UIViewController {
     }
 
     deinit {
-        Current.stateStore.unsubscribeSubscriber(with: id)
+        context.stateStore.unsubscribeSubscriber(with: id)
     }
 
+    private let context: AppContext
     private var changingCorner: Corner?
     private let photoEditsView = PhotoEditsView()
 }

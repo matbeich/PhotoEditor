@@ -4,20 +4,20 @@
 
 import UIKit
 
-class FilterCollectionViewCell: UICollectionViewCell {
-    var image: UIImage? {
+public class FilterCollectionViewCell: UICollectionViewCell {
+    public var image: UIImage? {
         didSet {
             imageView.image = image
         }
     }
 
-    var filterName: String? {
+    public var filterName: String? {
         didSet {
             textLabel.text = filterName
         }
     }
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
 
         setup()
@@ -28,7 +28,7 @@ class FilterCollectionViewCell: UICollectionViewCell {
         super.init(coder: aDecoder)
     }
 
-    override func prepareForReuse() {
+    override public func prepareForReuse() {
         super.prepareForReuse()
 
         textLabel.text = nil

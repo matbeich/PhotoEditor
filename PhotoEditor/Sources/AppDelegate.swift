@@ -2,6 +2,7 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product: PhotoEditor
 //
 
+import PhotoEditorKit
 import UIKit
 
 @UIApplicationMain
@@ -14,18 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
 
         return true
-    }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        Current.stateStore.state.value.appState = .active
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        Current.stateStore.state.value.appState = .background
-    }
-
-    func applicationWillResignActive(_ application: UIApplication) {
-        Current.stateStore.state.value.appState = .inactive
     }
 
     let navigator = AppNavigator()
