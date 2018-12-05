@@ -5,10 +5,6 @@
 import UIKit
 
 class FilterCollectionViewCell: UICollectionViewCell {
-    static var identifier: String {
-        return String(describing: self)
-    }
-
     var image: UIImage? {
         didSet {
             imageView.image = image

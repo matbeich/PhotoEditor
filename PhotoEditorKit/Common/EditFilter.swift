@@ -4,13 +4,13 @@
 
 import CoreImage
 
-protocol EditFilter {
+public protocol EditFilter {
     var name: String { get }
     func applied(to image: CIImage, in context: CIContext, withOptions options: [String: Any]) -> CGImage?
 }
 
 extension CIFilter: EditFilter {
-    func applied(to image: CIImage, in context: CIContext, withOptions options: [String: Any]) -> CGImage? {
+    public func applied(to image: CIImage, in context: CIContext, withOptions options: [String: Any]) -> CGImage? {
         setValue(image, forKey: kCIInputImageKey)
         options.forEach { setValue($0.value, forKey: $0.key) }
 

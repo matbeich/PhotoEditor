@@ -3,30 +3,24 @@
 //
 
 import UIKit
-import PhotoEditorKit
 
-protocol FiltersCollectionViewControllerDelegate: AnyObject {
-    func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter)
+typealias Sticker = UIImage
+
+protocol StickersCollectionViewControllerDelegate: AnyObject {
+    func stickersCollectionViewController(_ controller: StickersCollectionViewController, didSelectSticker sticker: Sticker)
 }
 
-class FiltersCollectionViewController: UIViewController {
-    weak var delegate: FiltersCollectionViewControllerDelegate?
+class StickersCollectionViewController: UIViewController {
+    weak var delegate: StickersCollectionViewControllerDelegate?
 
-    var image: UIImage? {
+    var stickers: [Sticker] {
         didSet {
             collectionView.reloadData()
         }
     }
 
-    var filters: [EditFilter] {
-        didSet {
-            collectionView.reloadData()
-        }
-    }
-
-    init(image: UIImage? = nil, filters: [EditFilter] = []) {
-        self.filters = filters
-        self.image = image
+    init(stickers: [Sticker] = []) {
+        self.stickers = stickers
 
         super.init(nibName: nil, bundle: nil)
         view.addSubview(collectionView)
@@ -49,7 +43,7 @@ class FiltersCollectionViewController: UIViewController {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(FilterCollectionViewCell.self, forCellWithReuseIdentifier: FilterCollectionViewCell.identifier)
+        collectionView.register(StickerCollectionViewCell.self, forCellWithReuseIdentifier: StickerCollectionViewCell.identifier)
     }
 
     lazy var collectionView: UICollectionView = {
@@ -62,36 +56,31 @@ class FiltersCollectionViewController: UIViewController {
     }()
 }
 
-extension FiltersCollectionViewController: UICollectionViewDataSource {
+extension StickersCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filters.count
+        return stickers.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.identifier, for: indexPath)
 
-        guard let filterCell = cell as? FilterCollectionViewCell, let image = image else {
+        guard let stickerCell = cell as? StickerCollectionViewCell else {
             return cell
         }
 
-        let filter = filters[indexPath.row]
+        let sticker = stickers[indexPath.row]
 
-        Current.photoEditService.asyncApplyFilter(filter, to: image) {
-            filterCell.image = $0
-            filterCell.filterName = filter.name
-        }
-
-        return filterCell
+        return stickerCell
     }
 }
 
-extension FiltersCollectionViewController: UICollectionViewDelegate {
+extension StickersCollectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.filtersCollectionViewController(self, didSelectFilter: filters[indexPath.row])
+        delegate?.stickersCollectionViewController(self, didSelectSticker: stickers[indexPath.row])
     }
 }
 
-extension FiltersCollectionViewController: UICollectionViewDelegateFlowLayout {
+extension StickersCollectionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let value = min(collectionView.frame.height, collectionView.frame.width)
 

@@ -1,53 +1,8 @@
 //
 // Copyright © 2018 Dimasno1. All rights reserved. Product:PhotoEditor
 //
-//
-//  Store.swift
-//  StateApp
-//
-//  Created by Admin on 11/26/18.
-//  Copyright © 2018 Admin. All rights reserved.
-//
 
 import UIKit
-
-typealias SubscriberID = ObjectIdentifier
-
-enum AppMode {
-    case normal
-    case superuser
-    case restricted
-}
-
-struct AppState {
-    var appState: UIApplication.State
-    var image: UIImage?
-    var editMode: EditMode
-}
-
-extension AppState {
-    static var initial = AppState(appState: .active, image: nil, editMode: .crop)
-}
-
-struct State<T> {
-    var value: T
-
-    init(_ value: T) {
-        self.value = value
-    }
-}
-
-protocol Subscriber: AnyObject {
-    var id: SubscriberID { get }
-}
-
-extension Subscriber {
-    var id: SubscriberID {
-        return ObjectIdentifier(self)
-    }
-}
-
-extension NSObject: Subscriber {}
 
 final class StateStore<T> {
     typealias SubscriberAction = (State<T>) -> Void
