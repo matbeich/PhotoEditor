@@ -16,6 +16,8 @@
 		8413020421B7F25000908E58 /* FilterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488974F2191A66400D99E91 /* FilterState.swift */; };
 		8413020521B7F25000908E58 /* CropState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F5A0E42191B35800DEC40F /* CropState.swift */; };
 		8413020621B7F25000908E58 /* NormalState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574221A7F9D100D24473 /* NormalState.swift */; };
+		8413020721B7F79100908E58 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F52199670100E5BD08 /* Config.swift */; };
+		8413020921B7F7BF00908E58 /* AppFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413020821B7F7BF00908E58 /* AppFilters.swift */; };
 		8415EC1621B7D4B400246BF3 /* StickersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8415EC1421B7D4A600246BF3 /* StickersCollectionViewController.swift */; };
 		843F78D121B6A58E0028C43A /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D021B6A58E0028C43A /* State.swift */; };
 		843F78D321B6A5AF0028C43A /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D221B6A5AF0028C43A /* AppState.swift */; };
@@ -29,7 +31,6 @@
 		844FC8E42195669700E5BD08 /* PhotoEditorKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FC8D42195669700E5BD08 /* PhotoEditorKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		844FC8F121956B9A00E5BD08 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F021956B9A00E5BD08 /* Grid.swift */; };
 		844FC8F421958F6000E5BD08 /* CornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F321958F6000E5BD08 /* CornerView.swift */; };
-		844FC8F62199670100E5BD08 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F52199670100E5BD08 /* Config.swift */; };
 		84662DB521ABFD2E00852812 /* BarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DB321ABFD2E00852812 /* BarButtonItem.swift */; };
 		84662DB621ABFD2E00852812 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DB421ABFD2E00852812 /* Toolbar.swift */; };
 		84662DED21AC333700852812 /* AppStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DEC21AC333700852812 /* AppStateStore.swift */; };
@@ -139,6 +140,7 @@
 		4E8C4F1E4F25F3740281AA1A /* Pods-PhotoEditorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoEditorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoEditorTests/Pods-PhotoEditorTests.release.xcconfig"; sourceTree = "<group>"; };
 		6EABEB649227AB7BF77DDC6C /* Pods_PhotoEditorTodayWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PhotoEditorTodayWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FEF036046E6C190B9E6BF50 /* Pods-PhotoEditorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoEditorTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoEditorTests/Pods-PhotoEditorTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8413020821B7F7BF00908E58 /* AppFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFilters.swift; sourceTree = "<group>"; };
 		8415EC1421B7D4A600246BF3 /* StickersCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickersCollectionViewController.swift; sourceTree = "<group>"; };
 		8422C96621B5327400F281A9 /* CGContext + UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGContext + UIImage.swift"; sourceTree = "<group>"; };
 		8422C96821B532E600F281A9 /* EditFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFilter.swift; sourceTree = "<group>"; };
@@ -277,6 +279,8 @@
 			children = (
 				848897512191A6C000D99E91 /* EditingStates */,
 				8422C96821B532E600F281A9 /* EditFilter.swift */,
+				8413020821B7F7BF00908E58 /* AppFilters.swift */,
+				844FC8F52199670100E5BD08 /* Config.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -341,7 +345,6 @@
 			isa = PBXGroup;
 			children = (
 				844FC8F021956B9A00E5BD08 /* Grid.swift */,
-				844FC8F52199670100E5BD08 /* Config.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -923,10 +926,12 @@
 			files = (
 				8413020521B7F25000908E58 /* CropState.swift in Sources */,
 				843F78D721B6A7100028C43A /* PhotoEditorService.swift in Sources */,
+				8413020721B7F79100908E58 /* Config.swift in Sources */,
 				843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */,
 				8413020321B7F24900908E58 /* EditingState.swift in Sources */,
 				8413020421B7F25000908E58 /* FilterState.swift in Sources */,
 				843F78D821B6A71C0028C43A /* EditFilter.swift in Sources */,
+				8413020921B7F7BF00908E58 /* AppFilters.swift in Sources */,
 				8413020621B7F25000908E58 /* NormalState.swift in Sources */,
 				843F78DB21B6A9B20028C43A /* WatermarkRenderer.swift in Sources */,
 			);
@@ -951,7 +956,6 @@
 				846E574D21A811EC00D24473 /* AppWorld.swift in Sources */,
 				8478BC1021A53B6B00D39C2D /* EffectsView.swift in Sources */,
 				84F5A0E72191B77300DEC40F /* FiltersCollectionViewController.swift in Sources */,
-				844FC8F62199670100E5BD08 /* Config.swift in Sources */,
 				843F78D121B6A58E0028C43A /* State.swift in Sources */,
 				84F5A0DE2191AEB600DEC40F /* R.generated.swift in Sources */,
 				8415EC1621B7D4B400246BF3 /* StickersCollectionViewController.swift in Sources */,
