@@ -5,6 +5,7 @@
 import Foundation
 
 public typealias Watermark = UIImage
+public typealias RendererCallback = (UIImage?) -> Void
 
 public final class WatermarkRenderer {
     public var watermark: Watermark
@@ -13,7 +14,7 @@ public final class WatermarkRenderer {
         self.watermark = watermark
     }
 
-    public func renderWatermark(on image: UIImage, then callback: @escaping (UIImage?) -> Void) {
+    public func asyncRenderWatermark(on image: UIImage, then callback: @escaping RendererCallback) {
         DispatchQueue.global().async { [weak self] in
             let img = self?.renderWatermark(on: image)
 
@@ -23,24 +24,22 @@ public final class WatermarkRenderer {
         }
     }
 
-    private func renderWatermark(on image: UIImage) -> UIImage? {
-        guard let cgWatermark = watermark.cgImage else {
+    public func renderWatermark(on image: UIImage) -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: image.size)
+
+        guard let cgimage = image.cgImage, let cgWatermark = watermark.cgImage else {
             return nil
         }
-        let renderer = UIGraphicsImageRenderer(size: image.size)
-        let scale = min(image.size.width, image.size.height) / max(watermark.size.width, watermark.size.height)
 
-        let xOffset = (image.size.width - watermark.size.width) / 2
-        let yOffset = (image.size.height - watermark.size.height) / 2
-        let rect = CGRect(origin: CGPoint(x: xOffset * scale, y: yOffset * scale),
-                          size: watermark.size.applying(CGAffineTransform(scaleX: scale, y: scale)))
+        let frame = CGRect(origin: CGPoint(x: image.size.width - watermark.size.width, y: 0),
+                           size: watermark.size)
 
         return renderer.image { ctx in
             ctx.cgContext.saveGState()
-            defer { ctx.cgContext.restoreGState() }
-            ctx.cgContext.rotate(by: -CGFloat.pi)
-            ctx.cgContext.translateBy(x: 0, y: image.size.height / 2)
-            ctx.cgContext.draw(cgWatermark, in: rect)
+            ctx.cgContext.flip(for: .downMirrored, withSize: image.size)
+            ctx.cgContext.draw(cgimage, in: CGRect(origin: .zero, size: image.size))
+            ctx.cgContext.draw(cgWatermark, in: frame)
+            ctx.cgContext.restoreGState()
         }
     }
 }
