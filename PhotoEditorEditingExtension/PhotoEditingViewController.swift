@@ -3,7 +3,6 @@
 //
 
 import UIKit
-import Photos
 import PhotosUI
 import PhotoEditorKit
 
@@ -35,8 +34,8 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
         guard
             let url = editingInputService.input.fullSizeImageURL,
             let image = UIImage(contentsOfFile: url.path)
-            else {
-                return
+        else {
+            return
         }
 
         var img: UIImage? = image
@@ -85,7 +84,6 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
         super.didReceiveMemoryWarning()
     }
 
-    var image  = UIImage()
     private let context = AppContext()
     private var editingInputService = EditingInputService()
     private lazy var sceneController = SceneController(context: context)
@@ -95,7 +93,8 @@ private extension CGRect {
     func scaled(by scale: CGFloat) -> CGRect {
         return CGRect(x: origin.x * scale,
                       y: origin.y * scale,
-                      width: width * scale, height: height * scale)
+                      width: width * scale,
+                      height: height * scale)
     }
 }
 

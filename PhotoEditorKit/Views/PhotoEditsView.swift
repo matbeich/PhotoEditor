@@ -111,7 +111,6 @@ public final class PhotoEditsView: UIView {
 
         visibleContentFrame = rect.toAbsolute(with: size)
         cropView.frame = rect.toAbsolute(with: bounds.size)
-        print(rect.toAbsolute(with: bounds.size))
         fitCropView()
         fitSavedRectToCropView()
     }
