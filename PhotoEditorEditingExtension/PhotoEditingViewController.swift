@@ -15,41 +15,96 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
         return true
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        setup()
-    }
-
     func canHandle(_ adjustmentData: PHAdjustmentData) -> Bool {
-        return false
+        return true
     }
 
     func startContentEditing(with contentEditingInput: PHContentEditingInput, placeholderImage: UIImage) {
-        sceneController.setImage(placeholderImage)
+        editingInputService = EditingInputService(contentEditingInput)
+        let image = contentEditingInput.displaySizeImage
+        let editingParameters = editingInputService.inputEditingParameters()
+
+        sceneController.setImage(image!)
+
+        if let cropRelative = editingParameters?.relativeCropRectangle {
+            sceneController.restoreCropedRect(fromRelative: cropRelative)
+        }
     }
 
     func finishContentEditing(completionHandler: @escaping (PHContentEditingOutput?) -> Void) {
+        guard
+            let url = editingInputService.input.fullSizeImageURL,
+            let image = UIImage(contentsOfFile: url.path)
+            else {
+                return
+        }
 
+        var img: UIImage? = image
+        var editingParameters = EditingParameters()
+
+        if let relativeCropZone = sceneController.relativeCropZone {
+            img = image.cropedZone(relativeCropZone.toAbsolute(with: image.size))
+            editingParameters.relativeCropRectangle = relativeCropZone
+        }
+
+        if let filter = sceneController.selectedFilter, let image = img {
+            img = context.photoEditService.applyFilter(filter, to: image)
+            editingParameters.filterName = filter.name
+        }
+
+        let encodedData = editingInputService.encodeInData(parameters: editingParameters)!
+        let configuredOutput = editingInputService.configuredOutput(encodedData: encodedData)
+
+        guard
+            let result = img,
+            let jpegData = result.jpegData(compressionQuality: 1.0)
+            else {
+                return
+        }
+
+        do {
+            try jpegData.write(to: configuredOutput.renderedContentURL)
+        } catch let error {
+            assertionFailure(error.localizedDescription)
+            completionHandler(nil)
+        }
+
+        completionHandler(configuredOutput)
     }
 
     func cancelContentEditing() {
 
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        addChild(sceneController, to: view)
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-
-        print("memory warning")
     }
 
-    private func setup() {
-        sceneController.willMove(toParent: self)
-        view.addSubview(sceneController.view)
-        sceneController.view.frame = view.bounds
-        addChild(sceneController)
-        sceneController.didMove(toParent: self)
-    }
+    var image  = UIImage()
+    private let context = AppContext()
+    private var editingInputService = EditingInputService()
+    private lazy var sceneController = SceneController(context: context)
+}
 
-    private let sceneController = SceneController(context: AppContext())
+private extension CGRect {
+    func scaled(by scale: CGFloat) -> CGRect {
+        return CGRect(x: origin.x * scale,
+                      y: origin.y * scale,
+                      width: width * scale, height: height * scale)
+    }
+}
+
+private extension UIViewController {
+    func addChild(_ controller: UIViewController, to container: UIView) {
+        controller.view.frame = container.bounds
+        controller.willMove(toParent: self)
+        view.addSubview(controller.view)
+        addChild(controller)
+        controller.didMove(toParent: self)
+    }
 }

@@ -104,6 +104,18 @@ public final class PhotoEditsView: UIView {
         visibleContentFrame = visibleRect
     }
 
+    public func restoreCropedRect(fromRelative rect: CGRect) {
+        guard let size = photo?.size else {
+            return
+        }
+
+        visibleContentFrame = rect.toAbsolute(with: size)
+        cropView.frame = rect.toAbsolute(with: bounds.size)
+        print(rect.toAbsolute(with: bounds.size))
+        fitCropView()
+        fitSavedRectToCropView()
+    }
+
     public func fitSavedRectToCropView() {
         let scale = min(cropView.frame.height / visibleContentFrame.size.height,
                         cropView.frame.width / visibleContentFrame.size.width)

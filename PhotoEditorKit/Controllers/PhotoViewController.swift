@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class PhotoViewController: UIViewController {
+public final class PhotoViewController: UIViewController {
     public var originalPhoto: UIImage? {
         didSet {
             guard let photo = originalPhoto else {
@@ -13,6 +13,18 @@ public class PhotoViewController: UIViewController {
 
             photoEditsView.set(photo)
         }
+    }
+
+    public var relativeCropZone: CGRect? {
+        guard let originalSize = originalPhoto?.size else {
+            return nil
+        }
+        
+        return CGRect(x: photoEditsView.visibleRect.origin.x / originalSize.width,
+                      y: photoEditsView.visibleRect.origin.y / originalSize.height,
+                      width: photoEditsView.visibleRect.width / originalSize.width,
+                      height: photoEditsView.visibleRect.height / originalSize.height
+        )
     }
 
     public var cropedOriginal: UIImage? {
@@ -49,6 +61,10 @@ public class PhotoViewController: UIViewController {
 
     public func setPhoto(_ photo: UIImage) {
         photoEditsView.set(photo)
+    }
+
+    public func restoreCropedRect(fromRelative rect: CGRect) {
+        photoEditsView.restoreCropedRect(fromRelative: rect)
     }
 
     private func setup() {
