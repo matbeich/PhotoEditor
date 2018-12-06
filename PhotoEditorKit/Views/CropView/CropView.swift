@@ -43,7 +43,7 @@ class CropView: UIView {
             return
         }
 
-        ctx.setStrokeColor(UIColor.lightGray.cgColor)
+        ctx.setStrokeColor(UIColor.white.cgColor)
         ctx.setLineWidth(0.3)
 
         if let grid = grid, gridIsVisible {

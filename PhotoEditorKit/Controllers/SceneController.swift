@@ -7,8 +7,17 @@ import PhotosUI
 import SnapKit
 import UIKit
 
-
 open class SceneController: UIViewController {
+    public var selectedFilter: EditFilter?
+
+    public var currentPhoto: UIImage? {
+        return photoViewController.originalPhoto
+    }
+
+    public var relativeCropZone: CGRect? {
+        return photoViewController.relativeCropZone
+    }
+
     public init(context: AppContext) {
         self.context = context
         self.photoViewController = PhotoViewController(context: context)
@@ -48,6 +57,10 @@ open class SceneController: UIViewController {
 
     public func setImage(_ image: UIImage) {
         photoViewController.originalPhoto = image
+    }
+
+    public func restoreCropedRect(fromRelative rect: CGRect) {
+        photoViewController.restoreCropedRect(fromRelative: rect)
     }
 
     private func makeConstraints() {
@@ -119,8 +132,8 @@ open class SceneController: UIViewController {
     private lazy var toolBar: Toolbar = {
         let barItems = [
             BarButtonItem(title: "Crop", image: nil),
-            BarButtonItem(title: "Filter", image: nil),
-            BarButtonItem(title: "Add Sticker", image: nil)
+            BarButtonItem(title: "Filters", image: nil),
+            BarButtonItem(title: "Stickers", image: nil)
         ]
         let toolbar = Toolbar(frame: .zero, barItems: barItems)
         toolbar.delegate = self
@@ -153,6 +166,7 @@ extension SceneController: ToolbarDelegate {
 
 extension SceneController: FiltersCollectionViewControllerDelegate {
     public func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter) {
+        selectedFilter = filter
         context.photoEditService.asyncApplyFilter(filter, to: photoViewController.originalPhoto!) { [weak self] image in
             guard let image = image else {
                 return
