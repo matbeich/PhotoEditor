@@ -79,7 +79,8 @@ public final class PhotoViewController: UIViewController {
 
     private func makeConstraints() {
         photoEditsView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide)
         }
     }
 
