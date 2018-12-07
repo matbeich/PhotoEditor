@@ -5,27 +5,25 @@
 import Foundation
 import PhotosUI
 
-final class EditingInputService {
+final class ContentEditingService {
     var input: PHContentEditingInput
 
-    init(_ input: PHContentEditingInput = PHContentEditingInput()) {
+    init(input: PHContentEditingInput = PHContentEditingInput()) {
         self.input = input
     }
 
-    func inputEditingParameters() -> EditingParameters? {
+    func editingParametersFromInput() -> EditingParameters? {
         guard
             let data = input.adjustmentData?.data,
             let object = NSKeyedUnarchiver.unarchiveObject(with: data) as? Data
         else {
             return nil
         }
-        
-        let parameters = try? PropertyListDecoder().decode(EditingParameters.self, from: object)
 
-        return parameters
+        return try? PropertyListDecoder().decode(EditingParameters.self, from: object)
     }
 
-    func encodeInData(parameters: EditingParameters) -> Data? {
+    func encodeToData(parameters: EditingParameters) -> Data? {
         guard
             let object = try? PropertyListEncoder().encode(parameters),
             let data = try? NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: true)
@@ -36,9 +34,9 @@ final class EditingInputService {
         return data
     }
 
-    func configuredOutput(encodedData: Data) -> PHContentEditingOutput {
+    func configureOutputFromData(_ data: Data) -> PHContentEditingOutput {
         let contentEditingOutput = PHContentEditingOutput(contentEditingInput: input)
-        let adjustmentData = PHAdjustmentData(formatIdentifier: identifier, formatVersion: formatVersion, data: encodedData)
+        let adjustmentData = PHAdjustmentData(formatIdentifier: identifier, formatVersion: formatVersion, data: data)
 
         contentEditingOutput.adjustmentData = adjustmentData
 
@@ -54,12 +52,4 @@ final class EditingInputService {
     }
 
     private let identifier = "com.dimasno1.PhotoEditor.PhotoEditor-crop.filter"
-}
-
-private extension NSKeyedArchiver {
-    enum Keys {
-        static let cropedRect = "cropedRect"
-        static let filterName = "filterName"
-        static let scale = "scale"
-    }
 }
