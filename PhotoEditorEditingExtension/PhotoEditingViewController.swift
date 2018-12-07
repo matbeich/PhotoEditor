@@ -6,12 +6,19 @@ import UIKit
 import PhotosUI
 import PhotoEditorKit
 
-
 @objc(PhotoEditingViewController)
 class PhotoEditingViewController: UIViewController, PHContentEditingController {
-
     var shouldShowCancelConfirmation: Bool {
         return true
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        addChild(sceneController, to: view)
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
     }
 
     func canHandle(_ adjustmentData: PHAdjustmentData) -> Bool {
@@ -19,14 +26,16 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
     }
 
     func startContentEditing(with contentEditingInput: PHContentEditingInput, placeholderImage: UIImage) {
-        editingInputService = EditingInputService(contentEditingInput)
-        let image = contentEditingInput.displaySizeImage
-        let editingParameters = editingInputService.inputEditingParameters()
+        editingInputService = ContentEditingService(input: contentEditingInput)
 
-        sceneController.setImage(image!)
+        if let image = contentEditingInput.displaySizeImage {
+            sceneController.setImage(image)
+        } else {
+            cancelContentEditing()
+        }
 
-        if let cropRelative = editingParameters?.relativeCropRectangle {
-            sceneController.restoreCropedRect(fromRelative: cropRelative)
+        if let editingParameters = editingInputService.editingParametersFromInput() {
+            restoreStateFromParameters(editingParameters)
         }
     }
 
@@ -35,7 +44,7 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
             let url = editingInputService.input.fullSizeImageURL,
             let image = UIImage(contentsOfFile: url.path)
         else {
-            return
+                return
         }
 
         var img: UIImage? = image
@@ -51,59 +60,43 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
             editingParameters.filterName = filter.name
         }
 
-        let encodedData = editingInputService.encodeInData(parameters: editingParameters)!
-        let configuredOutput = editingInputService.configuredOutput(encodedData: encodedData)
-
         guard
             let result = img,
-            let jpegData = result.jpegData(compressionQuality: 1.0)
-            else {
-                return
+            let jpegData = result.jpegData(compressionQuality: 1.0),
+            let encodedData = editingInputService.encodeToData(parameters: editingParameters)
+        else {
+            return
         }
 
+        let output = editingInputService.configureOutputFromData(encodedData)
+
         do {
-            try jpegData.write(to: configuredOutput.renderedContentURL)
+            try jpegData.write(to: output.renderedContentURL)
         } catch let error {
             assertionFailure(error.localizedDescription)
             completionHandler(nil)
+
+            return
         }
 
-        completionHandler(configuredOutput)
+        completionHandler(output)
     }
 
     func cancelContentEditing() {
 
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        addChild(sceneController, to: view)
-    }
+    private func restoreStateFromParameters(_ parameters: EditingParameters) {
+        if let cropRelative = parameters.relativeCropRectangle {
+            sceneController.restoreCropedRect(fromRelative: cropRelative)
+        }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+        if let filterName = parameters.filterName {
+            sceneController.selectedFilter = CIFilter(name: filterName)
+        }
     }
 
     private let context = AppContext()
-    private var editingInputService = EditingInputService()
+    private var editingInputService = ContentEditingService()
     private lazy var sceneController = SceneController(context: context)
-}
-
-private extension CGRect {
-    func scaled(by scale: CGFloat) -> CGRect {
-        return CGRect(x: origin.x * scale,
-                      y: origin.y * scale,
-                      width: width * scale,
-                      height: height * scale)
-    }
-}
-
-private extension UIViewController {
-    func addChild(_ controller: UIViewController, to container: UIView) {
-        controller.view.frame = container.bounds
-        controller.willMove(toParent: self)
-        view.addSubview(controller.view)
-        addChild(controller)
-        controller.didMove(toParent: self)
-    }
 }

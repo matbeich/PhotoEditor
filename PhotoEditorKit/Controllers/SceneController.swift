@@ -8,7 +8,11 @@ import SnapKit
 import UIKit
 
 open class SceneController: UIViewController {
-    public var selectedFilter: EditFilter?
+    public var selectedFilter: EditFilter? {
+        didSet {
+            applyFilter(selectedFilter)
+        }
+    }
 
     public var currentPhoto: UIImage? {
         return photoViewController.originalPhoto
@@ -57,6 +61,10 @@ open class SceneController: UIViewController {
 
     public func setImage(_ image: UIImage) {
         photoViewController.originalPhoto = image
+    }
+
+    public func setFilter(_ filter: EditFilter) {
+
     }
 
     public func restoreCropedRect(fromRelative rect: CGRect) {
@@ -124,7 +132,7 @@ open class SceneController: UIViewController {
         let controller = FiltersCollectionViewController(context: context, filters: filters)
 
         controller.delegate = self
-        controller.view.backgroundColor = .lightGray
+        controller.view.backgroundColor = view.backgroundColor
 
         return controller
     }()
@@ -141,6 +149,20 @@ open class SceneController: UIViewController {
 
         return toolbar
     }()
+
+    private func applyFilter(_ filter: EditFilter?) {
+        guard let originalPhoto = photoViewController.originalPhoto, let filter = filter else {
+            return
+        }
+
+        context.photoEditService.asyncApplyFilter(filter, to: originalPhoto) { [weak self] image in
+            guard let image = image else {
+                return
+            }
+
+            self?.photoViewController.setPhoto(image)
+        }
+    }
 
     private let context: AppContext
     private var photoViewController: PhotoViewController
@@ -167,12 +189,5 @@ extension SceneController: ToolbarDelegate {
 extension SceneController: FiltersCollectionViewControllerDelegate {
     public func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter) {
         selectedFilter = filter
-        context.photoEditService.asyncApplyFilter(filter, to: photoViewController.originalPhoto!) { [weak self] image in
-            guard let image = image else {
-                return
-            }
-
-            self?.photoViewController.setPhoto(image)
-        }
     }
 }

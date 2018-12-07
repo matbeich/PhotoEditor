@@ -36,25 +36,39 @@ public class FilterCollectionViewCell: UICollectionViewCell {
     }
 
     private func setup() {
+        imageView.layer.cornerRadius = min(bounds.width, bounds.height) * 0.1
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
-        textLabel.adjustsFontSizeToFitWidth = true
 
-        contentView.addSubview(imageView)
-        contentView.addSubview(textLabel)
+        textLabel.adjustsFontSizeToFitWidth = false
+        textLabel.textAlignment = .center
+        textLabel.font = UIFont.systemFont(ofSize: 10)
+
+        contentView.addSubview(stackView)
     }
 
     private func makeConstraints() {
+        stackView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
         imageView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
             make.height.equalTo(imageView.snp.width)
-        }
-
-        textLabel.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
         }
     }
 
     private let textLabel = UILabel()
     private let imageView = UIImageView()
+
+    private(set) lazy var stackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [imageView, textLabel])
+
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.isUserInteractionEnabled = false
+        stackView.spacing = 3
+
+        return stackView
+    }()
 }
