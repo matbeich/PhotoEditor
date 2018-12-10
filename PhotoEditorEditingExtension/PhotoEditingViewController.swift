@@ -51,7 +51,7 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
         var editingParameters = EditingParameters()
 
         if let relativeCropZone = sceneController.relativeCropZone {
-            img = image.cropedZone(relativeCropZone.toAbsolute(with: image.size))
+            img = image.cropedZone(relativeCropZone.absolute(in: CGRect(origin: .zero, size: image.size)))
             editingParameters.relativeCropRectangle = relativeCropZone
         }
 
