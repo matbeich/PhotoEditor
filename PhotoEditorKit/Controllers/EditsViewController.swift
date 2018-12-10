@@ -5,21 +5,9 @@
 import SnapKit
 import UIKit
 
-public final class PhotoEditsView: UIView {
+public final class EditsViewController: UIViewController {
     public var canCrop: Bool {
         return mode.state.showCrop
-    }
-
-    public var photo: UIImage? {
-        return imageView.image
-    }
-
-    public var allowedBounds: CGRect {
-        return cropView.allowedBounds
-    }
-
-    public var visibleRect: CGRect {
-        return convert(cropView.frame, to: imageView)
     }
 
     public var mode: EditMode = .normal {
@@ -28,18 +16,26 @@ public final class PhotoEditsView: UIView {
         }
     }
 
+    public var photo: UIImage? {
+        return imageView.image
+    }
+
+    public var visibleRect: CGRect {
+        return view.convert(cropView.frame, to: imageView)
+    }
+
     public init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
         self.scrollView = UIScrollView(frame: frame)
         self.cropView = CropView(grid: Grid(numberOfRows: 3, numberOfColumns: 3))
         self.visibleContentFrame = .zero
 
-        super.init(frame: frame)
+        super.init(nibName: nil, bundle: nil)
 
         setupScrollView()
-        addSubview(scrollView)
-        addSubview(effectsView)
-        addSubview(cropView)
+        view.addSubview(scrollView)
+        view.addSubview(effectsView)
+        view.addSubview(cropView)
 
         applyMode()
         makeConstraints()
@@ -49,12 +45,18 @@ public final class PhotoEditsView: UIView {
         fatalError("Not implemented")
     }
 
-    override public func layoutSubviews() {
-        super.layoutSubviews()
+    override public func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
         layoutCropViewIfNeeded()
         layoutScrollViewIfNeeded()
         updateMaskPath()
+    }
+
+    public func set(_ photo: UIImage) {
+        saveCropedRect()
+        imageView = UIImageView(image: photo)
+        view.setNeedsDisplay()
     }
 
     public func showMask() {
@@ -71,48 +73,12 @@ public final class PhotoEditsView: UIView {
         setCropViewGridIsVisible(false)
     }
 
-    public func set(_ photo: UIImage) {
-        saveCropedRect()
-        imageView = UIImageView(image: photo)
-        setNeedsDisplay()
-    }
-
     public func fitCropView() {
-        cropView.clipToBounds(allowedBounds, aspectScaled: true)
-    }
-
-    public func setDimmingViewIsVisible(_ visible: Bool) {
-        updateMaskPath()
-        effectsView.setDimmingViewIsVisible(visible)
-    }
-
-    public func setBlurIsVisible(_ visible: Bool) {
-        updateMaskPath()
-        effectsView.setBlurIsVisible(visible)
-    }
-
-    public func setCropViewGridIsVisible(_ visible: Bool) {
-        cropView.gridIsVisible = visible
-    }
-
-    public func setCropViewIsVisible(_ visible: Bool) {
-        cropView.isHidden = !visible
-        cropView.isUserInteractionEnabled = visible
+        cropView.clipToAllowedBounds(aspectScaled: true)
     }
 
     public func saveCropedRect() {
         visibleContentFrame = visibleRect
-    }
-
-    public func restoreCropedRect(fromRelative rect: CGRect) {
-        guard let size = photo?.size else {
-            return
-        }
-
-        visibleContentFrame = rect.absolute(in: CGRect(origin: .zero, size: size))
-        cropView.frame = rect.absolute(in: bounds)
-        fitCropView()
-        fitSavedRectToCropView()
     }
 
     public func fitSavedRectToCropView() {
@@ -132,6 +98,17 @@ public final class PhotoEditsView: UIView {
         scrollView.isUserInteractionEnabled = mode.state.canScroll
 
         updateInsets()
+    }
+
+    public func restoreCropedRect(fromRelative rect: CGRect) {
+        guard let size = photo?.size else {
+            return
+        }
+
+        visibleContentFrame = rect.absolute(in: CGRect(origin: .zero, size: size))
+        cropView.frame = rect.absolute(in: view.bounds)
+        fitCropView()
+        fitSavedRectToCropView()
     }
 
     public func changeCropViewFrame(using corner: Corner, translation: CGPoint) {
@@ -163,21 +140,21 @@ public final class PhotoEditsView: UIView {
     }
 
     private func layoutCropViewIfNeeded() {
-        if !bounds.isEmpty {
+        if !view.bounds.isEmpty {
             guard let size = visibleContentFrame.isEmpty ? photo?.size : visibleContentFrame.size else {
                 return
             }
 
             cropView.bounds.size = size
-            cropView.center = center
-            cropView.allowedBounds = bounds.inset(by: UIEdgeInsets(repeated: 20))
-            cropView.clipToBounds(allowedBounds, aspectScaled: true)
+            cropView.center = view.center
+            cropView.allowedBounds = view.bounds.inset(by: UIEdgeInsets(repeated: 20))
+            fitCropView()
             setCropViewIsVisible(mode.state.showCrop)
         }
     }
 
     private func layoutScrollViewIfNeeded() {
-        scrollView.frame = bounds
+        scrollView.frame = view.bounds
 
         if visibleContentFrame.isEmpty {
             scrollView.centerWithView(cropView)
@@ -202,7 +179,7 @@ public final class PhotoEditsView: UIView {
         }
 
         scrollView.removeFromSuperview()
-        scrollView = UIScrollView(frame: bounds)
+        scrollView = UIScrollView(frame: view.bounds)
         scrollView.contentSize = image.size
         scrollView.delegate = self
         scrollView.showsVerticalScrollIndicator = false
@@ -214,12 +191,31 @@ public final class PhotoEditsView: UIView {
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.addSubview(imageView)
 
-        insertSubview(scrollView, belowSubview: effectsView)
+        view.insertSubview(scrollView, belowSubview: effectsView)
+    }
+
+    private func setDimmingViewIsVisible(_ visible: Bool) {
+        updateMaskPath()
+        effectsView.setDimmingViewIsVisible(visible)
+    }
+
+    private func setBlurIsVisible(_ visible: Bool) {
+        updateMaskPath()
+        effectsView.setBlurIsVisible(visible)
+    }
+
+    private func setCropViewGridIsVisible(_ visible: Bool) {
+        cropView.gridIsVisible = visible
+    }
+
+    private func setCropViewIsVisible(_ visible: Bool) {
+        cropView.isHidden = !visible
+        cropView.isUserInteractionEnabled = visible
     }
 
     private func updateMaskPath() {
         let path = CGMutablePath()
-        path.addRect(bounds)
+        path.addRect(view.bounds)
         path.addRect(cropView.frame)
 
         effectsView.setMaskPath(path)
@@ -237,13 +233,13 @@ public final class PhotoEditsView: UIView {
     private var visibleContentFrame: CGRect
 }
 
-public extension PhotoEditsView {
+public extension EditsViewController {
     func cropViewCorner(at point: CGPoint) -> Corner? {
-        return cropView.cornerPosition(at: convert(point, to: cropView))
+        return cropView.cornerPosition(at: view.convert(point, to: cropView))
     }
 }
 
-extension PhotoEditsView: UIScrollViewDelegate {
+extension EditsViewController: UIScrollViewDelegate {
     public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }

@@ -11,7 +11,7 @@ public final class PhotoViewController: UIViewController {
                 return
             }
 
-            photoEditsView.set(photo)
+            editsViewController.set(photo)
         }
     }
 
@@ -20,20 +20,20 @@ public final class PhotoViewController: UIViewController {
             return nil
         }
         
-        return CGRect(x: photoEditsView.visibleRect.origin.x / originalSize.width,
-                      y: photoEditsView.visibleRect.origin.y / originalSize.height,
-                      width: photoEditsView.visibleRect.width / originalSize.width,
-                      height: photoEditsView.visibleRect.height / originalSize.height
+        return CGRect(x: editsViewController.visibleRect.origin.x / originalSize.width,
+                      y: editsViewController.visibleRect.origin.y / originalSize.height,
+                      width: editsViewController.visibleRect.width / originalSize.width,
+                      height: editsViewController.visibleRect.height / originalSize.height
         )
     }
 
     public var cropedOriginal: UIImage? {
-        return originalPhoto?.cropedZone(photoEditsView.visibleRect)
+        return originalPhoto?.cropedZone(editsViewController.visibleRect)
     }
 
     public var mode: EditMode = .crop {
         didSet {
-            photoEditsView.mode = mode
+            editsViewController.mode = mode
         }
     }
 
@@ -54,40 +54,32 @@ public final class PhotoViewController: UIViewController {
         panGestureRecognizer.addTarget(self, action: #selector(changeCropViewFrame(with:)))
 
         setup()
-        view.addSubview(photoEditsView)
         view.addGestureRecognizer(panGestureRecognizer)
-        makeConstraints()
+        add(safeAreaChild: editsViewController, in: view)
     }
 
     public func setPhoto(_ photo: UIImage) {
-        photoEditsView.set(photo)
+        editsViewController.set(photo)
     }
 
     public func restoreCropedRect(fromRelative rect: CGRect) {
-        photoEditsView.restoreCropedRect(fromRelative: rect)
+        editsViewController.restoreCropedRect(fromRelative: rect)
     }
 
     private func setup() {
-        photoEditsView.set(originalPhoto ?? UIImage())
+        editsViewController.set(originalPhoto ?? UIImage())
 
         context.stateStore.addSubscriber(with: id) { [weak self] state in
             if state.value.editMode != .crop {
-                self?.photoEditsView.saveCropedRect()
+                self?.editsViewController.saveCropedRect()
             }
-        }
-    }
-
-    private func makeConstraints() {
-        photoEditsView.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(view.safeAreaLayoutGuide)
         }
     }
 
     @objc public func changeCropViewFrame(with recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
-            changingCorner = photoEditsView.canCrop ? photoEditsView.cropViewCorner(at: recognizer.location(in: view)) : nil
+            changingCorner = editsViewController.canCrop ? editsViewController.cropViewCorner(at: recognizer.location(in: view)) : nil
 
         case .changed:
             guard let corner = changingCorner else {
@@ -97,15 +89,15 @@ public final class PhotoViewController: UIViewController {
             let translation = recognizer.translation(in: view)
             recognizer.setTranslation(.zero, in: view)
 
-            photoEditsView.showMask()
-            photoEditsView.changeCropViewFrame(using: corner, translation: translation)
+            editsViewController.showMask()
+            editsViewController.changeCropViewFrame(using: corner, translation: translation)
 
         case .ended, .cancelled, .failed:
             if changingCorner != nil {
-                photoEditsView.saveCropedRect()
-                photoEditsView.fitCropView()
-                photoEditsView.fitSavedRectToCropView()
-                photoEditsView.hideMask()
+                editsViewController.saveCropedRect()
+                editsViewController.fitCropView()
+                editsViewController.fitSavedRectToCropView()
+                editsViewController.hideMask()
 
                 changingCorner = nil
             }
@@ -120,5 +112,5 @@ public final class PhotoViewController: UIViewController {
 
     private let context: AppContext
     private var changingCorner: Corner?
-    private let photoEditsView = PhotoEditsView()
+    private let editsViewController = EditsViewController()
 }
