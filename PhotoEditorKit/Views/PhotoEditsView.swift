@@ -139,13 +139,11 @@ public final class PhotoEditsView: UIView {
     }
 
     private func updateInsets() {
-        let top = imageView.frame.minY.distance(to: cropView.frame.minY)
-        let bottom = imageView.frame.maxY.distance(to: cropView.frame.maxY)
-        let left = imageView.frame.minX.distance(to: cropView.frame.minX)
-        let right = imageView.frame.maxX.distance(to: cropView.frame.maxX)
+        let vertical = max(imageView.frame.minY.distance(to: cropView.frame.minY),
+                           imageView.frame.maxY.distance(to: cropView.frame.maxY))
 
-        let vertical = max(top, bottom)
-        let horizontal = max(left, right)
+        let horizontal = max(imageView.frame.minX.distance(to: cropView.frame.minX),
+                             imageView.frame.maxX.distance(to: cropView.frame.maxX))
 
         scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }

@@ -51,7 +51,7 @@ public final class PhotoViewController: UIViewController {
         super.viewDidLoad()
 
         let panGestureRecognizer = UIPanGestureRecognizer()
-        panGestureRecognizer.addTarget(self, action: #selector(changeSize(with:)))
+        panGestureRecognizer.addTarget(self, action: #selector(changeCropViewFrame(with:)))
 
         setup()
         view.addSubview(photoEditsView)
@@ -84,7 +84,7 @@ public final class PhotoViewController: UIViewController {
         }
     }
 
-    @objc public func changeSize(with recognizer: UIPanGestureRecognizer) {
+    @objc public func changeCropViewFrame(with recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
             changingCorner = photoEditsView.canCrop ? photoEditsView.cropViewCorner(at: recognizer.location(in: view)) : nil
@@ -99,10 +99,10 @@ public final class PhotoViewController: UIViewController {
 
             photoEditsView.showMask()
             photoEditsView.changeCropViewFrame(using: corner, translation: translation)
-            photoEditsView.saveCropedRect()
 
         case .ended, .cancelled, .failed:
             if changingCorner != nil {
+                photoEditsView.saveCropedRect()
                 photoEditsView.fitCropView()
                 photoEditsView.fitSavedRectToCropView()
                 photoEditsView.hideMask()
