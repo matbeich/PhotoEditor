@@ -160,6 +160,7 @@ public final class EditsViewController: UIViewController {
             scrollView.centerWithView(cropView)
             scrollView.minimumZoomScale = fitScaleForImage(photo)
             scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
+            updateInsets()
         } else {
             fitSavedRectToCropView()
         }
