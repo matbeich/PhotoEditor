@@ -58,9 +58,6 @@ public class FilterCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    private let textLabel = UILabel()
-    private let imageView = UIImageView()
-
     private(set) lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [imageView, textLabel])
 
@@ -71,4 +68,8 @@ public class FilterCollectionViewCell: UICollectionViewCell {
 
         return stackView
     }()
+
+    private let textLabel = UILabel()
+    private let imageView = UIImageView()
+
 }
