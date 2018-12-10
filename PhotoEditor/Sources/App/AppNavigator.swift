@@ -30,12 +30,12 @@ class AppNavigator: NSObject {
         applyChangesIfNeeded { [weak self] succes, image in
             let message = succes ? "Success" : "Error"
 
-            guard let image = image else {
+            guard let self = self, let image = image else {
                 return
             }
 
-            self?.photoLibraryService.saveImage(image) { succes, _ in
-                Alert.popUpMessage(message, duration: 1, in: self!.rootViewController)
+            self.photoLibraryService.saveImage(image) { succes, _ in
+                Alert.popUpMessage(message, duration: 1, in: self.rootViewController)
             }
         }
     }
