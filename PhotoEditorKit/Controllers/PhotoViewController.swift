@@ -99,10 +99,10 @@ public final class PhotoViewController: UIViewController {
 
             photoEditsView.showMask()
             photoEditsView.changeCropViewFrame(using: corner, translation: translation)
-            photoEditsView.saveCropedRect()
 
         case .ended, .cancelled, .failed:
             if changingCorner != nil {
+                photoEditsView.saveCropedRect()
                 photoEditsView.fitCropView()
                 photoEditsView.fitSavedRectToCropView()
                 photoEditsView.hideMask()
