@@ -12,4 +12,15 @@ public extension UIViewController {
         addChild(controller)
         controller.didMove(toParent: self)
     }
+
+    func add(safeAreaChild controller: UIViewController, in container: UIView) {
+        add(childController: controller, in: container) { parent, child in
+            child.view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                child.view.topAnchor.constraint(equalTo: container.safeAreaLayoutGuide.topAnchor),
+                child.view.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+                child.view.leftAnchor.constraint(equalTo: container.leftAnchor),
+                child.view.rightAnchor.constraint(equalTo: container.rightAnchor)])
+        }
+    }
 }

@@ -32,7 +32,7 @@
 		844102CA21B7FA0A00695AC9 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D021B6A58E0028C43A /* State.swift */; };
 		844102CC21B7FA4200695AC9 /* EditMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844102CB21B7FA4200695AC9 /* EditMode.swift */; };
 		844102CD21B7FB6A00695AC9 /* EffectsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8478BC0F21A53B6B00D39C2D /* EffectsView.swift */; };
-		844102CE21B7FB6A00695AC9 /* PhotoEditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897472191A48800D99E91 /* PhotoEditsView.swift */; };
+		844102CE21B7FB6A00695AC9 /* EditsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897472191A48800D99E91 /* EditsViewController.swift */; };
 		844102CF21B7FB6F00695AC9 /* CropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488974B2191A57E00D99E91 /* CropView.swift */; };
 		844102D021B7FB6F00695AC9 /* CornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8F321958F6000E5BD08 /* CornerView.swift */; };
 		844102D121B7FB7500695AC9 /* BarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84662DB321ABFD2E00852812 /* BarButtonItem.swift */; };
@@ -190,7 +190,7 @@
 		848897342191A03600D99E91 /* PhotoEditorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoEditorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		848897382191A03600D99E91 /* PhotoEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorTests.swift; sourceTree = "<group>"; };
 		8488973A2191A03600D99E91 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		848897472191A48800D99E91 /* PhotoEditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditsView.swift; sourceTree = "<group>"; };
+		848897472191A48800D99E91 /* EditsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditsViewController.swift; sourceTree = "<group>"; };
 		8488974B2191A57E00D99E91 /* CropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropView.swift; sourceTree = "<group>"; };
 		8488974D2191A62900D99E91 /* EditingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingState.swift; sourceTree = "<group>"; };
 		8488974F2191A66400D99E91 /* FilterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterState.swift; sourceTree = "<group>"; };
@@ -372,6 +372,7 @@
 			children = (
 				848897252191A03500D99E91 /* SceneController.swift */,
 				848897522191A75300D99E91 /* PhotoViewController.swift */,
+				848897472191A48800D99E91 /* EditsViewController.swift */,
 				846E574B21A8111E00D24473 /* FiltersCollectionViewController */,
 			);
 			path = Controllers;
@@ -431,7 +432,6 @@
 			children = (
 				844FC8F72199693800E5BD08 /* CropView */,
 				8478BC0F21A53B6B00D39C2D /* EffectsView.swift */,
-				848897472191A48800D99E91 /* PhotoEditsView.swift */,
 				84662DB721ABFD6700852812 /* Toolbar */,
 			);
 			path = Views;
@@ -1013,7 +1013,7 @@
 				844102CD21B7FB6A00695AC9 /* EffectsView.swift in Sources */,
 				844102D021B7FB6F00695AC9 /* CornerView.swift in Sources */,
 				8413020D21B7F89700908E58 /* AppState.swift in Sources */,
-				844102CE21B7FB6A00695AC9 /* PhotoEditsView.swift in Sources */,
+				844102CE21B7FB6A00695AC9 /* EditsViewController.swift in Sources */,
 				84D4AA5821B8035D00838EB1 /* UICollectionViewCell.swift in Sources */,
 				844102CC21B7FA4200695AC9 /* EditMode.swift in Sources */,
 				844102DA21B8012000695AC9 /* FilterCollectionViewCell.swift in Sources */,

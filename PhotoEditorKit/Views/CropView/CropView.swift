@@ -65,6 +65,10 @@ class CropView: UIView {
         return sortedCorners.first(where: { $0.frame.center.distance(to: point) < CGFloat(50.0) })?.corner
     }
 
+    func clipToAllowedBounds(aspectScaled: Bool) {
+        clipToBounds(allowedBounds, aspectScaled: aspectScaled)
+    }
+
     func changeFrame(using corner: Corner, translation: CGPoint) {
         guard !isHidden && isUserInteractionEnabled else {
             return
