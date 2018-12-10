@@ -128,7 +128,11 @@ open class SceneController: UIViewController {
     }
 
     private lazy var filtersCollectionViewController: FiltersCollectionViewController = {
-        let filters = Array(AppFilters.allCases).compactMap { CIFilter(name: $0.rawValue) }
+        let filters = Array(AppFilter.allCases).compactMap { CIFilter(
+            name: $0.specs.name,
+            parameters: $0.specs.parameters)
+        }
+        
         let controller = FiltersCollectionViewController(context: context, filters: filters)
 
         controller.delegate = self
