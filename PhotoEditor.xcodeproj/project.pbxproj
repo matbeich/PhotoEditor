@@ -23,6 +23,7 @@
 		8413020D21B7F89700908E58 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F78D221B6A5AF0028C43A /* AppState.swift */; };
 		8415EC1621B7D4B400246BF3 /* StickersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8415EC1421B7D4A600246BF3 /* StickersCollectionViewController.swift */; };
 		842E305321BE69030096F1F9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305221BE69030096F1F9 /* String.swift */; };
+		842E305521BE7BCD0096F1F9 /* PhotoLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */; };
 		843F78D721B6A7100028C43A /* PhotoEditorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574621A8009600D24473 /* PhotoEditorService.swift */; };
 		843F78D821B6A71C0028C43A /* EditFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96821B532E600F281A9 /* EditFilter.swift */; };
 		843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96621B5327400F281A9 /* CGContext + UIImage.swift */; };
@@ -155,6 +156,7 @@
 		8422C96621B5327400F281A9 /* CGContext + UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGContext + UIImage.swift"; sourceTree = "<group>"; };
 		8422C96821B532E600F281A9 /* EditFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFilter.swift; sourceTree = "<group>"; };
 		842E305221BE69030096F1F9 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryService.swift; sourceTree = "<group>"; };
 		843F78D021B6A58E0028C43A /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		843F78D221B6A5AF0028C43A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		843F78D421B6A5DA0028C43A /* Subscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
@@ -504,6 +506,7 @@
 				848897232191A03500D99E91 /* AppDelegate.swift */,
 				8415EC1321B7D46F00246BF3 /* App */,
 				848897462191A0C400D99E91 /* MainScene */,
+				842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -1026,6 +1029,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84D4AA5B21B807E300838EB1 /* World.swift in Sources */,
+				842E305521BE7BCD0096F1F9 /* PhotoLibraryService.swift in Sources */,
 				84AE3F8421B047C7004E142D /* AppNavigator.swift in Sources */,
 				84F5A0DE2191AEB600DEC40F /* R.generated.swift in Sources */,
 				8415EC1621B7D4B400246BF3 /* StickersCollectionViewController.swift in Sources */,
