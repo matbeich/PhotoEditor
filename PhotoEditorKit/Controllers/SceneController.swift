@@ -63,10 +63,6 @@ open class SceneController: UIViewController {
         photoViewController.originalPhoto = image
     }
 
-    public func setFilter(_ filter: EditFilter) {
-
-    }
-
     public func restoreCropedRect(fromRelative rect: CGRect) {
         photoViewController.restoreCropedRect(fromRelative: rect)
     }

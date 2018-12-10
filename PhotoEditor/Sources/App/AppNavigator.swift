@@ -3,6 +3,7 @@
 //
 
 import PhotoEditorKit
+import Photos
 import UIKit
 import Utils
 
@@ -34,6 +35,7 @@ class AppNavigator: NSObject {
         return controller
     }()
 
+    private var asset: PHAsset?
     private var image: UIImage?
     private let context = AppContext()
 }
@@ -41,6 +43,7 @@ class AppNavigator: NSObject {
 extension AppNavigator: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         image = info[.originalImage] as? UIImage
+        asset = info[.phAsset] as? PHAsset
 
         navigateTo(destination: .scene)
     }
