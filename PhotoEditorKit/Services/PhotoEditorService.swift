@@ -33,19 +33,7 @@ public final class PhotoEditorService {
         return filter.applied(to: ciImage, in: context, withOptions: options).flatMap { UIImage(cgImage: $0) }
     }
 
-    // FIXME: Add logic
-
-    public func changeColor(of image: UIImage, withValue value: CGFloat) -> UIImage? {
-        return nil
-    }
-
-    // FIXME: Add logic
-
-    public func changedBrightness(of image: UIImage, withValue value: CGFloat) -> UIImage? {
-        return nil
-    }
-
-    // FIXME: Add logic
+    #warning("add logic")
 
     public func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat, clockwise: Bool) -> UIImage? {
         return nil

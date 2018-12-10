@@ -2,8 +2,8 @@
 // Copyright © 2018 Dimasno1. All rights reserved. Product:PhotoEditor
 //
 
-import UIKit
 import Photos
+import UIKit
 
 protocol PhotoLibraryServiceType {
     typealias PhotoCompletion = (Bool, PHAsset?) -> Void
@@ -11,7 +11,7 @@ protocol PhotoLibraryServiceType {
 }
 
 final class PhotoLibraryService: PhotoLibraryServiceType {
-    init(library: PHPhotoLibrary) {
+    init(library: PHPhotoLibrary = .shared()) {
         self.photoLibrary = library
     }
 

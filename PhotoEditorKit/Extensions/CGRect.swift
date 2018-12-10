@@ -5,10 +5,10 @@
 import CoreGraphics
 
 public extension CGRect {
-    public func toAbsolute(with boundsSize: CGSize) -> CGRect {
-        return CGRect(x: boundsSize.width * origin.x,
-                      y: boundsSize.height * origin.y,
-                      width: boundsSize.width * width,
-                      height: boundsSize.height * height)
+    public func absolute(in bounds: CGRect) -> CGRect {
+        return CGRect(x: bounds.size.width * origin.x,
+                      y: bounds.size.height * origin.y,
+                      width: bounds.size.width * width,
+                      height: bounds.size.height * height)
     }
 }
