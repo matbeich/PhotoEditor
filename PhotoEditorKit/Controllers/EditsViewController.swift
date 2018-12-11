@@ -82,8 +82,9 @@ public final class EditsViewController: UIViewController {
     }
 
     public func fitSavedRectToCropView() {
-        let scale = min(cropView.frame.height / visibleContentFrame.size.height,
-                        cropView.frame.width / visibleContentFrame.size.width)
+        let scale = min(scrollView.maximumZoomScale,
+                        min(cropView.frame.height / visibleContentFrame.size.height,
+                            cropView.frame.width / visibleContentFrame.size.width))
 
         let cropViewOffset = CGPoint(x: cropView.frame.origin.x.distance(to: scrollView.frame.origin.x),
                                      y: cropView.frame.origin.y.distance(to: scrollView.frame.origin.y))
@@ -113,6 +114,7 @@ public final class EditsViewController: UIViewController {
 
     public func changeCropViewFrame(using corner: Corner, translation: CGPoint) {
         cropView.changeFrame(using: corner, translation: translation)
+        keepImageInsideCropView()
     }
 
     private func updateInsets() {
@@ -158,37 +160,52 @@ public final class EditsViewController: UIViewController {
 
         if visibleContentFrame.isEmpty {
             scrollView.centerWithView(cropView)
-            scrollView.minimumZoomScale = fitScaleForImage(photo)
-            scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
+            setMinimumZoomScale()
             updateInsets()
         } else {
             fitSavedRectToCropView()
         }
     }
 
-    private func fitScaleForImage(_ image: UIImage?) -> CGFloat {
-        guard let image = image else {
-            return 0
+    private func keepImageInsideCropView() {
+        let imageViewFrame = scrollView.convert(imageView.frame, to: view)
+        let shoudUpdateZoom = cropView.frame.height > imageViewFrame.height
+        let shouldMoveUp = cropView.frame.minY - imageViewFrame.minY < -2
+        let shouldMoveDown = cropView.frame.maxY > imageViewFrame.maxY
+        let shouldMoveLeft = cropView.frame.minX - imageViewFrame.minX < -2
+        let shouldMoveRight = cropView.frame.maxX > imageViewFrame.maxX
+
+        if shoudUpdateZoom {
+            setMinimumZoomScale()
+            scrollView.centerVerticallyWithView(cropView)
         }
 
-        return max(cropView.frame.height / image.size.height, cropView.frame.width / image.size.width)
+        if shouldMoveUp || shouldMoveLeft {
+            updateInsets()
+        }
+
+        if shouldMoveDown && !shoudUpdateZoom {
+            let yOffset = scrollView.contentOffset.y - (cropView.frame.maxY - imageViewFrame.maxY)
+            scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: yOffset)
+        }
+
+        if shouldMoveRight && !shoudUpdateZoom {
+            let xOffset = scrollView.contentOffset.x - (cropView.frame.maxX - imageViewFrame.maxX)
+            scrollView.contentOffset = CGPoint(x: xOffset, y: scrollView.contentOffset.y)
+        }
+
     }
 
     private func setupScrollView() {
-        guard let image = imageView.image else {
-            return
-        }
-
         scrollView.removeFromSuperview()
         scrollView = UIScrollView(frame: view.bounds)
-        scrollView.contentSize = image.size
+        scrollView.contentSize = photo?.size ?? .zero
         scrollView.delegate = self
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.isScrollEnabled = true
         scrollView.maximumZoomScale = 5
-        scrollView.minimumZoomScale = fitScaleForImage(image)
-        scrollView.zoomScale = scrollView.minimumZoomScale
+        setMinimumZoomScale()
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.addSubview(imageView)
 
@@ -212,6 +229,19 @@ public final class EditsViewController: UIViewController {
     private func setCropViewIsVisible(_ visible: Bool) {
         cropView.isHidden = !visible
         cropView.isUserInteractionEnabled = visible
+    }
+
+    private func setMinimumZoomScale() {
+        scrollView.minimumZoomScale = fitScaleForImage(photo)
+        scrollView.zoomScale = scrollView.minimumZoomScale
+    }
+
+    private func fitScaleForImage(_ image: UIImage?) -> CGFloat {
+        guard let image = image else {
+            return 0
+        }
+
+        return max(cropView.frame.height / image.size.height, cropView.frame.width / image.size.width)
     }
 
     private func updateMaskPath() {
@@ -267,6 +297,13 @@ extension EditsViewController: UIScrollViewDelegate {
 }
 
 private extension UIScrollView {
+    func centerVerticallyWithView(_ view: UIView, animated: Bool = false) {
+        let xOf = contentOffset.x
+        let yOf = contentSize.height / 2 + view.center.y.distance(to: frame.minY)
+
+        setContentOffset(CGPoint(x: xOf, y: yOf), animated: animated)
+    }
+
     func centerWithView(_ view: UIView, animated: Bool = false) {
         let xOf = contentSize.width / 2 + view.center.x.distance(to: frame.minX)
         let yOf = contentSize.height / 2 + view.center.y.distance(to: frame.minY)
