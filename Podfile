@@ -29,6 +29,7 @@ target 'PhotoEditor' do
     inherit! :search_paths
     pod 'iOSSnapshotTestCase'
     pod 'EarlGrey'
+    pod 'Nimble'
   end
   
   target 'PhotoEditorTodayWidget' do

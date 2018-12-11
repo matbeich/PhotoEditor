@@ -44,7 +44,7 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
             let url = editingInputService.input.fullSizeImageURL,
             let image = UIImage(contentsOfFile: url.path)
         else {
-                return
+            return
         }
 
         var img: UIImage? = image
