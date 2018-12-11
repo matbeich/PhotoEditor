@@ -33,7 +33,6 @@ final class PhotoLibraryService: PhotoLibraryServiceType {
 
         photoLibrary.performChanges(changeBlock) { success, _ in
             let asset = PHAsset.fetchAssets(withLocalIdentifiers: [placeholder.localIdentifier], options: nil).firstObject
-
             DispatchQueue.main.async { callback(success, asset) }
         }
     }

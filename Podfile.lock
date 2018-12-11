@@ -17,6 +17,7 @@ PODS:
   - iOSSnapshotTestCase/Core (4.0.0)
   - iOSSnapshotTestCase/SwiftSupport (4.0.0):
     - iOSSnapshotTestCase/Core
+  - Nimble (7.3.1)
   - R.swift (4.0.0):
     - R.swift.Library (~> 4.0.0)
   - R.swift.Library (4.0.0)
@@ -27,6 +28,7 @@ DEPENDENCIES:
   - AppCraftUtils/Interface
   - EarlGrey
   - iOSSnapshotTestCase
+  - Nimble
   - R.swift
   - SnapKit
 
@@ -37,6 +39,7 @@ SPEC REPOS:
     - DeepDiff
     - EarlGrey
     - iOSSnapshotTestCase
+    - Nimble
     - R.swift
     - R.swift.Library
     - SnapKit
@@ -46,10 +49,11 @@ SPEC CHECKSUMS:
   DeepDiff: 0d52be4ac0822b38f1ce1ad1514c841d7166a67b
   EarlGrey: 289a16cc7d08a54b962d72881b21e36d5103b549
   iOSSnapshotTestCase: 711379b19f69a22c131527df862352c877c2773c
+  Nimble: 04f732da099ea4d153122aec8c2a88fd0c7219ae
   R.swift: d6a5ec2f55a8441dc0ed9f1f8b37d7d11ae85c66
   R.swift.Library: c3af34921024333546e23b70e70d0b4e0cffca75
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
 
-PODFILE CHECKSUM: e19e6625e2d6519637e2d7d426d57d03b8e1038e
+PODFILE CHECKSUM: c21b6b59e438856563c1960034afa78cd04110cd
 
 COCOAPODS: 1.5.3

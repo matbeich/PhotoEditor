@@ -25,6 +25,7 @@
 		842E305321BE69030096F1F9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305221BE69030096F1F9 /* String.swift */; };
 		842E305521BE7BCD0096F1F9 /* PhotoLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */; };
 		842E305921BE95F10096F1F9 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305821BE95F10096F1F9 /* Alert.swift */; };
+		842E305D21BFD7620096F1F9 /* PhotoLibraryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305C21BFD7620096F1F9 /* PhotoLibraryServiceTests.swift */; };
 		843F78D721B6A7100028C43A /* PhotoEditorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574621A8009600D24473 /* PhotoEditorService.swift */; };
 		843F78D821B6A71C0028C43A /* EditFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96821B532E600F281A9 /* EditFilter.swift */; };
 		843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96621B5327400F281A9 /* CGContext + UIImage.swift */; };
@@ -159,6 +160,7 @@
 		842E305221BE69030096F1F9 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryService.swift; sourceTree = "<group>"; };
 		842E305821BE95F10096F1F9 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		842E305C21BFD7620096F1F9 /* PhotoLibraryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryServiceTests.swift; sourceTree = "<group>"; };
 		843F78D021B6A58E0028C43A /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		843F78D221B6A5AF0028C43A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		843F78D421B6A5DA0028C43A /* Subscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
@@ -331,8 +333,7 @@
 			isa = PBXGroup;
 			children = (
 				84AE3F8321B047C7004E142D /* AppNavigator.swift */,
-				84D4AA5A21B807E300838EB1 /* World.swift */,
-				842E305821BE95F10096F1F9 /* Alert.swift */,
+				848897462191A0C400D99E91 /* MainScene */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -347,6 +348,23 @@
 				84B02AF421BA717500370217 /* UIViewController.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		842E305A21BFD6B20096F1F9 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				84D4AA5A21B807E300838EB1 /* World.swift */,
+				842E305821BE95F10096F1F9 /* Alert.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		842E305B21BFD6C90096F1F9 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		843F78D621B6A6970028C43A /* SupportingFiles */ = {
@@ -480,6 +498,7 @@
 			children = (
 				848897382191A03600D99E91 /* PhotoEditorTests.swift */,
 				8488973A2191A03600D99E91 /* Info.plist */,
+				842E305C21BFD7620096F1F9 /* PhotoLibraryServiceTests.swift */,
 			);
 			path = PhotoEditorTests;
 			sourceTree = "<group>";
@@ -508,8 +527,8 @@
 			children = (
 				848897232191A03500D99E91 /* AppDelegate.swift */,
 				8415EC1321B7D46F00246BF3 /* App */,
-				848897462191A0C400D99E91 /* MainScene */,
-				842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */,
+				842E305A21BFD6B20096F1F9 /* Common */,
+				842E305B21BFD6C90096F1F9 /* Services */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -966,6 +985,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-PhotoEditorTests/Pods-PhotoEditorTests-frameworks.sh",
 				"${PODS_ROOT}/EarlGrey/EarlGrey/EarlGrey.framework",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
 				"${BUILT_PRODUCTS_DIR}/iOSSnapshotTestCase/FBSnapshotTestCase.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -973,6 +993,7 @@
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EarlGrey.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSnapshotTestCase.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1048,6 +1069,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				842E305D21BFD7620096F1F9 /* PhotoLibraryServiceTests.swift in Sources */,
 				848897392191A03600D99E91 /* PhotoEditorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
