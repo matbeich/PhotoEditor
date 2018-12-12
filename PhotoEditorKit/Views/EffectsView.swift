@@ -5,7 +5,7 @@
 import SnapKit
 import UIKit
 
-class EffectsView: UIView {
+final class EffectsView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
