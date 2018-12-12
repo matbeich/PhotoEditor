@@ -23,7 +23,7 @@ public struct DottedNumberedCircle {
             let yOffset = radius * sin(angle.inRadians())
             let lableAngle = atan2(xOffset, -yOffset)
             let point = CGPoint(x: center.x + xOffset, y: center.y - yOffset)
-            let labelPoint = CGPoint(x: center.x + xOffset * 0.95, y: center.y - yOffset * 0.95)
+            let labelPoint = CGPoint(x: center.x + xOffset * 0.85, y: center.y - yOffset * 0.85)
             let renderRadius = dotNumber % 5 == 0 ? dotRadius * 2 : dotRadius
             let labelTitle = dotNumber % 10 == 0 ? "\(Int(lableAngle.inDegrees().rounded()))" : ""
 

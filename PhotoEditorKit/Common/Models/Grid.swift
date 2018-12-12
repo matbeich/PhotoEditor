@@ -58,7 +58,7 @@ extension CGContext: Renderer {
     }
     
     public func dot(at point: CGPoint, with radius: CGFloat) {
-       addArc(center: point, radius: radius, startAngle: CGFloat(0.0.inRadians()), endAngle: CGFloat.pi.inRadians(), clockwise: false)
+       fillEllipse(in: CGRect(x: point.x - radius, y: point.y - radius, width: radius * 2, height: radius * 2))
     }
 
     public func square(at point: CGPoint, with size: CGSize) {
