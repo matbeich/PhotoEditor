@@ -26,6 +26,9 @@
 		842E305521BE7BCD0096F1F9 /* PhotoLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */; };
 		842E305921BE95F10096F1F9 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305821BE95F10096F1F9 /* Alert.swift */; };
 		842E305D21BFD7620096F1F9 /* PhotoLibraryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E305C21BFD7620096F1F9 /* PhotoLibraryServiceTests.swift */; };
+		842E307F21C00C0B0096F1F9 /* RotateAngleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E307E21C00C0B0096F1F9 /* RotateAngleControl.swift */; };
+		842E308121C013490096F1F9 /* DottedNumeredCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E308021C013490096F1F9 /* DottedNumeredCircle.swift */; };
+		842E308321C119810096F1F9 /* DottedNumberedCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E308221C119810096F1F9 /* DottedNumberedCircleView.swift */; };
 		843F78D721B6A7100028C43A /* PhotoEditorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574621A8009600D24473 /* PhotoEditorService.swift */; };
 		843F78D821B6A71C0028C43A /* EditFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96821B532E600F281A9 /* EditFilter.swift */; };
 		843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96621B5327400F281A9 /* CGContext + UIImage.swift */; };
@@ -161,6 +164,9 @@
 		842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryService.swift; sourceTree = "<group>"; };
 		842E305821BE95F10096F1F9 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		842E305C21BFD7620096F1F9 /* PhotoLibraryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryServiceTests.swift; sourceTree = "<group>"; };
+		842E307E21C00C0B0096F1F9 /* RotateAngleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotateAngleControl.swift; sourceTree = "<group>"; };
+		842E308021C013490096F1F9 /* DottedNumeredCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DottedNumeredCircle.swift; sourceTree = "<group>"; };
+		842E308221C119810096F1F9 /* DottedNumberedCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DottedNumberedCircleView.swift; sourceTree = "<group>"; };
 		843F78D021B6A58E0028C43A /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		843F78D221B6A5AF0028C43A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		843F78D421B6A5DA0028C43A /* Subscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
@@ -315,7 +321,7 @@
 				844FC8F52199670100E5BD08 /* Config.swift */,
 				843F78D421B6A5DA0028C43A /* Subscriber.swift */,
 				844102CB21B7FA4200695AC9 /* EditMode.swift */,
-				844FC8F021956B9A00E5BD08 /* Grid.swift */,
+				842E308A21C157080096F1F9 /* Models */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -365,6 +371,15 @@
 				842E305421BE7BCD0096F1F9 /* PhotoLibraryService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		842E308A21C157080096F1F9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				844FC8F021956B9A00E5BD08 /* Grid.swift */,
+				842E308021C013490096F1F9 /* DottedNumeredCircle.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		843F78D621B6A6970028C43A /* SupportingFiles */ = {
@@ -449,8 +464,10 @@
 			isa = PBXGroup;
 			children = (
 				844FC8F72199693800E5BD08 /* CropView */,
-				8478BC0F21A53B6B00D39C2D /* EffectsView.swift */,
 				84662DB721ABFD6700852812 /* Toolbar */,
+				8478BC0F21A53B6B00D39C2D /* EffectsView.swift */,
+				842E307E21C00C0B0096F1F9 /* RotateAngleControl.swift */,
+				842E308221C119810096F1F9 /* DottedNumberedCircleView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1016,14 +1033,17 @@
 				8413020721B7F79100908E58 /* Config.swift in Sources */,
 				843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */,
 				844102D821B8012000695AC9 /* PhotoViewController.swift in Sources */,
+				842E308121C013490096F1F9 /* DottedNumeredCircle.swift in Sources */,
 				844102D321B7FDE300695AC9 /* Grid.swift in Sources */,
 				8413020B21B7F88A00908E58 /* Subscriber.swift in Sources */,
+				842E307F21C00C0B0096F1F9 /* RotateAngleControl.swift in Sources */,
 				8413020321B7F24900908E58 /* EditingState.swift in Sources */,
 				844102D921B8012000695AC9 /* FiltersCollectionViewController.swift in Sources */,
 				844102D221B7FB7500695AC9 /* Toolbar.swift in Sources */,
 				8413020421B7F25000908E58 /* FilterState.swift in Sources */,
 				843F78D821B6A71C0028C43A /* EditFilter.swift in Sources */,
 				84B02AF521BA717500370217 /* UIViewController.swift in Sources */,
+				842E308321C119810096F1F9 /* DottedNumberedCircleView.swift in Sources */,
 				844102D121B7FB7500695AC9 /* BarButtonItem.swift in Sources */,
 				844102D721B8012000695AC9 /* SceneController.swift in Sources */,
 				8413020921B7F7BF00908E58 /* AppFilter.swift in Sources */,

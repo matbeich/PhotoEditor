@@ -39,10 +39,28 @@ public protocol Drawable {
 }
 
 public protocol Renderer {
+    func text(_ text: String, at point: CGPoint, transformAngle angle: CGFloat)
+    func dot(at point: CGPoint, with radius: CGFloat)
     func square(at point: CGPoint, with size: CGSize)
 }
 
 extension CGContext: Renderer {
+    public func text(_ text: String, at point: CGPoint, transformAngle angle: CGFloat) {
+        saveGState()
+        defer { restoreGState() }
+
+        let fontSize: CGFloat = 12.0
+        let size = (text as NSString).size(withAttributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize)])
+
+        translateBy(x: point.x, y: point.y)
+        rotate(by: -angle)
+        text.draw(at: CGPoint(x: -size.width / 2, y: 0), withAttributes: nil)
+    }
+    
+    public func dot(at point: CGPoint, with radius: CGFloat) {
+       fillEllipse(in: CGRect(x: point.x - radius, y: point.y - radius, width: radius * 2, height: radius * 2))
+    }
+
     public func square(at point: CGPoint, with size: CGSize) {
         stroke(CGRect(origin: point, size: size))
     }
