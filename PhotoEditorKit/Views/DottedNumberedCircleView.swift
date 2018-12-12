@@ -4,7 +4,7 @@
 
 import UIKit
 
-public final class DottedNumberedCircleView: UIView {
+final class DottedNumberedCircleView: UIView {
     public init(circle: DottedNumberedCircle, frame: CGRect) {
         self.circle = circle
         super.init(frame: frame)
@@ -16,7 +16,7 @@ public final class DottedNumberedCircleView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func draw(_ rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else {
             return
         }
