@@ -128,7 +128,12 @@ public extension FloatingPoint {
     func inRadians() -> Self {
         return 2 * Self.pi * (self / 360)
     }
+
+    func inDegrees() -> Self {
+        return (self * 360) / (2 * Self.pi)
+    }
 }
+
 
 private extension UIImage.Orientation {
     var isFlipped: Bool {
