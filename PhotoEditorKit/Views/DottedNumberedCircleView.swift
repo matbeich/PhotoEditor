@@ -5,6 +5,11 @@
 import UIKit
 
 final class DottedNumberedCircleView: UIView {
+    var dotsColor: UIColor = .darkGray {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     public init(circle: DottedNumberedCircle, frame: CGRect) {
         self.circle = circle
         super.init(frame: frame)
@@ -21,7 +26,7 @@ final class DottedNumberedCircleView: UIView {
             return
         }
 
-        context.setFillColor(UIColor.darkGray.cgColor)
+        context.setFillColor(dotsColor.cgColor)
         circle.draw(with: context, in: rect)
     }
 
