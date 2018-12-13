@@ -24,6 +24,8 @@ public final class EditsViewController: UIViewController {
         return view.convert(cropView.frame, to: imageView)
     }
 
+    public private(set) var angle: CGFloat = 0
+
     public init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
         self.scrollView = UIScrollView(frame: frame)
@@ -57,6 +59,16 @@ public final class EditsViewController: UIViewController {
         saveCropedRect()
         imageView = UIImageView(image: photo)
         view.setNeedsDisplay()
+    }
+
+    public func rotatePhoto(by angle: CGFloat) {
+        let transform = CGAffineTransform.identity
+        let currentTransform = imageView.layer.affineTransform()
+        let scaled = transform.scaledBy(x: currentTransform.scale.x, y: currentTransform.scale.y)
+        let rotating = scaled.rotated(by: angle.inRadians())
+
+        imageView.transform = rotating
+        self.angle = angle
     }
 
     public func showMask() {
@@ -169,7 +181,7 @@ public final class EditsViewController: UIViewController {
 
     private func keepImageInsideCropView() {
         let imageViewFrame = scrollView.convert(imageView.frame, to: view)
-        let shoudUpdateZoom = cropView.frame.height > imageViewFrame.height
+        let shoudUpdateZoom = cropView.frame.height > imageViewFrame.height || cropView.frame.width > imageViewFrame.width
         let shouldMoveUp = cropView.frame.minY - imageViewFrame.minY < -2
         let shouldMoveDown = cropView.frame.maxY > imageViewFrame.maxY
         let shouldMoveLeft = cropView.frame.minX - imageViewFrame.minX < -2
@@ -284,7 +296,7 @@ extension EditsViewController: UIScrollViewDelegate {
     }
 
     public func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        updateInsets()
+
     }
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

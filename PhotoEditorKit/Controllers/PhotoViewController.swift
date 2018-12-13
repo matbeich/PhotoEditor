@@ -76,6 +76,10 @@ public final class PhotoViewController: UIViewController {
         }
     }
 
+    public func rotateImage(by angle: CGFloat) {
+        editsViewController.rotatePhoto(by: angle)
+    }
+
     @objc public func changeCropViewFrame(with recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
