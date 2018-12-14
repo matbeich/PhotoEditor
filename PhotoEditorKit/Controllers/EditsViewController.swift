@@ -35,6 +35,7 @@ public final class EditsViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         setupScrollView()
+        view.layer.masksToBounds = true
         view.addSubview(scrollView)
         view.addSubview(effectsView)
         view.addSubview(cropView)
@@ -56,19 +57,62 @@ public final class EditsViewController: UIViewController {
     }
 
     public func set(_ photo: UIImage) {
-        saveCropedRect()
+        saveCropedAppearence()
         imageView = UIImageView(image: photo)
+        imageView.contentMode = .scaleAspectFit
         view.setNeedsDisplay()
     }
 
-    public func rotatePhoto(by angle: CGFloat) {
-        let transform = CGAffineTransform.identity
-        let currentTransform = imageView.layer.affineTransform()
-        let scaled = transform.scaledBy(x: currentTransform.scale.x, y: currentTransform.scale.y)
-        let rotating = scaled.rotated(by: angle.inRadians())
+    func calculateZoomForRotation(by angle: CGFloat) -> CGFloat {
+        let a = sin(angle) * scrollView.bounds.width
+        let b = cos(angle) * scrollView.bounds.width
+        let e = sin(angle) * scrollView.bounds.height
+        let f = cos(angle) * scrollView.bounds.height
 
-        imageView.transform = rotating
+        let height = a + f
+        let width = b + e
+
+        return max(width / scrollView.bounds.width,
+                   height / scrollView.bounds.height)
+    }
+
+    public func rotatePhoto(by angle: CGFloat) {
+        let scale = calculateZoomForRotation(by: angle.inRadians().magnitude)
+        let transform = CGAffineTransform.identity
+        let rotating = transform.rotated(by: angle.inRadians())
+        let scaling = rotating.scaledBy(x: scale, y: scale)
+
+        scrollView.minimumZoomScale = rotatedScale(by: angle) / scale
+
+        if scrollView.zoomScale < scrollView.minimumZoomScale {
+            scrollView.zoomScale = rotatedScale(by: angle) / scale
+        }
+
+        scrollView.transform = scaling
+        updateInsets(scaled: scale)
         self.angle = angle
+    }
+
+    func rotatedScale(by angle: CGFloat) -> CGFloat {
+        guard let image = imageView.image else {
+            return 1
+        }
+
+        let b = cropView.bounds.width / cos(angle.magnitude.inRadians())
+        let d = sin(angle.magnitude.inRadians()) * b
+        let e = cropView.bounds.height - d
+        let beta = 90 - angle.magnitude
+        let c = cos(beta.inRadians()) * e
+        let width = c + b
+
+        let additionalWidth = cropView.bounds.height / tan(angle.magnitude.inRadians())
+        let newWidth = additionalWidth + cropView.bounds.width
+        let height = newWidth * sin(angle.magnitude.inRadians())
+
+        let heightScale = height / image.size.height
+        let widthScale = width / image.size.width
+
+        return max(heightScale, widthScale)
     }
 
     public func showMask() {
@@ -89,7 +133,7 @@ public final class EditsViewController: UIViewController {
         cropView.clipToAllowedBounds(aspectScaled: true)
     }
 
-    public func saveCropedRect() {
+    public func saveCropedAppearence() {
         visibleContentFrame = visibleRect
     }
 
@@ -129,12 +173,23 @@ public final class EditsViewController: UIViewController {
         keepImageInsideCropView()
     }
 
-    private func updateInsets() {
-        let vertical = max(imageView.frame.minY.distance(to: cropView.frame.minY),
-                           imageView.frame.maxY.distance(to: cropView.frame.maxY))
+    private func updateInsets(scaled: CGFloat = 1) {
+        let transformedScrollViewFrame = CGRect(x: 0,
+                                                y: 0,
+                                                width: scrollView.bounds.width * scaled,
+                                                height: scrollView.bounds.height * scaled)
 
-        let horizontal = max(imageView.frame.minX.distance(to: cropView.frame.minX),
-                             imageView.frame.maxX.distance(to: cropView.frame.maxX))
+        let transfomedCropViewFrame = CGRect(x: cropView.frame.origin.x * scaled,
+                                             y: cropView.frame.origin.y * scaled,
+                                             width: cropView.frame.width * scaled,
+                                             height: cropView.frame.height * scaled)
+
+        print(transfomedCropViewFrame)
+        print(transformedScrollViewFrame)
+        print("\n")
+
+        let vertical = cropView.frame.origin.y
+        let horizontal = cropView.frame.origin.x
 
         scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }
@@ -205,7 +260,6 @@ public final class EditsViewController: UIViewController {
             let xOffset = scrollView.contentOffset.x - (cropView.frame.maxX - imageViewFrame.maxX)
             scrollView.contentOffset = CGPoint(x: xOffset, y: scrollView.contentOffset.y)
         }
-
     }
 
     private func setupScrollView() {
@@ -296,7 +350,6 @@ extension EditsViewController: UIScrollViewDelegate {
     }
 
     public func scrollViewDidZoom(_ scrollView: UIScrollView) {
-
     }
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

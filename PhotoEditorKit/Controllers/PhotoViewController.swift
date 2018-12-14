@@ -71,7 +71,7 @@ public final class PhotoViewController: UIViewController {
 
         context.stateStore.addSubscriber(with: id) { [weak self] state in
             if state.value.editMode != .crop {
-                self?.editsViewController.saveCropedRect()
+                self?.editsViewController.saveCropedAppearence()
             }
         }
     }
@@ -98,7 +98,7 @@ public final class PhotoViewController: UIViewController {
 
         case .ended, .cancelled, .failed:
             if changingCorner != nil {
-                editsViewController.saveCropedRect()
+                editsViewController.saveCropedAppearence()
                 editsViewController.fitCropView()
                 editsViewController.fitSavedRectToCropView()
                 editsViewController.hideMask()

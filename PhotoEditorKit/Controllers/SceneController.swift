@@ -35,7 +35,7 @@ open class SceneController: UIViewController {
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .darkGray
+        view.backgroundColor = .white
         view.addSubview(photoViewControllerContainer)
         view.addSubview(toolControlsContainer)
         view.addSubview(toolBar)
@@ -85,13 +85,30 @@ open class SceneController: UIViewController {
         }
     }
 
+    @objc private func rotateImage(using control: RotateAngleControl) {
+        photoViewController.rotateImage(by: control.angle)
+    }
+
     private func changeAppearenceOfTools(for mode: EditMode) {
         switch mode {
         case .crop:
-            toolControlsConstainerTop?.update(offset: 0)
+            filtersCollectionViewController.view.removeFromSuperview()
+            filtersCollectionViewController.removeFromParent()
+
+            toolControlsConstainerTop?.update(offset: -toolControlsContainer.bounds.height)
+            toolControlsContainer.addSubview(rotateControl)
+
+            rotateControl.snp.remakeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+
+            toolControlsContainer.addSubview(rotateControl)
 
         case .filter:
-            toolControlsConstainerTop?.update(offset: -toolControlsContainer.bounds.height)
+            rotateControl.snp.removeConstraints()
+            rotateControl.removeFromSuperview()
+
+            add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
 
         case .normal:
             break
@@ -99,6 +116,10 @@ open class SceneController: UIViewController {
     }
 
     private func setup() {
+        rotateControl.setDotsColor(.lightGray)
+        rotateControl.maxAngle = 90
+        rotateControl.minAngle = -90
+        rotateControl.addTarget(self, action: #selector(rotateImage), for: .valueChanged)
         add(fullscreenChild: photoViewController, in: photoViewControllerContainer)
         add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
 
@@ -141,7 +162,7 @@ open class SceneController: UIViewController {
         let barItems = [
             BarButtonItem(title: "Crop", image: nil),
             BarButtonItem(title: "Filters", image: nil),
-            BarButtonItem(title: "Stickers", image: nil)
+            BarButtonItem(title: "Preview", image: nil)
         ]
         let toolbar = Toolbar(frame: .zero, barItems: barItems)
         toolbar.delegate = self
@@ -164,6 +185,7 @@ open class SceneController: UIViewController {
         }
     }
 
+    private let rotateControl = RotateAngleControl(startAngle: 0, frame: .zero)
     private let context: AppContext
     private var photoViewController: PhotoViewController
     private let toolControlsContainer = UIView()

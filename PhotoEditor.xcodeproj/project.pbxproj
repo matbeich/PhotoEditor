@@ -476,10 +476,10 @@
 			isa = PBXGroup;
 			children = (
 				848897222191A03500D99E91 /* PhotoEditor */,
+				844FC8D32195669700E5BD08 /* PhotoEditorKit */,
 				84F5A1062191DC2800DEC40F /* PhotoEditorEditingExtension */,
 				84F5A1192191DF5700DEC40F /* PhotoEditorTodayWidget */,
 				848897372191A03600D99E91 /* PhotoEditorTests */,
-				844FC8D32195669700E5BD08 /* PhotoEditorKit */,
 				844FC8E02195669700E5BD08 /* PhotoEditorKitTests */,
 				848897212191A03500D99E91 /* Products */,
 				0089A29F757ABC42C334F16C /* Pods */,
