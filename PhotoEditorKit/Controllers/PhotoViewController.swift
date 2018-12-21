@@ -71,9 +71,13 @@ public final class PhotoViewController: UIViewController {
 
         context.stateStore.addSubscriber(with: id) { [weak self] state in
             if state.value.editMode != .crop {
-                self?.editsViewController.saveCropedRect()
+                self?.editsViewController.saveCropedAppearence()
             }
         }
+    }
+
+    public func rotateImage(by angle: CGFloat) {
+        editsViewController.rotatePhoto(by: angle)
     }
 
     @objc public func changeCropViewFrame(with recognizer: UIPanGestureRecognizer) {
@@ -94,7 +98,7 @@ public final class PhotoViewController: UIViewController {
 
         case .ended, .cancelled, .failed:
             if changingCorner != nil {
-                editsViewController.saveCropedRect()
+                editsViewController.saveCropedAppearence()
                 editsViewController.fitCropView()
                 editsViewController.fitSavedRectToCropView()
                 editsViewController.hideMask()

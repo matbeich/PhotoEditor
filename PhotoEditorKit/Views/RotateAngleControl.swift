@@ -65,17 +65,8 @@ public final class RotateAngleControl: UIControl {
         setAngle(angle)
     }
 
-    @objc private func rotateControlWithRecognizer(_ recognizer: UIPanGestureRecognizer) {
-        switch recognizer.state {
-
-        case .changed, .cancelled, .ended:
-            angle -= recognizer.translation(in: self).x / 5
-
-            setAngle(angle)
-            recognizer.setTranslation(.zero, in: self)
-        default:
-            break
-        }
+    public func setDotsColor(_ color: UIColor) {
+        numberedCircleView.dotsColor = color
     }
 
     public func rotateToAngle(_ angle: CGFloat, animated: Bool = false) {
@@ -91,6 +82,19 @@ public final class RotateAngleControl: UIControl {
             }
         } else {
             setAngle(self.angle)
+        }
+    }
+
+    @objc private func rotateControlWithRecognizer(_ recognizer: UIPanGestureRecognizer) {
+        switch recognizer.state {
+
+        case .changed, .cancelled, .ended:
+            angle -= recognizer.translation(in: self).x / 5
+
+            setAngle(angle)
+            recognizer.setTranslation(.zero, in: self)
+        default:
+            break
         }
     }
 

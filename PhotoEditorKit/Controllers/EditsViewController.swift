@@ -24,6 +24,8 @@ public final class EditsViewController: UIViewController {
         return view.convert(cropView.frame, to: imageView)
     }
 
+    public private(set) var angle: CGFloat = 0
+
     public init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
         self.scrollView = UIScrollView(frame: frame)
@@ -33,6 +35,7 @@ public final class EditsViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         setupScrollView()
+        view.layer.masksToBounds = true
         view.addSubview(scrollView)
         view.addSubview(effectsView)
         view.addSubview(cropView)
@@ -54,9 +57,42 @@ public final class EditsViewController: UIViewController {
     }
 
     public func set(_ photo: UIImage) {
-        saveCropedRect()
+        saveCropedAppearence()
         imageView = UIImageView(image: photo)
-        view.setNeedsDisplay()
+    }
+
+    public func rotatePhoto(by angle: CGFloat) {
+        let scale = zoomForRotation(by: angle.inRadians().magnitude)
+        let transform = CGAffineTransform.identity
+        let rotating = transform.rotated(by: angle.inRadians())
+        let scaling = rotating.scaledBy(x: scale, y: scale)
+        let minScale = scaleForRotation(by: angle) / scale
+
+        scrollView.minimumZoomScale = minScale
+
+        if scrollView.zoomScale < scrollView.minimumZoomScale {
+            scrollView.zoomScale = minScale
+        }
+
+        scrollView.transform = scaling
+        updateInsets(scaled: scale, angle: angle.magnitude)
+
+        self.angle = angle
+    }
+
+    private func zoomForRotation(by angle: CGFloat) -> CGFloat {
+        let size = calculator.inscribeSize(for: scrollView.bounds, rotatedByAngle: angle)
+
+        return max(size.width / scrollView.bounds.width,
+                   size.height / scrollView.bounds.height)
+    }
+
+    private func scaleForRotation(by angle: CGFloat) -> CGFloat {
+        guard let image = imageView.image else {
+            return 1
+        }
+
+        return calculator.fitScale(for: image, in: cropView, rotationAngle: angle)
     }
 
     public func showMask() {
@@ -67,8 +103,8 @@ public final class EditsViewController: UIViewController {
     }
 
     public func hideMask() {
-        setBlurIsVisible(true)
-        setDimmingViewIsVisible(false)
+        setBlurIsVisible(false)
+        setDimmingViewIsVisible(true)
         setCropViewIsVisible(true)
         setCropViewGridIsVisible(false)
     }
@@ -77,7 +113,7 @@ public final class EditsViewController: UIViewController {
         cropView.clipToAllowedBounds(aspectScaled: true)
     }
 
-    public func saveCropedRect() {
+    public func saveCropedAppearence() {
         visibleContentFrame = visibleRect
     }
 
@@ -117,12 +153,11 @@ public final class EditsViewController: UIViewController {
         keepImageInsideCropView()
     }
 
-    private func updateInsets() {
-        let vertical = max(imageView.frame.minY.distance(to: cropView.frame.minY),
-                           imageView.frame.maxY.distance(to: cropView.frame.maxY))
-
-        let horizontal = max(imageView.frame.minX.distance(to: cropView.frame.minX),
-                             imageView.frame.maxX.distance(to: cropView.frame.maxX))
+    private func updateInsets(scaled: CGFloat = 1, angle: CGFloat = 0) {
+        let scaledScrollFrame = CGRect(x: 0, y: 0, width: scrollView.bounds.width * scaled, height: scrollView.bounds.height * scaled)
+        let inscribeCropSize = calculator.inscribeSize(for: cropView.frame, rotatedByAngle: angle.inRadians())
+        let vertical = (scaledScrollFrame.height - inscribeCropSize.height) / (2 * scaled)
+        let horizontal = (scaledScrollFrame.width - inscribeCropSize.width) / (2 * scaled)
 
         scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }
@@ -169,7 +204,9 @@ public final class EditsViewController: UIViewController {
 
     private func keepImageInsideCropView() {
         let imageViewFrame = scrollView.convert(imageView.frame, to: view)
-        let shoudUpdateZoom = cropView.frame.height > imageViewFrame.height
+        let shouldZoomToFitHeight = cropView.frame.height > imageViewFrame.height
+        let shouldZoomToFitWidth = cropView.frame.width > imageViewFrame.width
+        let shoudUpdateZoom = shouldZoomToFitWidth || shouldZoomToFitHeight
         let shouldMoveUp = cropView.frame.minY - imageViewFrame.minY < -2
         let shouldMoveDown = cropView.frame.maxY > imageViewFrame.maxY
         let shouldMoveLeft = cropView.frame.minX - imageViewFrame.minX < -2
@@ -177,7 +214,7 @@ public final class EditsViewController: UIViewController {
 
         if shoudUpdateZoom {
             setMinimumZoomScale()
-            scrollView.centerVerticallyWithView(cropView)
+            shouldZoomToFitWidth ? scrollView.centerHorizontallyWithView(cropView) : scrollView.centerVerticallyWithView(cropView)
         }
 
         if shouldMoveUp || shouldMoveLeft {
@@ -193,7 +230,6 @@ public final class EditsViewController: UIViewController {
             let xOffset = scrollView.contentOffset.x - (cropView.frame.maxX - imageViewFrame.maxX)
             scrollView.contentOffset = CGPoint(x: xOffset, y: scrollView.contentOffset.y)
         }
-
     }
 
     private func setupScrollView() {
@@ -262,6 +298,7 @@ public final class EditsViewController: UIViewController {
     private let effectsView = EffectsView()
     private var cropView = CropView(frame: .zero)
     private var visibleContentFrame: CGRect
+    private let calculator = GeometryCalculator()
 }
 
 public extension EditsViewController {
@@ -284,10 +321,10 @@ extension EditsViewController: UIScrollViewDelegate {
     }
 
     public func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        updateInsets()
     }
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        print("will begin draging")
         showMask()
     }
 
@@ -300,6 +337,13 @@ private extension UIScrollView {
     func centerVerticallyWithView(_ view: UIView, animated: Bool = false) {
         let xOf = contentOffset.x
         let yOf = contentSize.height / 2 + view.center.y.distance(to: frame.minY)
+
+        setContentOffset(CGPoint(x: xOf, y: yOf), animated: animated)
+    }
+
+    func centerHorizontallyWithView(_ view: UIView, animated: Bool = false) {
+        let xOf = contentSize.width / 2 + view.center.x.distance(to: frame.minX)
+        let yOf = contentOffset.y
 
         setContentOffset(CGPoint(x: xOf, y: yOf), animated: animated)
     }

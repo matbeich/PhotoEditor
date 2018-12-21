@@ -47,14 +47,6 @@ final class EffectsView: UIView {
         }
     }
 
-    private let dimmingView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        view.isHidden = true
-
-        return view
-    }()
-
     private let maskLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
 
@@ -62,6 +54,14 @@ final class EffectsView: UIView {
         layer.fillRule = .evenOdd
 
         return layer
+    }()
+
+    private let dimmingView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        view.isHidden = true
+
+        return view
     }()
 
     private let blurView: UIVisualEffectView = {
