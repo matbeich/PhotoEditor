@@ -25,6 +25,7 @@ public final class EditsViewController: UIViewController {
     }
 
     public private(set) var angle: CGFloat = 0
+    public private(set) var scale: CGFloat = 1
 
     public init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
@@ -62,11 +63,11 @@ public final class EditsViewController: UIViewController {
     }
 
     public func rotatePhoto(by angle: CGFloat) {
-        let scale = zoomForRotation(by: angle.inRadians().magnitude)
+        scale = zoomForRotation(by: angle.inRadians().magnitude)
         let transform = CGAffineTransform.identity
         let rotating = transform.rotated(by: angle.inRadians())
         let scaling = rotating.scaledBy(x: scale, y: scale)
-        let minScale = scaleForRotation(by: angle) / scale
+        let minScale = scaleForRotation(by: angle)
 
         scrollView.minimumZoomScale = minScale
 
@@ -75,13 +76,13 @@ public final class EditsViewController: UIViewController {
         }
 
         scrollView.transform = scaling
-        updateInsets(scaled: scale, angle: angle.magnitude)
+        updateInsets()
 
-        self.angle = angle
+        self.angle = angle.magnitude
     }
 
     private func zoomForRotation(by angle: CGFloat) -> CGFloat {
-        let size = calculator.inscribeSize(for: scrollView.bounds, rotatedByAngle: angle)
+        let size = calculator.boundingBoxSize(of: scrollView.bounds, rotatedByAngle: angle)
 
         return max(size.width / scrollView.bounds.width,
                    size.height / scrollView.bounds.height)
@@ -92,7 +93,7 @@ public final class EditsViewController: UIViewController {
             return 1
         }
 
-        return calculator.fitScale(for: image, in: cropView, rotationAngle: angle)
+        return calculator.fitScale(for: image, in: cropView, rotationAngle: angle) / scale
     }
 
     public func showMask() {
@@ -103,8 +104,8 @@ public final class EditsViewController: UIViewController {
     }
 
     public func hideMask() {
-        setBlurIsVisible(false)
-        setDimmingViewIsVisible(true)
+        setBlurIsVisible(true)
+        setDimmingViewIsVisible(false)
         setCropViewIsVisible(true)
         setCropViewGridIsVisible(false)
     }
@@ -153,11 +154,11 @@ public final class EditsViewController: UIViewController {
         keepImageInsideCropView()
     }
 
-    private func updateInsets(scaled: CGFloat = 1, angle: CGFloat = 0) {
-        let scaledScrollFrame = CGRect(x: 0, y: 0, width: scrollView.bounds.width * scaled, height: scrollView.bounds.height * scaled)
-        let inscribeCropSize = calculator.inscribeSize(for: cropView.frame, rotatedByAngle: angle.inRadians())
-        let vertical = (scaledScrollFrame.height - inscribeCropSize.height) / (2 * scaled)
-        let horizontal = (scaledScrollFrame.width - inscribeCropSize.width) / (2 * scaled)
+    private func updateInsets() {
+        let frame = calculator.boundingBox(of: cropView.frame, inBoundsOf: scrollView)
+
+        let vertical = frame.origin.y
+        let horizontal = frame.origin.x
 
         scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }
@@ -204,30 +205,38 @@ public final class EditsViewController: UIViewController {
 
     private func keepImageInsideCropView() {
         let imageViewFrame = scrollView.convert(imageView.frame, to: view)
-        let shouldZoomToFitHeight = cropView.frame.height > imageViewFrame.height
-        let shouldZoomToFitWidth = cropView.frame.width > imageViewFrame.width
+        let frame = calculator.boundingBox(of: cropView.frame, inBoundsOf: scrollView)
+
+        let shouldZoomToFitHeight = frame.height > imageViewFrame.height
+        let shouldZoomToFitWidth = frame.width > imageViewFrame.width
         let shoudUpdateZoom = shouldZoomToFitWidth || shouldZoomToFitHeight
-        let shouldMoveUp = cropView.frame.minY - imageViewFrame.minY < -2
-        let shouldMoveDown = cropView.frame.maxY > imageViewFrame.maxY
-        let shouldMoveLeft = cropView.frame.minX - imageViewFrame.minX < -2
-        let shouldMoveRight = cropView.frame.maxX > imageViewFrame.maxX
+        let shouldMoveUp = frame.minY - imageViewFrame.minY < -2
+        let shouldMoveDown = frame.maxY > imageViewFrame.maxY
+        let shouldMoveLeft = frame.minX - imageViewFrame.minX < -2
+        let shouldMoveRight = frame.maxX > imageViewFrame.maxX
 
         if shoudUpdateZoom {
             setMinimumZoomScale()
             shouldZoomToFitWidth ? scrollView.centerHorizontallyWithView(cropView) : scrollView.centerVerticallyWithView(cropView)
         }
 
-        if shouldMoveUp || shouldMoveLeft {
-            updateInsets()
+        if shouldMoveUp && !shoudUpdateZoom{
+            let yOffset = scrollView.contentOffset.y - (frame.minY - imageViewFrame.minY)
+            scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: yOffset)
+        }
+
+        if shouldMoveLeft && !shoudUpdateZoom{
+            let xOffset = scrollView.contentOffset.x - (frame.minX - imageViewFrame.minX)
+            scrollView.contentOffset = CGPoint(x: xOffset, y: scrollView.contentOffset.y)
         }
 
         if shouldMoveDown && !shoudUpdateZoom {
-            let yOffset = scrollView.contentOffset.y - (cropView.frame.maxY - imageViewFrame.maxY)
+            let yOffset = scrollView.contentOffset.y - (frame.maxY - imageViewFrame.maxY)
             scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: yOffset)
         }
 
         if shouldMoveRight && !shoudUpdateZoom {
-            let xOffset = scrollView.contentOffset.x - (cropView.frame.maxX - imageViewFrame.maxX)
+            let xOffset = scrollView.contentOffset.x - (frame.maxX - imageViewFrame.maxX)
             scrollView.contentOffset = CGPoint(x: xOffset, y: scrollView.contentOffset.y)
         }
     }
@@ -242,7 +251,7 @@ public final class EditsViewController: UIViewController {
         scrollView.isScrollEnabled = true
         scrollView.maximumZoomScale = 5
         setMinimumZoomScale()
-        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.contentInsetAdjustmentBehavior = .automatic
         scrollView.addSubview(imageView)
 
         view.insertSubview(scrollView, belowSubview: effectsView)
@@ -324,7 +333,6 @@ extension EditsViewController: UIScrollViewDelegate {
     }
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        print("will begin draging")
         showMask()
     }
 

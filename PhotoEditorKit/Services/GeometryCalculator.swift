@@ -7,11 +7,26 @@ import Foundation
 
 final class GeometryCalculator {
     
-    public func inscribeSize(for frame: CGRect, rotatedByAngle angle: CGFloat) -> CGSize {
+    public func boundingBoxSize(of frame: CGRect, rotatedByAngle angle: CGFloat) -> CGSize {
         let width = cos(angle) * frame.width + sin(angle) * frame.height
         let height = sin(angle) * frame.width + cos(angle) * frame.height
 
         return CGSize(width: width, height: height)
+    }
+
+    public func boundingBox(of frame: CGRect, inBoundsOf trasformedView: UIView) -> CGRect {
+        let scale = trasformedView.transform.scale.x
+        let angle = trasformedView.transform.rotation.magnitude
+        
+        let frameHeight = frame.maxY - frame.origin.y
+        let frameWidth = frame.maxX - frame.origin.x
+        let width = (cos(angle) * frameWidth + sin(angle) * frameHeight) / scale
+        let height = (sin(angle) * frameWidth + cos(angle) * frameHeight) / scale
+
+        let x = frame.origin.x + (frameWidth - width) / 2
+        let y = frame.origin.y + (frameHeight - height) / 2
+
+        return CGRect(x: x, y: y, width: width, height: height)
     }
 
     public func fitScale(for image: UIImage, in view: UIView, rotationAngle: CGFloat) -> CGFloat {
