@@ -56,13 +56,13 @@ class CropView: UIView {
     }
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return cornerPosition(at: point) != nil && isUserInteractionEnabled
+        return cornerPosition(at: point) != nil
     }
 
     func cornerPosition(at point: CGPoint) -> Corner? {
         let sortedCorners = cornerViews.sorted { $0.center.distance(to: point) < $1.center.distance(to: point) }
 
-        return sortedCorners.first(where: { $0.frame.center.distance(to: point) < CGFloat(50.0) })?.corner
+        return sortedCorners.first(where: { $0.frame.center.distance(to: point) < CGFloat(40.0) })?.corner
     }
 
     func clipToAllowedBounds(aspectScaled: Bool) {
