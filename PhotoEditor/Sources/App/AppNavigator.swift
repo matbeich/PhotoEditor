@@ -55,9 +55,18 @@ class AppNavigator: NSObject {
         }
 
         var img: UIImage? = image
+//
+//        if let angle = sceneController?.angle {
+//            print(angle)
+//            img = context.photoEditService.rotateImage(image, byDegrees: angle)
+//        }
 
-        if let relativeCropZone = sceneController?.relativeCropZone {
-            img = image.cropedZone(relativeCropZone.absolute(in: CGRect(origin: .zero, size: image.size)))
+        if let relativeCropZone = sceneController?.relativeCropZone, let size = sceneController?.size {
+            let rectangle = CGRect(origin: .zero, size: size)
+            let absolute = relativeCropZone.absolute(in: CGRect(origin: .zero, size: size))
+            print("absolute \(absolute)")
+            print("rect: \(rectangle)")
+            img = context.photoEditService.drawImage(img!, with: size, rect: absolute)
         }
 
         if let filter = sceneController?.selectedFilter, let editingImage = img {

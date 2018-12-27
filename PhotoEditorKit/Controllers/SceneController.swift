@@ -14,12 +14,20 @@ open class SceneController: UIViewController {
         }
     }
 
+    public var size: CGSize {
+        return photoViewController.size
+    }
+
     public var currentPhoto: UIImage? {
         return photoViewController.originalPhoto
     }
 
     public var relativeCropZone: CGRect? {
         return photoViewController.relativeCropZone
+    }
+
+    public var angle: CGFloat? {
+        return photoViewController.angle
     }
 
     public init(context: AppContext) {

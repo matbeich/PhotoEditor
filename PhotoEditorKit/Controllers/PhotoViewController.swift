@@ -15,20 +15,20 @@ public final class PhotoViewController: UIViewController {
         }
     }
 
+    public var size: CGSize {
+        return editsViewController.scrollViewSize
+    }
+
     public var relativeCropZone: CGRect? {
-        guard let originalSize = originalPhoto?.size else {
-            return nil
-        }
-        
-        return CGRect(x: editsViewController.visibleRect.origin.x / originalSize.width,
-                      y: editsViewController.visibleRect.origin.y / originalSize.height,
-                      width: editsViewController.visibleRect.width / originalSize.width,
-                      height: editsViewController.visibleRect.height / originalSize.height
-        )
+        return editsViewController.relativeFrameToCrop
     }
 
     public var cropedOriginal: UIImage? {
         return originalPhoto?.cropedZone(editsViewController.visibleRect)
+    }
+
+    public var angle: CGFloat {
+        return editsViewController.angle
     }
 
     public var mode: EditMode = .crop {

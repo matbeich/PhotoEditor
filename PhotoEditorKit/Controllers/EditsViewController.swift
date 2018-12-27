@@ -6,6 +6,11 @@ import SnapKit
 import UIKit
 
 public final class EditsViewController: UIViewController {
+
+    public private(set) var angle: CGFloat = 0
+    public private(set) var scale: CGFloat = 1
+
+
     public var canCrop: Bool {
         return mode.state.showCrop
     }
@@ -20,12 +25,32 @@ public final class EditsViewController: UIViewController {
         return imageView.image
     }
 
-    public var visibleRect: CGRect {
-        return view.convert(cropView.frame, to: imageView)
+    public var scrollViewSize: CGSize {
+        let scrollViewSize = calculator.boundingBoxSize(of: scrollView.bounds, forRotationAngle: angle)
+
+        return CGSize(width: scrollViewSize.width * scale, height: scrollViewSize.height * scale)
     }
 
-    public private(set) var angle: CGFloat = 0
-    public private(set) var scale: CGFloat = 1
+    public var relativeFrameToCrop: CGRect {
+        let width = angle.isInRange(-45 ..< 46) ? scrollView.bounds.width : scrollView.bounds.height
+        let height = angle.isInRange(-45 ..< 46) ? scrollView.bounds.height : scrollView.bounds.width
+
+        return CGRect(x: -scrollView.contentOffset.x / width,
+                      y: -scrollView.contentOffset.y / height,
+                      width: scrollView.contentSize.width / width,
+                      height: scrollView.contentSize.height / height)
+    }
+
+
+    public var visibleRect: CGRect {
+        let xOffset = (scrollViewSize.width - cropView.bounds.width) / (2 * scrollViewSize.width)
+        let yOffset = (scrollViewSize.height - cropView.bounds.height) / (2 * scrollViewSize.height)
+
+        print(xOffset)
+        print(yOffset)
+
+        return CGRect(x: xOffset, y: yOffset, width: 1 - 2 * xOffset, height: 1 - 2 * yOffset)
+    }
 
     public init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
@@ -63,11 +88,12 @@ public final class EditsViewController: UIViewController {
     }
 
     public func rotatePhoto(by angle: CGFloat) {
-        scale = zoomForRotation(by: angle.inRadians().magnitude)
+        print(visibleRect)
+        scale = zoomForRotation(by: angle)
         let transform = CGAffineTransform.identity
         let rotating = transform.rotated(by: angle.inRadians())
         let scaling = rotating.scaledBy(x: scale, y: scale)
-        let minScale = scaleForRotation(by: angle)
+        let minScale = fitScaleForImageRotated(by: angle)
 
         scrollView.minimumZoomScale = minScale
 
@@ -82,13 +108,13 @@ public final class EditsViewController: UIViewController {
     }
 
     private func zoomForRotation(by angle: CGFloat) -> CGFloat {
-        let size = calculator.boundingBoxSize(of: scrollView.bounds, rotatedByAngle: angle)
+        let size = calculator.boundingBoxSize(of: scrollView.bounds, forRotationAngle: angle)
 
         return max(size.width / scrollView.bounds.width,
                    size.height / scrollView.bounds.height)
     }
 
-    private func scaleForRotation(by angle: CGFloat) -> CGFloat {
+    private func fitScaleForImageRotated(by angle: CGFloat) -> CGFloat {
         guard let image = imageView.image else {
             return 1
         }
@@ -155,7 +181,7 @@ public final class EditsViewController: UIViewController {
     }
 
     private func updateInsets() {
-        let frame = calculator.boundingBox(of: cropView.frame, inBoundsOf: scrollView)
+        let frame = calculator.boundingBox(of: cropView.frame, convertedToBoundsOf: scrollView)
 
         let vertical = frame.origin.y
         let horizontal = frame.origin.x
@@ -205,7 +231,7 @@ public final class EditsViewController: UIViewController {
 
     private func keepImageInsideCropView() {
         let imageViewFrame = scrollView.convert(imageView.frame, to: view)
-        let frame = calculator.boundingBox(of: cropView.frame, inBoundsOf: scrollView)
+        let frame = calculator.boundingBox(of: cropView.frame, convertedToBoundsOf: scrollView)
 
         let shouldZoomToFitHeight = frame.height > imageViewFrame.height
         let shouldZoomToFitWidth = frame.width > imageViewFrame.width
