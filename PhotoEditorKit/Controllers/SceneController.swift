@@ -26,6 +26,10 @@ open class SceneController: UIViewController {
         return photoViewController.relativeCropZone
     }
 
+    public var cropViewCutArea: CGRect {
+        return photoViewController.cropViewCutArea
+    }
+
     public var angle: CGFloat? {
         return photoViewController.angle
     }

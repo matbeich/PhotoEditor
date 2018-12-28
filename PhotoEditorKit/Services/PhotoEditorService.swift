@@ -41,8 +41,8 @@ public final class PhotoEditorService {
 
         let angle = degrees.inRadians()
         let clockwise = degrees > 0
-        let size = GeometryCalculator().boundingBoxSize(of: CGRect(origin: .zero, size: img.size), forRotationAngle: angle.magnitude)
-        let imgRenderer = UIGraphicsImageRenderer(size: size)
+        let imageSize = calculator.boundingBoxSize(of: CGRect(origin: .zero, size: img.size), forRotationAngle: degrees)
+        let imgRenderer = UIGraphicsImageRenderer(size: imageSize)
 
         let translation = CGPoint(x: clockwise ? sin(angle) * img.size.height : 0,
                                   y: clockwise ? 0 : -(sin(angle) * img.size.width))
@@ -64,13 +64,13 @@ public final class PhotoEditorService {
         let imgRenderer = UIGraphicsImageRenderer(size: size)
 
         return imgRenderer.image { ctx in
+            ctx.cgContext.stroke(CGRect(origin: .zero, size: size))
             img.draw(in: rect)
         }
     }
 
-
-
     private let context: CIContext
+    private let calculator = GeometryCalculator()
 }
 
 public extension FloatingPoint {

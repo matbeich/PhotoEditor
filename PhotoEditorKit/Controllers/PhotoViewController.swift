@@ -15,12 +15,16 @@ public final class PhotoViewController: UIViewController {
         }
     }
 
+    public var cropViewCutArea: CGRect {
+        return editsViewController.cropViewCutArea
+    }
+
     public var size: CGSize {
         return editsViewController.scrollViewSize
     }
 
     public var relativeCropZone: CGRect? {
-        return editsViewController.relativeFrameToCrop
+        return editsViewController.scrollViewCutArea
     }
 
     public var cropedOriginal: UIImage? {

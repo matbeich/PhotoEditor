@@ -55,19 +55,29 @@ class AppNavigator: NSObject {
         }
 
         var img: UIImage? = image
-//
-//        if let angle = sceneController?.angle {
-//            print(angle)
-//            img = context.photoEditService.rotateImage(image, byDegrees: angle)
-//        }
 
-        if let relativeCropZone = sceneController?.relativeCropZone, let size = sceneController?.size {
-            let rectangle = CGRect(origin: .zero, size: size)
-            let absolute = relativeCropZone.absolute(in: CGRect(origin: .zero, size: size))
-            print("absolute \(absolute)")
-            print("rect: \(rectangle)")
-            img = context.photoEditService.drawImage(img!, with: size, rect: absolute)
+        if let scrollViewCropZone = sceneController?.relativeCropZone, let size = sceneController?.size {
+            let cropRect = scrollViewCropZone.absolute(in: CGRect(origin: .zero, size: size))
+
+            print(size)
+            print(cropRect)
+
+            img = context.photoEditService.drawImage(img!, with: size, rect: cropRect)
         }
+
+//        if let angle = sceneController?.angle {
+//            let rotated = context.photoEditService.rotateImage(img!, byDegrees: angle)
+//            img = rotated
+//        }
+//
+//        if let cutArea = sceneController?.cropViewCutArea, let size = img?.size {
+        ////            let boundsize = calc.boundingBoxSize(of: CGRect(origin: .zero, size: size), forRotationAngle: angle)
+//            let zone = cutArea.absolute(in: CGRect(origin: .zero, size: size))
+//
+//            print(zone)
+//
+//            img = img?.cropedZone(zone)
+//        }
 
         if let filter = sceneController?.selectedFilter, let editingImage = img {
             context.photoEditService.asyncApplyFilter(filter, to: editingImage) { image in
@@ -89,6 +99,7 @@ class AppNavigator: NSObject {
     private var image: UIImage?
     private var sceneController: SceneController?
     private let context = AppContext()
+    private let calc = GeometryCalculator()
     private let photoLibraryService: PhotoLibraryServiceType = PhotoLibraryService()
 }
 

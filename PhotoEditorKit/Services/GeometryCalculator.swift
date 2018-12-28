@@ -11,6 +11,7 @@ public final class GeometryCalculator {
     
     public func boundingBoxSize(of frame: CGRect, forRotationAngle angle: CGFloat) -> CGSize {
         let angle = angle.inRadians().magnitude
+
         let width = cos(angle) * frame.width + sin(angle) * frame.height
         let height = sin(angle) * frame.width + cos(angle) * frame.height
 
