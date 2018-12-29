@@ -25,73 +25,27 @@ public final class EditsViewController: UIViewController {
     }
 
     public var scrollViewSize: CGSize {
-        let scrollViewSize = calculator.boundingBoxSize(of: scrollView.bounds, forRotationAngle: angle)
-        let width = angle.isInRange(-45 ..< 46) ? scrollViewSize.width : scrollViewSize.height
-        let height = angle.isInRange(-45 ..< 46) ? scrollViewSize.height : scrollViewSize.width
+        guard  scrollView.zoomScale > 0 else {
+            return .zero
+        }
 
-        return CGSize(width: width, height: height)
+        return CGSize(width: scrollView.bounds.width * (1 / scrollView.zoomScale),
+                      height: scrollView.bounds.height * (1 / scrollView.zoomScale))
     }
 
     public var scrollViewCutArea: CGRect {
-//        let scaled = min(scrollViewSize.width / scrollView.bounds.width,
-//                         scrollViewSize.height / scrollView.bounds.height)
-//
-//        let scaledBounds = CGSize(width: scrollView.bounds.width * scaled,
-//                                  height: scrollView.bounds.height * scaled)
-//
-//        print(scaled)
-//
-//        let origin = CGPoint(x: (-scrollView.contentOffset.x / scaled) / scrollViewSize.width,
-//                             y: (-scrollView.contentOffset.y / scaled) / scrollViewSize.height)
-//
-//        let size = CGSize(width: (scrollView.contentSize.width * scaled) / scrollViewSize.width,
-//                          height: (scrollView.contentSize.height * scaled) / scrollViewSize.height)
-//
-//        return CGRect(origin: origin, size: size)
+        let origin = CGPoint(x: scrollView.contentOffset.x / scrollView.bounds.width,
+                             y: scrollView.contentOffset.y / scrollView.bounds.height)
 
-                let scaled = max(scrollViewSize.width / scrollView.bounds.width, scrollViewSize.height / scrollView.bounds.height)
+        let size = CGSize(width: scrollView.contentSize.width / scrollView.bounds.width,
+                          height: scrollView.contentSize.height / scrollView.bounds.height)
 
-            let contentSize = CGSize(width: scrollView.contentSize.width * scaled,
-                                     height: scrollView.contentSize.height * scaled)
-
-
-                let yratio = scrollViewSize.height / scaledBounds.height
-                let xratio = scrollViewSize.width / scaledBounds.width
-
-                let ratio = min(xratio, yratio)
-
-                let newXOffset = -scrollView.contentOffset.x * scaled * xratio
-                let newYOffset = -scrollView.contentOffset.y * scaled * yratio
-                let newWidth = scrollView.contentSize.width * scaled
-                let newHeight = scrollView.contentSize.height * scaled
-
-                let imageWidthRatio = scaledBounds.width / newWidth
-                let imageHeightRatio = scaledBounds.height / newHeight
-
-                print("#############")
-                print(scrollViewSize)
-                print(scaledBounds)
-                print("X: \(newXOffset)")
-                print("Y: \(newYOffset)")
-                print("newY: \(newYOffset * ratio)")
-                print("xRatio: \(xratio)")
-                print("yRatio: \(yratio)")
-                print("#############")
-                print("\n")
-
-                print(CGRect(x: (newXOffset * ratio) / scrollViewSize.width,
-                             y: (newYOffset * ratio) / scrollViewSize.height,
-                             width: newWidth / scrollViewSize.width,
-                             height: newHeight / scrollViewSize.height))
-
-                return CGRect(x: (newXOffset * ratio) / scrollViewSize.width,
-                              y: (newYOffset * ratio) / scrollViewSize.height,
-                              width: newWidth / scrollViewSize.width,
-                              height: newHeight / scrollViewSize.height)
+        return CGRect(origin: origin, size: size)
     }
 
     public var cropViewCutArea: CGRect {
-        let box = calculator.boundingBoxSize(of: CGRect(origin: .zero, size: scrollViewSize), forRotationAngle: angle)
+        let scaledScrollViewBounds =  CGRect(origin: .zero, size: scrollView.bounds.size.scaled(by: scale))
+        let box = calculator.boundingBoxSize(of: scaledScrollViewBounds, forRotationAngle: angle)
 
         let x = (box.width - cropView.bounds.width) / 2
         let y = (box.height - cropView.bounds.height) / 2
@@ -102,8 +56,23 @@ public final class EditsViewController: UIViewController {
                       height: cropView.bounds.height / box.height)
     }
 
+    public var finalCutRect: CGRect {
+        let rect = CGRect(origin: .zero, size: scrollViewSize)
+        let scrollCrop = scrollViewCutArea.absolute(in: rect)
+
+
+        print(scrollCrop)
+        print(scrollViewSize)
+        let cutRect = scrollView.contentSize.scaled(by: scale)
+
+        return .zero
+    }
 
     public var visibleRect: CGRect {
+        guard scrollViewSize.width > 0 && scrollViewSize.height > 0 else {
+            return .zero
+        }
+
         let xOffset = (scrollViewSize.width - cropView.bounds.width) / (2 * scrollViewSize.width)
         let yOffset = (scrollViewSize.height - cropView.bounds.height) / (2 * scrollViewSize.height)
 
@@ -146,15 +115,17 @@ public final class EditsViewController: UIViewController {
     }
 
     public func rotatePhoto(by angle: CGFloat) {
+        print(finalCutRect)
+
         scale = zoomForRotation(by: angle)
-        print(scrollViewCutArea)
 
         let transform = CGAffineTransform.identity
-        let rotating = transform.rotated(by: angle.inRadians())
-        let scaling = rotating.scaledBy(x: scale, y: scale)
+        let scaling = transform.scaledBy(x: scale, y: scale)
+        let rotating = scaling.rotated(by: angle.inRadians())
+
         let minScale = fitScaleForImageRotated(by: angle)
 
-        scrollView.transform = scaling
+        scrollView.transform = rotating
         scrollView.minimumZoomScale = minScale
 
         if scrollView.zoomScale < scrollView.minimumZoomScale {

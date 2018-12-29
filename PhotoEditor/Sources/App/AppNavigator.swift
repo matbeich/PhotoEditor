@@ -59,25 +59,19 @@ class AppNavigator: NSObject {
         if let scrollViewCropZone = sceneController?.relativeCropZone, let size = sceneController?.size {
             let cropRect = scrollViewCropZone.absolute(in: CGRect(origin: .zero, size: size))
 
-            print(size)
-            print(cropRect)
-
             img = context.photoEditService.drawImage(img!, with: size, rect: cropRect)
         }
 
-//        if let angle = sceneController?.angle {
-//            let rotated = context.photoEditService.rotateImage(img!, byDegrees: angle)
-//            img = rotated
-//        }
-//
-//        if let cutArea = sceneController?.cropViewCutArea, let size = img?.size {
-        ////            let boundsize = calc.boundingBoxSize(of: CGRect(origin: .zero, size: size), forRotationAngle: angle)
-//            let zone = cutArea.absolute(in: CGRect(origin: .zero, size: size))
-//
-//            print(zone)
-//
-//            img = img?.cropedZone(zone)
-//        }
+        if let angle = sceneController?.angle {
+            let rotated = context.photoEditService.rotateImage(img!, byDegrees: angle)
+            img = rotated
+        }
+
+        if let cutArea = sceneController?.cropViewCutArea, let size = img?.size {
+            let zone = cutArea.absolute(in: CGRect(origin: .zero, size: size))
+
+            img = img?.cropedZone(zone)
+        }
 
         if let filter = sceneController?.selectedFilter, let editingImage = img {
             context.photoEditService.asyncApplyFilter(filter, to: editingImage) { image in
@@ -113,5 +107,11 @@ extension AppNavigator: UIImagePickerControllerDelegate & UINavigationController
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         print("cancel")
+    }
+}
+
+public extension CGSize {
+    func scaledBy(_ value: CGFloat) -> CGSize {
+        return CGSize(width: width * value, height: height * value)
     }
 }
