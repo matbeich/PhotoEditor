@@ -49,32 +49,27 @@ class AppNavigator: NSObject {
     }
 
     private func applyChangesIfNeeded(callback: @escaping (Bool, UIImage?) -> Void) {
-        guard let image = image else {
+        guard let image = image, let sceneController = sceneController else {
             callback(false, nil)
+
             return
         }
 
         var img: UIImage? = image
 
-        if let scrollViewCropZone = sceneController?.relativeCropZone, let size = sceneController?.size {
-            let cropRect = scrollViewCropZone.absolute(in: CGRect(origin: .zero, size: size))
-
-            img = context.photoEditService.drawImage(img!, with: size, rect: cropRect)
+        if let angle = sceneController.angle {
+            img = self.context.photoEditService.rotateImage(img!, byDegrees: angle)
         }
 
-        if let angle = sceneController?.angle {
-            let rotated = context.photoEditService.rotateImage(img!, byDegrees: angle)
-            img = rotated
-        }
+        let cutArea = sceneController.finalArea
+        let rect = CGRect(origin: .zero, size: img?.size ?? .zero)
+        let zone = cutArea.absolute(in: rect)
+        let croped = img?.cropedZone(zone)
+        img = croped
 
-        if let cutArea = sceneController?.cropViewCutArea, let size = img?.size {
-            let zone = cutArea.absolute(in: CGRect(origin: .zero, size: size))
 
-            img = img?.cropedZone(zone)
-        }
-
-        if let filter = sceneController?.selectedFilter, let editingImage = img {
-            context.photoEditService.asyncApplyFilter(filter, to: editingImage) { image in
+        if let filter = sceneController.selectedFilter, let editingImage = img {
+            self.context.photoEditService.asyncApplyFilter(filter, to: editingImage) { image in
                 callback(image != nil, image)
             }
         } else {

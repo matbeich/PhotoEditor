@@ -15,8 +15,8 @@ public final class PhotoViewController: UIViewController {
         }
     }
 
-    public var cropViewCutArea: CGRect {
-        return editsViewController.cropViewCutArea
+    public var finalArea: CGRect {
+        return editsViewController.finalRect
     }
 
     public var size: CGSize {
@@ -32,7 +32,7 @@ public final class PhotoViewController: UIViewController {
     }
 
     public var angle: CGFloat {
-        return editsViewController.angle
+        return editsViewController.imageRotationAngle
     }
 
     public var mode: EditMode = .crop {
