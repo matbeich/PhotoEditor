@@ -24,72 +24,8 @@ public final class EditsViewController: UIViewController {
         return imageView.image
     }
 
-    public var scrollViewSize: CGSize {
-        guard  scrollView.zoomScale > 0 else {
-            return .zero
-        }
-
-        return CGSize(width: scrollView.bounds.width * (1 / scrollView.zoomScale),
-                      height: scrollView.bounds.height * (1 / scrollView.zoomScale))
-    }
-
-    public var scrollViewCutArea: CGRect {
-        let origin = CGPoint(x: scrollView.contentOffset.x / scrollView.bounds.width,
-                             y: scrollView.contentOffset.y / scrollView.bounds.height)
-
-        let size = CGSize(width: scrollView.contentSize.width / scrollView.bounds.width,
-                          height: scrollView.contentSize.height / scrollView.bounds.height)
-
-        return CGRect(origin: origin, size: size)
-    }
-
-    public var cropViewCutArea: CGRect {
-        let scaledScrollViewBounds =  CGRect(origin: .zero, size: scrollViewSize)
-        let box = calculator.boundingBoxSize(of: scaledScrollViewBounds, forRotationAngle: imageRotationAngle)
-
-        let x = (box.width - cropView.bounds.width) / 2
-        let y = (box.height - cropView.bounds.height) / 2
-
-        return CGRect(x: x / box.width,
-                      y: y / box.height,
-                      width: cropView.bounds.width / box.width,
-                      height: cropView.bounds.height / box.height)
-    }
-
-    public var relativeCutSize: CGSize {
-        let boundedRect = calculator.boundingBoxSize(of: finalRect, forRotationAngle: imageRotationAngle)
-
-        return .zero
-    }
-
-    public var finalRect: CGRect {
-        let rect = CGRect(origin: .zero, size: photo?.size ?? .zero)
-        let relativev = calculator.focusedPoint(by: scrollView)
-        let focusedPoint = relativev.absolute(in: rect)
-        let bounded = calculator.boundingBoxSize(of: rect, forRotationAngle: imageRotationAngle)
-        let boundedContent = calculator.boundingBoxSize(of: CGRect(origin: .zero, size: CGSize(width: scrollView.contentSize.width * scrollViewScale, height: scrollView.contentSize.height * scrollViewScale)), forRotationAngle: imageRotationAngle)
-        let newPoint = calculator.boundedBoxPositionOfPoint(focusedPoint, afterRotationOfRect: rect, byAngle: imageRotationAngle)
-
-        let size = CGSize(width: cropView.bounds.width / boundedContent.width,
-                          height: cropView.bounds.height / boundedContent.height)
-
-        let origin = CGPoint(x: (newPoint.x / bounded.width) - size.width / 2,
-                               y: (newPoint.y / bounded.height) - size.height / 2)
-
-        print("Size: \(size)")
-        print("newPoint: \(newPoint)")
-        return CGRect(origin: origin, size: size)
-    }
-
-    public var visibleRect: CGRect {
-        guard scrollViewSize.width > 0 && scrollViewSize.height > 0 else {
-            return .zero
-        }
-
-        let xOffset = (scrollViewSize.width - cropView.bounds.width) / (2 * scrollViewSize.width)
-        let yOffset = (scrollViewSize.height - cropView.bounds.height) / (2 * scrollViewSize.height)
-
-        return CGRect(x: xOffset, y: yOffset, width: 1 - 2 * xOffset, height: 1 - 2 * yOffset)
+    public var relativeCutRect: CGRect {
+        return calculateCutRect()
     }
 
     public init(frame: CGRect = .zero, image: UIImage? = nil) {
@@ -128,7 +64,6 @@ public final class EditsViewController: UIViewController {
     }
 
     public func rotatePhoto(by angle: CGFloat) {
-        print(finalRect)
         scrollViewScale = zoomForRotation(by: angle)
 
         let transform = CGAffineTransform.identity
@@ -149,7 +84,7 @@ public final class EditsViewController: UIViewController {
     }
 
     private func zoomForRotation(by angle: CGFloat) -> CGFloat {
-        let size = calculator.boundingBoxSize(of: scrollView.bounds, forRotationAngle: angle)
+        let size = calculator.boundingBoxOfRectWithSize(scrollView.bounds.size, rotatedByAngle: angle)
 
         return max(size.width / scrollView.bounds.width,
                    size.height / scrollView.bounds.height)
@@ -182,7 +117,14 @@ public final class EditsViewController: UIViewController {
     }
 
     public func saveCropedAppearence() {
-        visibleContentFrame = visibleRect
+        guard let size = photo?.size, !size.isEmpty else {
+            return
+        }
+
+        let rotatedSize = calculator.boundingBoxOfRectWithSize(size, rotatedByAngle: imageRotationAngle)
+        let frame = CGRect(origin: .zero, size: rotatedSize)
+
+        visibleContentFrame = relativeCutRect.absolute(in: frame)
     }
 
     public func fitSavedRectToCropView() {
@@ -197,7 +139,7 @@ public final class EditsViewController: UIViewController {
             .applying(CGAffineTransform(scaleX: scale, y: scale))
             .applying(CGAffineTransform(translationX: cropViewOffset.x, y: cropViewOffset.y))
 
-        scrollView.minimumZoomScale = fitScaleForImage(photo)
+        scrollView.minimumZoomScale = fitScaleForImageRotated(by: imageRotationAngle)
         scrollView.setZoomScale(scale, animated: false)
         scrollView.setContentOffset(offset, animated: false)
         scrollView.isUserInteractionEnabled = mode.state.canScroll
@@ -362,6 +304,32 @@ public final class EditsViewController: UIViewController {
         path.addRect(cropView.frame)
 
         effectsView.setMaskPath(path)
+    }
+
+    private func calculateCutRect() -> CGRect {
+        let photoFrame = CGRect(origin: .zero, size: photo?.size ?? .zero)
+        let scrollViewFocusPoint = calculator.focusedPoint(by: scrollView).absolute(in: photoFrame)
+
+        let photoBoundingBox = calculator.boundingBoxOfRectWithSize(photoFrame.size,
+                                                          rotatedByAngle: imageRotationAngle)
+
+        let contentSize = CGSize(width: scrollView.contentSize.width * scrollViewScale,
+                                 height: scrollView.contentSize.height * scrollViewScale)
+
+        let contentBoundingBox = calculator.boundingBoxOfRectWithSize(contentSize,
+                                                                      rotatedByAngle: imageRotationAngle)
+
+        let center = calculator.boundedBoxPositionOfPoint(scrollViewFocusPoint,
+                                                          afterRotationOfRect: photoFrame,
+                                                          byAngle: imageRotationAngle)
+
+        let relativeSize = CGSize(width: cropView.bounds.width / contentBoundingBox.width,
+                                  height: cropView.bounds.height / contentBoundingBox.height)
+
+        let relativeOrigin = CGPoint(x: (center.x / photoBoundingBox.width) - relativeSize.width / 2,
+                                     y: (center.y / photoBoundingBox.height) - relativeSize.height / 2)
+
+        return CGRect(origin: relativeOrigin, size: relativeSize)
     }
 
     private var imageView: UIImageView {

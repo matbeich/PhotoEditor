@@ -33,39 +33,35 @@ public final class PhotoEditorService {
         return filter.applied(to: ciImage, in: context, withOptions: options).flatMap { UIImage(cgImage: $0) }
     }
 
+    public func asyncRotateImage(_ image: UIImage, byDegrees degrees: CGFloat, callback: @escaping EditCallback) {
+        DispatchQueue.global().async { [weak self] in
+            let img = self?.rotateImage(image, byDegrees: degrees)
+
+            DispatchQueue.main.async {
+                callback(img)
+            }
+        }
+    }
+
     public func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat) -> UIImage? {
-        guard let img = image.fixOrientation(), degrees.isInRange(-90 ..< 91) else {
+        guard degrees.isInRange(-90 ..< 91) else {
             assertionFailure("Angle must be in range from -90 to 90.")
             return nil
         }
 
         let angle = degrees.inRadians()
         let clockwise = degrees > 0
-        let imageSize = calculator.boundingBoxSize(of: CGRect(origin: .zero, size: img.size), forRotationAngle: degrees)
+        let imageSize = calculator.boundingBoxOfRectWithSize(image.size, rotatedByAngle: degrees)
         let imgRenderer = UIGraphicsImageRenderer(size: imageSize)
 
-        let translation = CGPoint(x: clockwise ? sin(angle) * img.size.height : 0,
-                                  y: clockwise ? 0 : -(sin(angle) * img.size.width))
+        let translation = CGPoint(x: clockwise ? sin(angle) * image.size.height : 0,
+                                  y: clockwise ? 0 : -(sin(angle) * image.size.width))
 
         return imgRenderer.image { ctx in
             ctx.cgContext.translateBy(x: translation.x, y: translation.y)
             ctx.cgContext.rotate(by: angle)
 
-            img.draw(in: CGRect(origin: .zero, size: img.size))
-        }
-    }
-
-
-    public func drawImage(_ image: UIImage, with size: CGSize, rect: CGRect) -> UIImage? {
-        guard let img = image.fixOrientation() else {
-            return nil
-        }
-
-        let imgRenderer = UIGraphicsImageRenderer(size: size)
-
-        return imgRenderer.image { ctx in
-            ctx.cgContext.stroke(CGRect(origin: .zero, size: size))
-            img.draw(in: rect)
+            image.draw(in: CGRect(origin: .zero, size: image.size))
         }
     }
 

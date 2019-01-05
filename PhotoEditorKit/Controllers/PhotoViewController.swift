@@ -11,24 +11,12 @@ public final class PhotoViewController: UIViewController {
                 return
             }
 
-            editsViewController.set(photo)
+            setPhoto(photo)
         }
     }
 
-    public var finalArea: CGRect {
-        return editsViewController.finalRect
-    }
-
-    public var size: CGSize {
-        return editsViewController.scrollViewSize
-    }
-
-    public var relativeCropZone: CGRect? {
-        return editsViewController.scrollViewCutArea
-    }
-
-    public var cropedOriginal: UIImage? {
-        return originalPhoto?.cropedZone(editsViewController.visibleRect)
+    public var cutArea: CGRect {
+        return editsViewController.relativeCutRect
     }
 
     public var angle: CGFloat {
@@ -71,8 +59,6 @@ public final class PhotoViewController: UIViewController {
     }
 
     private func setup() {
-        editsViewController.set(originalPhoto ?? UIImage())
-
         context.stateStore.addSubscriber(with: id) { [weak self] state in
             if state.value.editMode != .crop {
                 self?.editsViewController.saveCropedAppearence()

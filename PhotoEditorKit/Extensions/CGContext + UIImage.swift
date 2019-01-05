@@ -49,8 +49,12 @@ public extension CGContext {
 
 public extension UIImage {
     func cropedZone(_ zone: CGRect) -> UIImage? {
-        let fixed = fixOrientation()
-        guard let cutImageRef = fixed?.cgImage?.cropping(to: zone) else {
+        let zone = CGRect(x: zone.origin.x * scale,
+                          y: zone.origin.y * scale,
+                          width: zone.width * scale,
+                          height: zone.height * scale)
+
+        guard let cutImageRef = cgImage?.cropping(to: zone) else {
             return nil
         }
 
@@ -59,32 +63,40 @@ public extension UIImage {
 
     func fixOrientation() -> UIImage? {
         guard
+            imageOrientation != .up,
             let cg = cgImage,
             let colorSpace = cg.colorSpace,
-            let ctx = CGContext(data: nil,
-                                width: Int(size.width),
-                                height: Int(size.height),
-                                bitsPerComponent: cg.bitsPerComponent,
-                                bytesPerRow: cg.bytesPerRow,
-                                space: colorSpace,
-                                bitmapInfo: cg.bitmapInfo.rawValue)
-            else {
-                return self
+            let ctx = CGContext(
+                data: nil,
+                width: Int(size.width),
+                height: Int(size.height),
+                bitsPerComponent: cg.bitsPerComponent,
+                bytesPerRow: cg.bytesPerRow,
+                space: colorSpace,
+                bitmapInfo: cg.bitmapInfo.rawValue)
+        else {
+            return self
         }
 
         let imgSize: CGSize = imageOrientation.isFlipped ? CGSize(width: size.height, height: size.width) : size
 
         ctx.saveGState()
-        defer { ctx.restoreGState() }
-
         ctx.flip(for: imageOrientation, withSize: imgSize)
         ctx.draw(cg, in: CGRect(origin: .zero, size: imgSize))
+        ctx.restoreGState()
 
         guard let img = ctx.makeImage() else {
             return nil
         }
 
         return UIImage(cgImage: img)
+    }
+
+    func zoom(scale: CGFloat) -> UIImage? {
+        let size = CGSize(width: self.size.width * scale,
+                          height: self.size.height * scale)
+
+        return resizeVI(size: size)
     }
 
     func resizeVI(size: CGSize) -> UIImage? {

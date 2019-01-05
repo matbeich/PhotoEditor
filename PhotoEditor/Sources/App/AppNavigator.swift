@@ -16,7 +16,7 @@ class AppNavigator: NSObject {
         switch destination {
         case .scene:
             sceneController = SceneController(context: context)
-            guard let sceneController = sceneController, let img = image?.fixOrientation() else {
+            guard let sceneController = sceneController, let img = image else {
                 return
             }
 
@@ -50,30 +50,34 @@ class AppNavigator: NSObject {
 
     private func applyChangesIfNeeded(callback: @escaping (Bool, UIImage?) -> Void) {
         guard let image = image, let sceneController = sceneController else {
-            callback(false, nil)
+            DispatchQueue.main.async {
+                callback(false, nil)
+            }
 
             return
         }
 
-        var img: UIImage? = image
+        modifiedImage = image
 
-        if let angle = sceneController.angle {
-            img = self.context.photoEditService.rotateImage(img!, byDegrees: angle)
-        }
-
-        let cutArea = sceneController.finalArea
-        let rect = CGRect(origin: .zero, size: img?.size ?? .zero)
-        let zone = cutArea.absolute(in: rect)
-        let croped = img?.cropedZone(zone)
-        img = croped
-
-
-        if let filter = sceneController.selectedFilter, let editingImage = img {
-            self.context.photoEditService.asyncApplyFilter(filter, to: editingImage) { image in
-                callback(image != nil, image)
+        DispatchQueue.global().sync {
+            if let angle = sceneController.angle, let image = modifiedImage?.zoom(scale: 1.0) {
+                modifiedImage = context.photoEditService.rotateImage(image, byDegrees: angle)
             }
-        } else {
-            callback(true, img)
+
+            let rotatedImageFrame = CGRect(origin: .zero, size: modifiedImage?.size ?? .zero)
+            let cropZone = sceneController.cutArea.absolute(in: rotatedImageFrame)
+
+            modifiedImage = modifiedImage?.cropedZone(cropZone)
+
+            if let filter = sceneController.selectedFilter, let editingImage = modifiedImage {
+                self.context.photoEditService.asyncApplyFilter(filter, to: editingImage) { image in
+                    callback(image != nil, image)
+                }
+            } else {
+                DispatchQueue.main.async { [weak self] in
+                    callback(true, self?.modifiedImage)
+                }
+            }
         }
     }
 
@@ -86,6 +90,7 @@ class AppNavigator: NSObject {
     }()
 
     private var image: UIImage?
+    private var modifiedImage: UIImage?
     private var sceneController: SceneController?
     private let context = AppContext()
     private let calc = GeometryCalculator()
@@ -95,7 +100,7 @@ class AppNavigator: NSObject {
 extension AppNavigator: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         image = nil
-        image = info[.originalImage] as? UIImage
+        image = (info[.originalImage] as? UIImage)?.fixOrientation()
 
         navigateTo(destination: .scene)
     }
