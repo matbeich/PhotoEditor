@@ -18,8 +18,12 @@ open class SceneController: UIViewController {
         return photoViewController.originalPhoto
     }
 
-    public var relativeCropZone: CGRect? {
-        return photoViewController.relativeCropZone
+    public var cutArea: CGRect {
+        return photoViewController.cutArea
+    }
+
+    public var angle: CGFloat? {
+        return photoViewController.angle
     }
 
     public init(context: AppContext) {
@@ -129,19 +133,20 @@ open class SceneController: UIViewController {
         }
     }
 
+    #warning("set filters")
     private func updateFiltersPhoto() {
-        guard let photo = photoViewController.cropedOriginal else {
-            return
-        }
-
-        DispatchQueue.global().async { [weak self] in
-            let rect = photo.size.applying(CGAffineTransform(scaleX: 0.2, y: 0.2))
-            let pht = photo.resizeVI(size: rect)
-
-            DispatchQueue.main.async {
-                self?.filtersCollectionViewController.image = pht
-            }
-        }
+//        guard let photo = photoViewController.cropedOriginal else {
+//            return
+//        }
+//
+//        DispatchQueue.global().async { [weak self] in
+//            let rect = photo.size.applying(CGAffineTransform(scaleX: 0.2, y: 0.2))
+//            let pht = photo.resizeVI(size: rect)
+//
+//            DispatchQueue.main.async {
+//                self?.filtersCollectionViewController.image = pht
+//            }
+//        }
     }
 
     private lazy var filtersCollectionViewController: FiltersCollectionViewController = {

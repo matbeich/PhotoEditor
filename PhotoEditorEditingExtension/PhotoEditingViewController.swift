@@ -49,11 +49,11 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
 
         var img: UIImage? = image
         var editingParameters = EditingParameters()
-
-        if let relativeCropZone = sceneController.relativeCropZone {
-            img = image.cropedZone(relativeCropZone.absolute(in: CGRect(origin: .zero, size: image.size)))
-            editingParameters.relativeCropRectangle = relativeCropZone
-        }
+//
+//        if let relativeCropZone = sceneController.relativeCropZone {
+//            img = image.cropedZone(relativeCropZone.absolute(in: CGRect(origin: .zero, size: image.size)))
+//            editingParameters.relativeCropRectangle = relativeCropZone
+//        }
 
         if let filter = sceneController.selectedFilter, let image = img {
             img = context.photoEditService.applyFilter(filter, to: image)

@@ -6,6 +6,10 @@ import SnapKit
 import UIKit
 
 public final class EditsViewController: UIViewController {
+
+    public private(set) var imageRotationAngle: CGFloat = 0
+    public private(set) var scrollViewScale: CGFloat = 1
+
     public var canCrop: Bool {
         return mode.state.showCrop
     }
@@ -20,12 +24,9 @@ public final class EditsViewController: UIViewController {
         return imageView.image
     }
 
-    public var visibleRect: CGRect {
-        return view.convert(cropView.frame, to: imageView)
+    public var relativeCutRect: CGRect {
+        return calculateCutRect()
     }
-
-    public private(set) var angle: CGFloat = 0
-    public private(set) var scale: CGFloat = 1
 
     public init(frame: CGRect = .zero, image: UIImage? = nil) {
         self.imageView = UIImageView(image: image)
@@ -63,37 +64,38 @@ public final class EditsViewController: UIViewController {
     }
 
     public func rotatePhoto(by angle: CGFloat) {
-        scale = zoomForRotation(by: angle.inRadians().magnitude)
-        let transform = CGAffineTransform.identity
-        let rotating = transform.rotated(by: angle.inRadians())
-        let scaling = rotating.scaledBy(x: scale, y: scale)
-        let minScale = scaleForRotation(by: angle)
+        scrollViewScale = zoomForRotation(by: angle)
 
+        let transform = CGAffineTransform.identity
+        let scaling = transform.scaledBy(x: scrollViewScale, y: scrollViewScale)
+        let rotating = scaling.rotated(by: angle.inRadians())
+
+        let minScale = fitScaleForImageRotated(by: angle)
+
+        scrollView.transform = rotating
         scrollView.minimumZoomScale = minScale
 
         if scrollView.zoomScale < scrollView.minimumZoomScale {
             scrollView.zoomScale = minScale
         }
 
-        scrollView.transform = scaling
         updateInsets()
-
-        self.angle = angle.magnitude
+        self.imageRotationAngle = angle
     }
 
     private func zoomForRotation(by angle: CGFloat) -> CGFloat {
-        let size = calculator.boundingBoxSize(of: scrollView.bounds, rotatedByAngle: angle)
+        let size = calculator.boundingBoxOfRectWithSize(scrollView.bounds.size, rotatedByAngle: angle)
 
         return max(size.width / scrollView.bounds.width,
                    size.height / scrollView.bounds.height)
     }
 
-    private func scaleForRotation(by angle: CGFloat) -> CGFloat {
+    private func fitScaleForImageRotated(by angle: CGFloat) -> CGFloat {
         guard let image = imageView.image else {
             return 1
         }
 
-        return calculator.fitScale(for: image, in: cropView, rotationAngle: angle) / scale
+        return calculator.fitScale(for: image, in: cropView, rotationAngle: angle) / scrollViewScale
     }
 
     public func showMask() {
@@ -115,7 +117,14 @@ public final class EditsViewController: UIViewController {
     }
 
     public func saveCropedAppearence() {
-        visibleContentFrame = visibleRect
+        guard let size = photo?.size, !size.isEmpty else {
+            return
+        }
+
+        let rotatedSize = calculator.boundingBoxOfRectWithSize(size, rotatedByAngle: imageRotationAngle)
+        let frame = CGRect(origin: .zero, size: rotatedSize)
+
+        visibleContentFrame = relativeCutRect.absolute(in: frame)
     }
 
     public func fitSavedRectToCropView() {
@@ -130,7 +139,7 @@ public final class EditsViewController: UIViewController {
             .applying(CGAffineTransform(scaleX: scale, y: scale))
             .applying(CGAffineTransform(translationX: cropViewOffset.x, y: cropViewOffset.y))
 
-        scrollView.minimumZoomScale = fitScaleForImage(photo)
+        scrollView.minimumZoomScale = fitScaleForImageRotated(by: imageRotationAngle)
         scrollView.setZoomScale(scale, animated: false)
         scrollView.setContentOffset(offset, animated: false)
         scrollView.isUserInteractionEnabled = mode.state.canScroll
@@ -155,7 +164,7 @@ public final class EditsViewController: UIViewController {
     }
 
     private func updateInsets() {
-        let frame = calculator.boundingBox(of: cropView.frame, inBoundsOf: scrollView)
+        let frame = calculator.boundingBox(of: cropView.frame, convertedToBoundsOf: scrollView)
 
         let vertical = frame.origin.y
         let horizontal = frame.origin.x
@@ -205,7 +214,7 @@ public final class EditsViewController: UIViewController {
 
     private func keepImageInsideCropView() {
         let imageViewFrame = scrollView.convert(imageView.frame, to: view)
-        let frame = calculator.boundingBox(of: cropView.frame, inBoundsOf: scrollView)
+        let frame = calculator.boundingBox(of: cropView.frame, convertedToBoundsOf: scrollView)
 
         let shouldZoomToFitHeight = frame.height > imageViewFrame.height
         let shouldZoomToFitWidth = frame.width > imageViewFrame.width
@@ -295,6 +304,32 @@ public final class EditsViewController: UIViewController {
         path.addRect(cropView.frame)
 
         effectsView.setMaskPath(path)
+    }
+
+    private func calculateCutRect() -> CGRect {
+        let photoFrame = CGRect(origin: .zero, size: photo?.size ?? .zero)
+        let scrollViewFocusPoint = calculator.focusedPoint(by: scrollView).absolute(in: photoFrame)
+
+        let photoBoundingBox = calculator.boundingBoxOfRectWithSize(photoFrame.size,
+                                                          rotatedByAngle: imageRotationAngle)
+
+        let contentSize = CGSize(width: scrollView.contentSize.width * scrollViewScale,
+                                 height: scrollView.contentSize.height * scrollViewScale)
+
+        let contentBoundingBox = calculator.boundingBoxOfRectWithSize(contentSize,
+                                                                      rotatedByAngle: imageRotationAngle)
+
+        let center = calculator.boundedBoxPositionOfPoint(scrollViewFocusPoint,
+                                                          afterRotationOfRect: photoFrame,
+                                                          byAngle: imageRotationAngle)
+
+        let relativeSize = CGSize(width: cropView.bounds.width / contentBoundingBox.width,
+                                  height: cropView.bounds.height / contentBoundingBox.height)
+
+        let relativeOrigin = CGPoint(x: (center.x / photoBoundingBox.width) - relativeSize.width / 2,
+                                     y: (center.y / photoBoundingBox.height) - relativeSize.height / 2)
+
+        return CGRect(origin: relativeOrigin, size: relativeSize)
     }
 
     private var imageView: UIImageView {

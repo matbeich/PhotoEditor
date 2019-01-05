@@ -30,6 +30,7 @@
 		842E308121C013490096F1F9 /* DottedNumeredCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E308021C013490096F1F9 /* DottedNumeredCircle.swift */; };
 		842E308321C119810096F1F9 /* DottedNumberedCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E308221C119810096F1F9 /* DottedNumberedCircleView.swift */; };
 		842E308C21CCE90F0096F1F9 /* GeometryCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E308B21CCE90F0096F1F9 /* GeometryCalculator.swift */; };
+		842E308E21D367320096F1F9 /* Edits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842E308D21D367310096F1F9 /* Edits.swift */; };
 		843F78D721B6A7100028C43A /* PhotoEditorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574621A8009600D24473 /* PhotoEditorService.swift */; };
 		843F78D821B6A71C0028C43A /* EditFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96821B532E600F281A9 /* EditFilter.swift */; };
 		843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8422C96621B5327400F281A9 /* CGContext + UIImage.swift */; };
@@ -169,6 +170,7 @@
 		842E308021C013490096F1F9 /* DottedNumeredCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DottedNumeredCircle.swift; sourceTree = "<group>"; };
 		842E308221C119810096F1F9 /* DottedNumberedCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DottedNumberedCircleView.swift; sourceTree = "<group>"; };
 		842E308B21CCE90F0096F1F9 /* GeometryCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryCalculator.swift; sourceTree = "<group>"; };
+		842E308D21D367310096F1F9 /* Edits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edits.swift; sourceTree = "<group>"; };
 		843F78D021B6A58E0028C43A /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		843F78D221B6A5AF0028C43A /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		843F78D421B6A5DA0028C43A /* Subscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
@@ -381,6 +383,7 @@
 			children = (
 				844FC8F021956B9A00E5BD08 /* Grid.swift */,
 				842E308021C013490096F1F9 /* DottedNumeredCircle.swift */,
+				842E308D21D367310096F1F9 /* Edits.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1035,6 +1038,7 @@
 				842E305321BE69030096F1F9 /* String.swift in Sources */,
 				8413020721B7F79100908E58 /* Config.swift in Sources */,
 				843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */,
+				842E308E21D367320096F1F9 /* Edits.swift in Sources */,
 				844102D821B8012000695AC9 /* PhotoViewController.swift in Sources */,
 				842E308121C013490096F1F9 /* DottedNumeredCircle.swift in Sources */,
 				844102D321B7FDE300695AC9 /* Grid.swift in Sources */,

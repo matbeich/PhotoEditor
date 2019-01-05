@@ -33,11 +33,44 @@ public final class PhotoEditorService {
         return filter.applied(to: ciImage, in: context, withOptions: options).flatMap { UIImage(cgImage: $0) }
     }
 
-    #warning("add logic")
+    public func asyncRotateImage(_ image: UIImage, byDegrees degrees: CGFloat, callback: @escaping EditCallback) {
+        DispatchQueue.global().async { [weak self] in
+            let img = self?.rotateImage(image, byDegrees: degrees)
 
-    public func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat, clockwise: Bool) -> UIImage? {
-        return nil
+            DispatchQueue.main.async {
+                callback(img)
+            }
+        }
+    }
+
+    public func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat) -> UIImage? {
+        guard degrees.isInRange(-90 ..< 91) else {
+            assertionFailure("Angle must be in range from -90 to 90.")
+            return nil
+        }
+
+        let angle = degrees.inRadians()
+        let clockwise = degrees > 0
+        let imageSize = calculator.boundingBoxOfRectWithSize(image.size, rotatedByAngle: degrees)
+        let imgRenderer = UIGraphicsImageRenderer(size: imageSize)
+
+        let translation = CGPoint(x: clockwise ? sin(angle) * image.size.height : 0,
+                                  y: clockwise ? 0 : -(sin(angle) * image.size.width))
+
+        return imgRenderer.image { ctx in
+            ctx.cgContext.translateBy(x: translation.x, y: translation.y)
+            ctx.cgContext.rotate(by: angle)
+
+            image.draw(in: CGRect(origin: .zero, size: image.size))
+        }
     }
 
     private let context: CIContext
+    private let calculator = GeometryCalculator()
+}
+
+public extension FloatingPoint {
+    func isInRange(_ range: Range<Self>) -> Bool {
+        return range.contains(self)
+    }
 }
