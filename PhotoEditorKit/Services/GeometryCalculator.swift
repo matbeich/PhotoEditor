@@ -18,6 +18,14 @@ public final class GeometryCalculator {
         return CGSize(width: width, height: height)
     }
 
+    public func sizeOfRectIBoundedBoxWith(size: CGSize, rotatedBy angle: CGFloat) -> CGSize {
+        let angle = angle.magnitude.inRadians()
+        let x = 1 / ((cos(angle) * cos(angle)) - (sin(angle) * sin(angle))) * (size.width * cos(angle) - size.height * sin(angle))
+        let y = 1 / ((cos(angle) * cos(angle)) - (sin(angle) * sin(angle))) * (-size.width * sin(angle) + size.height * cos(angle))
+
+        return CGSize(width: x.rounded(), height: y.rounded())
+    }
+
     public func boundingBox(of frame: CGRect, convertedToBoundsOf trasformedView: UIView) -> CGRect {
         let scale = trasformedView.transform.scale.x
         let angle = trasformedView.transform.rotation.magnitude
