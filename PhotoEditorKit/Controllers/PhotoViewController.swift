@@ -73,7 +73,8 @@ public final class PhotoViewController: UIViewController {
     @objc public func changeCropViewFrame(with recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
-            changingCorner = editsViewController.canCrop ? editsViewController.cropViewCorner(at: recognizer.location(in: view)) : nil
+            let point = view.convert(recognizer.location(in: view), to: editsViewController.view)
+            changingCorner = editsViewController.canCrop ? editsViewController.cropViewCorner(at: point) : nil
 
         case .changed:
             guard let corner = changingCorner else {

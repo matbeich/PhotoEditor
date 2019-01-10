@@ -61,7 +61,7 @@ class CropView: UIView {
 
     func cornerPosition(at point: CGPoint) -> Corner? {
         let sortedCorners = cornerViews.sorted { $0.center.distance(to: point) < $1.center.distance(to: point) }
-
+        
         return sortedCorners.first(where: { $0.frame.center.distance(to: point) < CGFloat(40.0) })?.corner
     }
 
