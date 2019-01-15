@@ -18,7 +18,7 @@ public final class GeometryCalculator {
         return CGSize(width: width, height: height)
     }
 
-    public func sizeOfRectIBoundedBoxWith(size: CGSize, rotatedBy angle: CGFloat) -> CGSize {
+    public func sizeOfRectInBoundedBoxWithSize(_ size: CGSize, rotatedBy angle: CGFloat) -> CGSize {
         let angle = angle.magnitude.inRadians()
         let x = 1 / ((cos(angle) * cos(angle)) - (sin(angle) * sin(angle))) * (size.width * cos(angle) - size.height * sin(angle))
         let y = 1 / ((cos(angle) * cos(angle)) - (sin(angle) * sin(angle))) * (-size.width * sin(angle) + size.height * cos(angle))
@@ -29,14 +29,19 @@ public final class GeometryCalculator {
     public func boundingBox(of frame: CGRect, convertedToBoundsOf trasformedView: UIView) -> CGRect {
         let scale = trasformedView.transform.scale.x
         let angle = trasformedView.transform.rotation.magnitude
-        
-        let frameHeight = frame.maxY - frame.origin.y
-        let frameWidth = frame.maxX - frame.origin.x
-        let width = (cos(angle) * frameWidth + sin(angle) * frameHeight) / scale
-        let height = (sin(angle) * frameWidth + cos(angle) * frameHeight) / scale
 
-        let x = frame.origin.x - (width - frameWidth) / 2
-        let y = frame.origin.y - (height - frameHeight) / 2
+        let width = (cos(angle) * frame.width + sin(angle) * frame.height) / scale
+        let height = (sin(angle) * frame.width + cos(angle) * frame.height) / scale
+
+        let origin = positionOfPoint(frame.origin,
+                                     afterRotationOfRect: CGRect(origin: .zero, size: trasformedView.bounds.size),
+                                     byAngle: trasformedView.transform.rotation)
+
+//        let realOrigin = CGPoint(x: origin.x - width / 2, y: origin.y - height / 2)
+
+        print("Origin: \(origin)")
+        let x = (frame.origin.x + (frame.width / 2)) - (width / 2)
+        let y = (frame.origin.y + (frame.height / 2)) - (height / 2)
 
         return CGRect(x: x, y: y, width: width, height: height)
     }
@@ -48,10 +53,27 @@ public final class GeometryCalculator {
         return CGPoint(x: x, y: y)
     }
 
+    func positionOfPoint(_ point: CGPoint, afterRotationOfRect rect: CGRect, byAngle angle: CGFloat) -> CGPoint {
+        let center = CGPoint(x: rect.maxX - (rect.width / 2), y: rect.maxY - (rect.height / 2))
+        let width = point.x - center.x
+        let height = point.y - center.y
+        let vector = sqrt(pow(width, 2) + pow(height, 2))
+        let alpha = atan(width / height).inDegrees()
+
+        let beta = (angle - alpha)
+
+        let x = (sin(beta.inRadians()) * vector) + center.x
+        let y = (cos(beta.inRadians()) * vector) + center.y
+
+//        print("Angle: \(angle)")
+//        print("Point: \(CGPoint(x: x, y: y))")
+        return CGPoint(x: x, y: y)
+    }
+
     public func boundedBoxPositionOfPoint(_ point: CGPoint, afterRotationOfRect rect: CGRect, byAngle angle: CGFloat) -> CGPoint {
         let rotatedOrigin = CGPoint(x: angle < 0 ? 0 : sin(angle.magnitude.inRadians()) * rect.height,
                                     y: angle < 0 ? sin(angle.magnitude.inRadians()) * rect.width : 0)
-        
+
         let alpha = atan(point.y / point.x).inDegrees()
         let beta = 90 - (angle + alpha)
         let vectorToOrigin = sqrt(pow(point.x, 2) + pow(point.y, 2))

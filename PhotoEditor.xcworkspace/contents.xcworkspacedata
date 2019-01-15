@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:UIPlayground.playground">
+   </FileRef>
+   <FileRef
       location = "group:PhotoEditor.xcodeproj">
    </FileRef>
    <FileRef

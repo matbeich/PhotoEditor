@@ -74,6 +74,7 @@ public final class PhotoViewController: UIViewController {
         switch recognizer.state {
         case .began:
             let point = view.convert(recognizer.location(in: view), to: editsViewController.view)
+            
             changingCorner = editsViewController.canCrop ? editsViewController.cropViewCorner(at: point) : nil
 
         case .changed:
