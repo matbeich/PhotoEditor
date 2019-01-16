@@ -30,20 +30,31 @@ public final class GeometryCalculator {
         let scale = trasformedView.transform.scale.x
         let angle = trasformedView.transform.rotation.magnitude
 
-        let width = (cos(angle) * frame.width + sin(angle) * frame.height) / scale
-        let height = (sin(angle) * frame.width + cos(angle) * frame.height) / scale
+        let rotatedCenter = positionOfPoint(
+            frame.center,
+            afterRotationOfRect: CGRect(origin: .zero, size: trasformedView.bounds.size),
+            byAngle: trasformedView.transform.rotation.inDegrees()
+        )
 
-        let origin = positionOfPoint(frame.origin,
-                                     afterRotationOfRect: CGRect(origin: .zero, size: trasformedView.bounds.size),
-                                     byAngle: trasformedView.transform.rotation)
+        let transformedSize = CGSize(width: trasformedView.bounds.width * scale,
+                                     height: trasformedView.bounds.height * scale)
 
-//        let realOrigin = CGPoint(x: origin.x - width / 2, y: origin.y - height / 2)
+        let distanceToPointFromCenter = CGPoint(x: rotatedCenter.x - (trasformedView.bounds.width / 2),
+                                                y: rotatedCenter.y - (trasformedView.bounds.height / 2))
 
-        print("Origin: \(origin)")
-        let x = (frame.origin.x + (frame.width / 2)) - (width / 2)
-        let y = (frame.origin.y + (frame.height / 2)) - (height / 2)
+        let positionInTransformed = CGPoint(x: ((transformedSize.width / 2) + distanceToPointFromCenter.x) / scale,
+                                            y: ((transformedSize.height / 2) + distanceToPointFromCenter.y) / scale)
 
-        return CGRect(x: x, y: y, width: width, height: height)
+        let size = CGSize(
+            width: (cos(angle) * frame.width + sin(angle) * frame.height) / scale,
+            height: (sin(angle) * frame.width + cos(angle) * frame.height) / scale
+        )
+
+        let origin = CGPoint(
+            x: positionInTransformed.x - size.width / 2,
+            y: positionInTransformed.y - size.height / 2)
+
+        return CGRect(origin: origin, size: size)
     }
 
     public func focusedPoint(by scrollView: UIScrollView) -> CGPoint {
@@ -54,20 +65,24 @@ public final class GeometryCalculator {
     }
 
     func positionOfPoint(_ point: CGPoint, afterRotationOfRect rect: CGRect, byAngle angle: CGFloat) -> CGPoint {
-        let center = CGPoint(x: rect.maxX - (rect.width / 2), y: rect.maxY - (rect.height / 2))
-        let width = point.x - center.x
-        let height = point.y - center.y
-        let vector = sqrt(pow(width, 2) + pow(height, 2))
-        let alpha = atan(width / height).inDegrees()
+        let center = CGPoint(x: rect.maxX - (rect.width / 2),
+                             y: rect.maxY - (rect.height / 2))
 
-        let beta = (angle - alpha)
+        guard point != center else {
+            return point
+        }
 
-        let x = (sin(beta.inRadians()) * vector) + center.x
-        let y = (cos(beta.inRadians()) * vector) + center.y
+        let width: CGFloat = (point.x - center.x)
+        let height: CGFloat = (point.y - center.y)
 
-//        print("Angle: \(angle)")
-//        print("Point: \(CGPoint(x: x, y: y))")
-        return CGPoint(x: x, y: y)
+        let vector: CGFloat = sqrt(pow(width, 2) + pow(height, 2))
+        let alpha = atan2(width, height).inDegrees()
+        let beta = (angle + alpha)
+
+        let x = (sin(beta.inRadians()) * vector)
+        let y = (cos(beta.inRadians()) * vector)
+
+        return CGPoint(x: x + center.x, y: y + center.y)
     }
 
     public func boundedBoxPositionOfPoint(_ point: CGPoint, afterRotationOfRect rect: CGRect, byAngle angle: CGFloat) -> CGPoint {

@@ -118,7 +118,7 @@ public final class EditsViewController: UIViewController {
         cropView.clipToAllowedBounds(aspectScaled: true)
     }
 
-    lazy var cropViewFrame: CGRect = cropView.frame
+    lazy var scrollViewOffset: CGPoint = cropView.frame.origin
 
     public func saveCropedAppearence() {
         guard let size = photo?.size, !size.isEmpty else {
@@ -127,13 +127,10 @@ public final class EditsViewController: UIViewController {
 
         let frame = calculator.boundingBox(of: cropView.frame, convertedToBoundsOf: scrollView)
 
-        cropViewFrame = CGRect(x: (frame.origin.x + scrollView.bounds.origin.x) / scrollView.contentSize.width,
-                               y: (frame.origin.y + scrollView.bounds.origin.y) / scrollView.contentSize.height,
-                               width: frame.width,
-                               height: frame.height)
+        scrollViewOffset = CGPoint(x: frame.origin.x + scrollView.bounds.origin.x,
+                                   y: frame.origin.y + scrollView.bounds.origin.y)
 
         let rotatedSize = calculator.boundingBoxOfRectWithSize(size, rotatedByAngle: imageRotationAngle)
-
         visibleContentFrame = relativeCutRect.absolute(in: CGRect(origin: .zero, size: rotatedSize))
     }
 
@@ -142,17 +139,17 @@ public final class EditsViewController: UIViewController {
                             cropView.bounds.width / (visibleContentFrame.size.width * scrollViewScale))
 
         let allowedScale = min(scrollView.maximumZoomScale, cropScale)
+        let scale = max(1, allowedScale / scrollView.zoomScale)
         let currentCropViewOffset = calculator.boundingBox(of: cropView.frame, convertedToBoundsOf: scrollView)
 
         scrollView.minimumZoomScale = fitScaleForImageRotated(by: imageRotationAngle)
-
         scrollView.setZoomScale(allowedScale, animated: false)
-        let offsett = CGPoint(x: cropViewFrame.origin.x * scrollView.contentSize.width - currentCropViewOffset.origin.x,
-                              y: cropViewFrame.origin.y * scrollView.contentSize.height - currentCropViewOffset.origin.y)
-        print(offsett)
+
+        let offsett = CGPoint(x: (scrollViewOffset.x * scale) - currentCropViewOffset.origin.x,
+                              y: (scrollViewOffset.y * scale) - currentCropViewOffset.origin.y)
+
         scrollView.setContentOffset(offsett, animated: false)
         scrollView.isUserInteractionEnabled = mode.state.canScroll
-
         updateInsets()
     }
 
