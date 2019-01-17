@@ -58,24 +58,27 @@ class AppNavigator: NSObject {
         }
 
         modifiedImage = image
+        let rotatedImageFrame = CGRect(origin: .zero, size: self.modifiedImage?.size ?? .zero)
+        let cropZone = sceneController.cutArea.absolute(in: rotatedImageFrame)
 
-        DispatchQueue.global().sync {
-            if let angle = sceneController.angle, let image = modifiedImage?.zoom(scale: 1.0) {
-                modifiedImage = context.photoEditService.rotateImage(image, byDegrees: angle)
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else {
+                return
             }
 
-            let rotatedImageFrame = CGRect(origin: .zero, size: modifiedImage?.size ?? .zero)
-            let cropZone = sceneController.cutArea.absolute(in: rotatedImageFrame)
+            if let angle = sceneController.angle, let image = self.modifiedImage?.zoom(scale: 1.0) {
+                self.modifiedImage = self.context.photoEditService.rotateImage(image, byDegrees: angle)
+            }
 
-            modifiedImage = modifiedImage?.cropedZone(cropZone)
+            self.modifiedImage = self.modifiedImage?.cropedZone(cropZone)
 
-            if let filter = sceneController.selectedFilter, let editingImage = modifiedImage {
+            if let filter = sceneController.selectedFilter, let editingImage = self.modifiedImage {
                 self.context.photoEditService.asyncApplyFilter(filter, to: editingImage) { image in
                     callback(image != nil, image)
                 }
             } else {
-                DispatchQueue.main.async { [weak self] in
-                    callback(true, self?.modifiedImage)
+                DispatchQueue.main.async {
+                    callback(true, self.modifiedImage)
                 }
             }
         }
@@ -93,7 +96,6 @@ class AppNavigator: NSObject {
     private var modifiedImage: UIImage?
     private var sceneController: SceneController?
     private let context = AppContext()
-    private let calc = GeometryCalculator()
     private let photoLibraryService: PhotoLibraryServiceType = PhotoLibraryService()
 }
 

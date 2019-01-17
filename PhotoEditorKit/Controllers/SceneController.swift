@@ -135,13 +135,14 @@ open class SceneController: UIViewController {
 
     #warning("set filters")
     private func updateFiltersPhoto() {
+//        let photo = 
 //        guard let photo = photoViewController.cropedOriginal else {
 //            return
 //        }
 //
 //        DispatchQueue.global().async { [weak self] in
-//            let rect = photo.size.applying(CGAffineTransform(scaleX: 0.2, y: 0.2))
-//            let pht = photo.resizeVI(size: rect)
+//            let size = photo.size.applying(CGAffineTransform(scaleX: 0.2, y: 0.2))
+//            let pht = photo.resizeVI(size: size)
 //
 //            DispatchQueue.main.async {
 //                self?.filtersCollectionViewController.image = pht

@@ -11,13 +11,19 @@ public final class PhotoEditorService {
         self.context = CIContext(options: options)
     }
 
-    public func cropeZone(_ zone: CGRect, of image: UIImage) -> UIImage? {
-        return image.cropedZone(zone)
-    }
-
     public func asyncApplyFilter(_ filter: EditFilter, to image: UIImage, with callback: @escaping EditCallback) {
         DispatchQueue.global().async { [weak self] in
             let img = self?.applyFilter(filter, to: image)
+
+            DispatchQueue.main.async {
+                callback(img)
+            }
+        }
+    }
+
+    public func asyncRotateImage(_ image: UIImage, byDegrees degrees: CGFloat, callback: @escaping EditCallback) {
+        DispatchQueue.global().async { [weak self] in
+            let img = self?.rotateImage(image, byDegrees: degrees)
 
             DispatchQueue.main.async {
                 callback(img)
@@ -31,16 +37,6 @@ public final class PhotoEditorService {
         }
 
         return filter.applied(to: ciImage, in: context, withOptions: options).flatMap { UIImage(cgImage: $0) }
-    }
-
-    public func asyncRotateImage(_ image: UIImage, byDegrees degrees: CGFloat, callback: @escaping EditCallback) {
-        DispatchQueue.global().async { [weak self] in
-            let img = self?.rotateImage(image, byDegrees: degrees)
-
-            DispatchQueue.main.async {
-                callback(img)
-            }
-        }
     }
 
     public func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat) -> UIImage? {
