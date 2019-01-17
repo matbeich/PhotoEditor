@@ -58,8 +58,8 @@ class AppNavigator: NSObject {
         }
 
         modifiedImage = image
-        let rotatedImageFrame = CGRect(origin: .zero, size: self.modifiedImage?.size ?? .zero)
-        let cropZone = sceneController.cutArea.absolute(in: rotatedImageFrame)
+
+        let cutArea = sceneController.cutArea
 
         DispatchQueue.global().async { [weak self] in
             guard let self = self else {
@@ -70,6 +70,8 @@ class AppNavigator: NSObject {
                 self.modifiedImage = self.context.photoEditService.rotateImage(image, byDegrees: angle)
             }
 
+            let rotatedImageFrame = CGRect(origin: .zero, size: self.modifiedImage?.size ?? .zero)
+            let cropZone = cutArea.absolute(in: rotatedImageFrame)
             self.modifiedImage = self.modifiedImage?.cropedZone(cropZone)
 
             if let filter = sceneController.selectedFilter, let editingImage = self.modifiedImage {

@@ -50,6 +50,7 @@ open class SceneController: UIViewController {
 
     deinit {
         context.stateStore.unsubscribeSubscriber(with: id)
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
 
     override open func viewDidAppear(_ animated: Bool) {
@@ -120,6 +121,7 @@ open class SceneController: UIViewController {
     }
 
     private func setup() {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         rotateControl.setDotsColor(.lightGray)
         rotateControl.maxAngle = 90
         rotateControl.minAngle = -90
