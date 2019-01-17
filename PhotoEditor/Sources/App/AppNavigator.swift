@@ -111,9 +111,3 @@ extension AppNavigator: UIImagePickerControllerDelegate & UINavigationController
         print("cancel")
     }
 }
-
-public extension CGSize {
-    func scaledBy(_ value: CGFloat) -> CGSize {
-        return CGSize(width: width * value, height: height * value)
-    }
-}

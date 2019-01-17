@@ -3,20 +3,11 @@
 //
 
 import Foundation
-
+import Utils
 
 public final class GeometryCalculator {
 
     public init() {}
-    
-    public func boundingBoxOfRectWithSize(_ size: CGSize, rotatedByAngle angle: CGFloat) -> CGSize {
-        let angle = angle.inRadians().magnitude
-
-        let width = cos(angle) * size.width + sin(angle) * size.height
-        let height = sin(angle) * size.width + cos(angle) * size.height
-
-        return CGSize(width: width, height: height)
-    }
 
     public func sizeOfRectFittedInBoxWithSize(_ size: CGSize, rotationAngle angle: CGFloat) -> CGSize {
         let angle = angle.magnitude.inRadians()
@@ -45,16 +36,22 @@ public final class GeometryCalculator {
         let positionInTransformed = CGPoint(x: ((transformedSize.width / 2) + distanceToPointFromCenter.x) / scale,
                                             y: ((transformedSize.height / 2) + distanceToPointFromCenter.y) / scale)
 
-        let size = CGSize(
-            width: (cos(angle) * frame.width + sin(angle) * frame.height) / scale,
-            height: (sin(angle) * frame.width + cos(angle) * frame.height) / scale
-        )
+        let size = boundingBoxOfRectWithSize(frame.size, rotatedByAngle: angle.inDegrees()) / scale
 
         let origin = CGPoint(
             x: positionInTransformed.x - size.width / 2,
             y: positionInTransformed.y - size.height / 2)
 
         return CGRect(origin: origin, size: size)
+    }
+
+    public func boundingBoxOfRectWithSize(_ size: CGSize, rotatedByAngle angle: CGFloat) -> CGSize {
+        let angle = angle.inRadians().magnitude
+
+        let width = cos(angle) * size.width + sin(angle) * size.height
+        let height = sin(angle) * size.width + cos(angle) * size.height
+
+        return CGSize(width: width, height: height)
     }
 
     public func focusedPoint(by scrollView: UIScrollView) -> CGPoint {
