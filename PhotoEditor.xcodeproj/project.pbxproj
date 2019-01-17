@@ -49,6 +49,8 @@
 		844102D821B8012000695AC9 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897522191A75300D99E91 /* PhotoViewController.swift */; };
 		844102D921B8012000695AC9 /* FiltersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F5A0E62191B77300DEC40F /* FiltersCollectionViewController.swift */; };
 		844102DA21B8012000695AC9 /* FilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574921A8111700D24473 /* FilterCollectionViewCell.swift */; };
+		8441824721F082C50038FC62 /* UIScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8441824621F082C50038FC62 /* UIScrollView.swift */; };
+		8441824921F0A07E0038FC62 /* KeepInBoundsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8441824821F0A07E0038FC62 /* KeepInBoundsAction.swift */; };
 		844FC8DB2195669700E5BD08 /* PhotoEditorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */; };
 		844FC8E22195669700E5BD08 /* PhotoEditorKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8E12195669700E5BD08 /* PhotoEditorKitTests.swift */; };
 		844FC8E42195669700E5BD08 /* PhotoEditorKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FC8D42195669700E5BD08 /* PhotoEditorKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -176,6 +178,8 @@
 		843F78D421B6A5DA0028C43A /* Subscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
 		843F78DA21B6A9B20028C43A /* WatermarkRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkRenderer.swift; sourceTree = "<group>"; };
 		844102CB21B7FA4200695AC9 /* EditMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMode.swift; sourceTree = "<group>"; };
+		8441824621F082C50038FC62 /* UIScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollView.swift; sourceTree = "<group>"; };
+		8441824821F0A07E0038FC62 /* KeepInBoundsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepInBoundsAction.swift; sourceTree = "<group>"; };
 		844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PhotoEditorKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		844FC8D42195669700E5BD08 /* PhotoEditorKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoEditorKit.h; sourceTree = "<group>"; };
 		844FC8D52195669700E5BD08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -327,6 +331,7 @@
 				843F78D421B6A5DA0028C43A /* Subscriber.swift */,
 				844102CB21B7FA4200695AC9 /* EditMode.swift */,
 				842E308A21C157080096F1F9 /* Models */,
+				8441824821F0A07E0038FC62 /* KeepInBoundsAction.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -357,6 +362,7 @@
 				84D4AA5721B8035D00838EB1 /* UICollectionViewCell.swift */,
 				84B02AF221B9633200370217 /* CGRect.swift */,
 				84B02AF421BA717500370217 /* UIViewController.swift */,
+				8441824621F082C50038FC62 /* UIScrollView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1045,6 +1051,7 @@
 				8413020B21B7F88A00908E58 /* Subscriber.swift in Sources */,
 				842E307F21C00C0B0096F1F9 /* RotateAngleControl.swift in Sources */,
 				8413020321B7F24900908E58 /* EditingState.swift in Sources */,
+				8441824721F082C50038FC62 /* UIScrollView.swift in Sources */,
 				844102D921B8012000695AC9 /* FiltersCollectionViewController.swift in Sources */,
 				844102D221B7FB7500695AC9 /* Toolbar.swift in Sources */,
 				8413020421B7F25000908E58 /* FilterState.swift in Sources */,
@@ -1054,6 +1061,7 @@
 				842E308321C119810096F1F9 /* DottedNumberedCircleView.swift in Sources */,
 				844102D121B7FB7500695AC9 /* BarButtonItem.swift in Sources */,
 				844102D721B8012000695AC9 /* SceneController.swift in Sources */,
+				8441824921F0A07E0038FC62 /* KeepInBoundsAction.swift in Sources */,
 				8413020921B7F7BF00908E58 /* AppFilter.swift in Sources */,
 				844102CA21B7FA0A00695AC9 /* State.swift in Sources */,
 				8413020621B7F25000908E58 /* NormalState.swift in Sources */,
