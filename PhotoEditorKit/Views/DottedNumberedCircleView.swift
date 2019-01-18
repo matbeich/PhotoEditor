@@ -33,7 +33,7 @@ final class DottedNumberedCircleView: UIView {
     }
 
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("Error: init(coder:) has not been implemented, use init(circle:, frame:) instead")
     }
 
     override func draw(_ rect: CGRect) {
