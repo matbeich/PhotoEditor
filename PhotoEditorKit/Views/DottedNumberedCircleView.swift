@@ -10,8 +10,23 @@ final class DottedNumberedCircleView: UIView {
             setNeedsDisplay()
         }
     }
+
+    var dotsNumber: Int {
+        didSet {
+            update()
+        }
+    }
+
+    var dotsRadius: CGFloat {
+        didSet {
+            update()
+        }
+    }
+
     public init(circle: DottedNumberedCircle, frame: CGRect) {
         self.circle = circle
+        self.dotsNumber = circle.numberOfDots
+        self.dotsRadius = circle.dotRadius
         super.init(frame: frame)
 
         backgroundColor = .clear
@@ -30,5 +45,14 @@ final class DottedNumberedCircleView: UIView {
         circle.draw(with: context, in: rect)
     }
 
-    private let circle: DottedNumberedCircle
+    private func update() {
+        circle = DottedNumberedCircle(
+            numberOfDots: dotsNumber,
+            dotRadius: dotsRadius
+        )
+
+        setNeedsDisplay()
+    }
+
+    private var circle: DottedNumberedCircle
 }

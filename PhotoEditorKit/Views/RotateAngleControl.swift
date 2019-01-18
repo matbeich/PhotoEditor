@@ -65,8 +65,16 @@ public final class RotateAngleControl: UIControl {
         setAngle(angle)
     }
 
+    public func setDotsNumber(_ number: Int) {
+        numberedCircleView.dotsNumber = number
+    }
+
     public func setDotsColor(_ color: UIColor) {
         numberedCircleView.dotsColor = color
+    }
+
+    public func setDotsRadius(_ radius: CGFloat) {
+        numberedCircleView.dotsRadius = radius
     }
 
     public func rotateToAngle(_ angle: CGFloat, animated: Bool = false) {
