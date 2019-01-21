@@ -13,37 +13,6 @@ public enum KeepInBoundsAction {
     case zoomFitHeight
     case none
 
-    init(cropFrame: CGRect, imageFrame: CGRect) {
-        let fitHeight = cropFrame.height > imageFrame.height
-        let fitWidth = cropFrame.width > imageFrame.width
-
-        self = .none
-
-        if fitHeight {
-            self = .zoomFitHeight
-        }
-
-        if fitWidth {
-            self = .zoomFitWidth
-        }
-
-        if (cropFrame.minY < imageFrame.minY) && !fitHeight {
-            self = .dragUp
-        }
-
-        if (cropFrame.maxY > imageFrame.maxY) && !fitHeight {
-            self = .dragDown
-        }
-
-        if (cropFrame.minX < imageFrame.minX) && !fitWidth {
-            self = .dragLeft
-        }
-
-        if (cropFrame.maxX > imageFrame.maxX) && !fitWidth {
-            self = .dragRight
-        }
-    }
-
     func contentOffsetInScrollView(_ scrollView: UIScrollView,forCropFrame frame: CGRect, imageFrame: CGRect) -> CGPoint {
         switch self {
         case .dragDown:

@@ -170,3 +170,49 @@ private extension UIImage.Orientation {
         }
     }
 }
+
+
+extension CGImage: Image {
+    public var id: String {
+        return String(describing: self.hashValue)
+    }
+}
+
+extension CIImage: Image {
+    public var id: String {
+        return String(describing: self.hashValue)
+    }
+}
+
+extension Data: Image {
+    public var id: String {
+        return String(describing: self.hashValue)
+    }
+}
+
+extension UIImage: Image {
+    public var id: String {
+        return String(describing: self.hashValue)
+    }
+
+    var cgOrientation: CGImagePropertyOrientation {
+        switch imageOrientation {
+        case .up:
+            return .up
+        case .down:
+            return .down
+        case .left:
+            return .left
+        case .right:
+            return .right
+        case .downMirrored:
+            return .downMirrored
+        case .upMirrored:
+            return .upMirrored
+        case .leftMirrored:
+            return .leftMirrored
+        case .rightMirrored:
+            return .rightMirrored
+        }
+    }
+}
