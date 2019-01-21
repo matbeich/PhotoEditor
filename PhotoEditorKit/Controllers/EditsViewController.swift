@@ -19,7 +19,7 @@ public final class EditsViewController: UIViewController {
             applyMode()
         }
     }
-
+    
     public var photo: UIImage? {
         return imageView.image
     }
@@ -28,12 +28,12 @@ public final class EditsViewController: UIViewController {
         return calculateCutRect()
     }
 
-    public init(frame: CGRect = .zero, image: UIImage? = nil) {
+    public init(frame: CGRect = .zero, image: UIImage? = nil, context: AppContext) {
         self.imageView = UIImageView(image: image)
         self.scrollView = UIScrollView(frame: frame)
         self.cropView = CropView(grid: Grid(numberOfRows: 3, numberOfColumns: 3))
         self.visibleContentFrame = .zero
-
+        self.context = context
         super.init(nibName: nil, bundle: nil)
 
         setupScrollView()
@@ -84,7 +84,7 @@ public final class EditsViewController: UIViewController {
     }
 
     private func zoomForRotation(by angle: CGFloat) -> CGFloat {
-        let size = calculator.boundingBoxOfRectWithSize(scrollView.bounds.size, rotatedByAngle: angle)
+        let size = context.calculator.boundingBoxOfRectWithSize(scrollView.bounds.size, rotatedByAngle: angle)
 
         return max(size.width / scrollView.bounds.width,
                    size.height / scrollView.bounds.height)
@@ -97,7 +97,7 @@ public final class EditsViewController: UIViewController {
 
         return angle == 0 ?
             fitScaleForImage(image) :
-            calculator.fitScale(for: image, in: cropView, rotationAngle: angle) / scrollViewScale
+            context.calculator.fitScale(for: image, in: cropView, rotationAngle: angle) / scrollViewScale
     }
 
     public func showMask() {
@@ -128,7 +128,7 @@ public final class EditsViewController: UIViewController {
         scrollViewOffset = CGPoint(x: convertedCropViewFrame.origin.x + scrollView.bounds.origin.x,
                                    y: convertedCropViewFrame.origin.y + scrollView.bounds.origin.y)
 
-        let rotatedSize = calculator.boundingBoxOfRectWithSize(size, rotatedByAngle: imageRotationAngle)
+        let rotatedSize = context.calculator.boundingBoxOfRectWithSize(size, rotatedByAngle: imageRotationAngle)
         visibleContentFrame = relativeCutRect.absolute(in: CGRect(origin: .zero, size: rotatedSize))
     }
 
@@ -273,16 +273,16 @@ public final class EditsViewController: UIViewController {
         let photoFrame = CGRect(origin: .zero, size: photo?.size ?? .zero)
         let imagePositionInCenterOfScrollView = scrollView.contentPositionInCenter
 
-        let photoBoundingBox = calculator.boundingBoxOfRectWithSize(photoFrame.size,
+        let photoBoundingBox = context.calculator.boundingBoxOfRectWithSize(photoFrame.size,
                                                                     rotatedByAngle: imageRotationAngle)
 
         let contentSize = CGSize(width: scrollView.contentSize.width * scrollViewScale,
                                  height: scrollView.contentSize.height * scrollViewScale)
 
-        let contentBoundingBox = calculator.boundingBoxOfRectWithSize(contentSize,
+        let contentBoundingBox = context.calculator.boundingBoxOfRectWithSize(contentSize,
                                                                       rotatedByAngle: imageRotationAngle)
 
-        let center = calculator.boundedBoxPositionOfPoint(imagePositionInCenterOfScrollView,
+        let center = context.calculator.boundedBoxPositionOfPoint(imagePositionInCenterOfScrollView,
                                                           afterRotationOfRect: photoFrame,
                                                           byAngle: imageRotationAngle)
 
@@ -329,14 +329,14 @@ public final class EditsViewController: UIViewController {
     }
 
     private var convertedCropViewFrame: CGRect {
-        return calculator.boundingBox(of: cropView.frame, convertedToOriginalFrameOfTransformedView: scrollView)
+        return context.calculator.boundingBox(of: cropView.frame, convertedToOriginalFrameOfTransformedView: scrollView)
     }
 
+    private let context: AppContext
     private var scrollView: UIScrollView
     private let effectsView = EffectsView()
     private var cropView = CropView(frame: .zero)
     private var visibleContentFrame: CGRect
-    private let calculator = GeometryCalculator()
 }
 
 public extension EditsViewController {

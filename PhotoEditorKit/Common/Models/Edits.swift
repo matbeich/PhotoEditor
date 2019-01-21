@@ -5,9 +5,9 @@
 import Foundation
 
 public struct Edits: Codable {
-    var imageRotationAngle: CGFloat
-    var relativeCutFrame: CGRect
-    var filterName: String?
+    public var imageRotationAngle: CGFloat
+    public var relativeCutFrame: CGRect
+    public var filterName: String?
 
     public mutating func reset() {
         imageRotationAngle = 0

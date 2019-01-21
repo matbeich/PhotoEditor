@@ -31,6 +31,7 @@ public final class PhotoViewController: UIViewController {
 
     public init(context: AppContext) {
         self.context = context
+        self.editsViewController = EditsViewController(context: context)
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -108,5 +109,5 @@ public final class PhotoViewController: UIViewController {
 
     private let context: AppContext
     private var changingCorner: Corner?
-    private let editsViewController = EditsViewController()
+    private let editsViewController: EditsViewController
 }
