@@ -10,11 +10,13 @@ public protocol Image {
 }
 
 public typealias FaceDetectionCallback = (VNRequest, Error?) -> Void
+public typealias FacePartsDetectionCallback = ([FacePartLocation]) -> Void
 
 public final class FaceDetector {
+
     public init() {}
 
-    public func addImage(_ image: Image) {
+    public func prepareForImage(_ image: Image) {
         var request: VNImageRequestHandler?
         let orientation = (image as? UIImage)?.cgOrientation ?? .up
 
@@ -48,6 +50,29 @@ public final class FaceDetector {
         requestHandlers.updateValue(requestHandler, forKey: image.id)
     }
 
+    public func detectPartsOfFace(_ parts: [FacePart], on image: UIImage, callback: @escaping FacePartsDetectionCallback) {
+        let faceDetectionCallback: FaceDetectionCallback = { request, error in
+            var callbackResults = [FacePartLocation]()
+
+            guard error == nil else {
+                callback(callbackResults)
+                return
+            }
+
+            let results = request.results as? [VNFaceObservation]
+
+            results?.forEach { faceObservation in
+                parts.forEach {
+                    callbackResults.append(FacePartLocation(facePart: $0, locations: $0.landmarkRegionsFor(observation: faceObservation)))
+                }
+            }
+
+            callback(callbackResults)
+        }
+
+        detectFacesOnImage(image, callback: faceDetectionCallback)
+    }
+
     public func detectFacesOnImage(_ image: Image, callback: @escaping FaceDetectionCallback) {
         let faceRequest = VNDetectFaceLandmarksRequest(completionHandler: callback)
 
@@ -62,49 +87,4 @@ public final class FaceDetector {
     }
 
     private var requestHandlers = [String: VNImageRequestHandler]()
-}
-
-extension CGImage: Image {
-    public var id: String {
-        return String(describing: self.hashValue)
-    }
-}
-
-extension CIImage: Image {
-    public var id: String {
-        return String(describing: self.hashValue)
-    }
-}
-
-extension Data: Image {
-    public var id: String {
-        return String(describing: self.hashValue)
-    }
-}
-
-extension UIImage: Image {
-    public var id: String {
-        return String(describing: self.hashValue)
-    }
-
-    var cgOrientation: CGImagePropertyOrientation {
-        switch imageOrientation {
-        case .up:
-            return .up
-        case .down:
-            return .down
-        case .left:
-            return .left
-        case .right:
-            return .right
-        case .downMirrored:
-            return .downMirrored
-        case .upMirrored:
-            return .upMirrored
-        case .leftMirrored:
-            return .leftMirrored
-        case .rightMirrored:
-            return .rightMirrored
-        }
-    }
 }

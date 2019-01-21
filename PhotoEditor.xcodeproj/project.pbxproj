@@ -51,6 +51,7 @@
 		844102DA21B8012000695AC9 /* FilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E574921A8111700D24473 /* FilterCollectionViewCell.swift */; };
 		8441824721F082C50038FC62 /* UIScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8441824621F082C50038FC62 /* UIScrollView.swift */; };
 		8441824921F0A07E0038FC62 /* KeepInBoundsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8441824821F0A07E0038FC62 /* KeepInBoundsAction.swift */; };
+		844586F821F5DE8100E00B76 /* FacePartLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844586F721F5DE8100E00B76 /* FacePartLocation.swift */; };
 		844FC8DB2195669700E5BD08 /* PhotoEditorKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */; };
 		844FC8E22195669700E5BD08 /* PhotoEditorKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844FC8E12195669700E5BD08 /* PhotoEditorKitTests.swift */; };
 		844FC8E42195669700E5BD08 /* PhotoEditorKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FC8D42195669700E5BD08 /* PhotoEditorKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -58,6 +59,7 @@
 		8488972B2191A03600D99E91 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8488972A2191A03600D99E91 /* Assets.xcassets */; };
 		8488972E2191A03600D99E91 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8488972C2191A03600D99E91 /* LaunchScreen.storyboard */; };
 		848897392191A03600D99E91 /* PhotoEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848897382191A03600D99E91 /* PhotoEditorTests.swift */; };
+		8493EA2E21F5C68700B02477 /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8493EA2D21F5C68700B02477 /* FaceDetector.swift */; };
 		849CC7DF21B7D6020018A08A /* StickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849CC7DE21B7D6020018A08A /* StickerCollectionViewCell.swift */; };
 		84AE3F8021B03E9B004E142D /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 84AE3F7F21B03E9B004E142D /* test.jpg */; };
 		84AE3F8421B047C7004E142D /* AppNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AE3F8321B047C7004E142D /* AppNavigator.swift */; };
@@ -180,6 +182,7 @@
 		844102CB21B7FA4200695AC9 /* EditMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMode.swift; sourceTree = "<group>"; };
 		8441824621F082C50038FC62 /* UIScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollView.swift; sourceTree = "<group>"; };
 		8441824821F0A07E0038FC62 /* KeepInBoundsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepInBoundsAction.swift; sourceTree = "<group>"; };
+		844586F721F5DE8100E00B76 /* FacePartLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacePartLocation.swift; sourceTree = "<group>"; };
 		844FC8D22195669700E5BD08 /* PhotoEditorKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PhotoEditorKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		844FC8D42195669700E5BD08 /* PhotoEditorKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoEditorKit.h; sourceTree = "<group>"; };
 		844FC8D52195669700E5BD08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -211,6 +214,7 @@
 		8488974D2191A62900D99E91 /* EditingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingState.swift; sourceTree = "<group>"; };
 		8488974F2191A66400D99E91 /* FilterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterState.swift; sourceTree = "<group>"; };
 		848897522191A75300D99E91 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
+		8493EA2D21F5C68700B02477 /* FaceDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaceDetector.swift; sourceTree = "<group>"; };
 		849CC7DE21B7D6020018A08A /* StickerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerCollectionViewCell.swift; sourceTree = "<group>"; };
 		84AE3F7F21B03E9B004E142D /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		84AE3F8321B047C7004E142D /* AppNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigator.swift; sourceTree = "<group>"; };
@@ -311,6 +315,7 @@
 		8413020121B7F21200908E58 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				8493EA2D21F5C68700B02477 /* FaceDetector.swift */,
 				84662DEC21AC333700852812 /* AppStateStore.swift */,
 				846E574621A8009600D24473 /* PhotoEditorService.swift */,
 				843F78DA21B6A9B20028C43A /* WatermarkRenderer.swift */,
@@ -387,6 +392,7 @@
 		842E308A21C157080096F1F9 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				844586F721F5DE8100E00B76 /* FacePartLocation.swift */,
 				844FC8F021956B9A00E5BD08 /* Grid.swift */,
 				842E308021C013490096F1F9 /* DottedNumeredCircle.swift */,
 				842E308D21D367310096F1F9 /* Edits.swift */,
@@ -1045,6 +1051,7 @@
 				8413020721B7F79100908E58 /* Config.swift in Sources */,
 				843F78D921B6A72E0028C43A /* CGContext + UIImage.swift in Sources */,
 				842E308E21D367320096F1F9 /* Edits.swift in Sources */,
+				844586F821F5DE8100E00B76 /* FacePartLocation.swift in Sources */,
 				844102D821B8012000695AC9 /* PhotoViewController.swift in Sources */,
 				842E308121C013490096F1F9 /* DottedNumeredCircle.swift in Sources */,
 				844102D321B7FDE300695AC9 /* Grid.swift in Sources */,
@@ -1068,6 +1075,7 @@
 				84D4AA5921B8055100838EB1 /* AppContext.swift in Sources */,
 				844102D621B8002300695AC9 /* AppStateStore.swift in Sources */,
 				844102CD21B7FB6A00695AC9 /* EffectsView.swift in Sources */,
+				8493EA2E21F5C68700B02477 /* FaceDetector.swift in Sources */,
 				844102D021B7FB6F00695AC9 /* CornerView.swift in Sources */,
 				8413020D21B7F89700908E58 /* AppState.swift in Sources */,
 				844102CE21B7FB6A00695AC9 /* EditsViewController.swift in Sources */,
