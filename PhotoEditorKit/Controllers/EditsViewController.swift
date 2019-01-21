@@ -298,32 +298,26 @@ public final class EditsViewController: UIViewController {
     private func tuneContentPlacement() {
         let shouldZoomToFitHeight = convertedCropViewFrame.height > scrollView.contentFrame.height
         let shouldZoomToFitWidth = convertedCropViewFrame.width > scrollView.contentFrame.width
-        let shoudUpdateZoom = shouldZoomToFitWidth || shouldZoomToFitHeight
 
-        let shouldMoveUp = convertedCropViewFrame.minY < scrollView.contentFrame.minY
-        let shouldMoveDown = convertedCropViewFrame.maxY > scrollView.contentFrame.maxY
-        let shouldMoveLeft = convertedCropViewFrame.minX < scrollView.contentFrame.minX
-        let shouldMoveRight = convertedCropViewFrame.maxX > scrollView.contentFrame.maxX
-
-        if shoudUpdateZoom {
+        if shouldZoomToFitWidth || shouldZoomToFitHeight {
             setMinimumZoomScale()
             let action: KeepInBoundsAction = shouldZoomToFitWidth ? .zoomFitWidth : .zoomFitHeight
             scrollView.dragContentToCorrespondingEdge(of: convertedCropViewFrame, using: action)
         }
 
-        if shouldMoveUp {
+        if convertedCropViewFrame.minY < scrollView.contentFrame.minY {
             scrollView.dragContentToCorrespondingEdge(of: convertedCropViewFrame, using: .dragUp)
         }
 
-        if shouldMoveLeft {
+        if convertedCropViewFrame.minX < scrollView.contentFrame.minX {
             scrollView.dragContentToCorrespondingEdge(of: convertedCropViewFrame, using: .dragLeft)
         }
 
-        if shouldMoveDown {
+        if convertedCropViewFrame.maxY > scrollView.contentFrame.maxY {
             scrollView.dragContentToCorrespondingEdge(of: convertedCropViewFrame, using: .dragDown)
         }
 
-        if shouldMoveRight {
+        if convertedCropViewFrame.maxX > scrollView.contentFrame.maxX {
             scrollView.dragContentToCorrespondingEdge(of: convertedCropViewFrame, using: .dragRight)
         }
     }
