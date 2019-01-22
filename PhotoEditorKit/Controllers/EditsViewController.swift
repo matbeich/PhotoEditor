@@ -7,11 +7,13 @@ import UIKit
 
 public final class EditsViewController: UIViewController {
 
-    public private(set) var imageRotationAngle: CGFloat = 0
-    public private(set) var scrollViewScale: CGFloat = 1
+//    public var edits: Edits {
+//
+//    }
 
-    public var canCrop: Bool {
-        return mode.state.showCrop
+
+    public var imageRotationAngle: CGFloat {
+        return scrollView.transform.rotation
     }
 
     public var mode: EditMode = .normal {
@@ -19,7 +21,7 @@ public final class EditsViewController: UIViewController {
             applyMode()
         }
     }
-    
+
     public var photo: UIImage? {
         return imageView.image
     }
@@ -64,12 +66,10 @@ public final class EditsViewController: UIViewController {
     }
 
     public func rotatePhoto(by angle: CGFloat) {
-        scrollViewScale = zoomForRotation(by: angle)
-
+        let scrollViewScale = zoomForRotation(by: angle)
         let transform = CGAffineTransform.identity
         let scaling = transform.scaledBy(x: scrollViewScale, y: scrollViewScale)
         let rotating = scaling.rotated(by: angle.inRadians())
-
         let minScale = fitScaleForImageRotated(by: angle)
 
         scrollView.transform = rotating
@@ -80,7 +80,7 @@ public final class EditsViewController: UIViewController {
         }
 
         updateInsets()
-        self.imageRotationAngle = angle
+//        self.imageRotationAngle = angle
     }
 
     private func zoomForRotation(by angle: CGFloat) -> CGFloat {
@@ -332,6 +332,10 @@ public final class EditsViewController: UIViewController {
         return context.calculator.boundingBox(of: cropView.frame, convertedToOriginalFrameOfTransformedView: scrollView)
     }
 
+    private var scrollViewScale: CGFloat {
+        return scrollView.transform.scale.x
+    }
+
     private let context: AppContext
     private var scrollView: UIScrollView
     private let effectsView = EffectsView()
@@ -364,25 +368,5 @@ extension EditsViewController: UIScrollViewDelegate {
 
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         hideMask()
-    }
-}
-
-private extension UIScrollView {
-    var contentFrame: CGRect {
-        return CGRect(x: -bounds.origin.x,
-                      y: -bounds.origin.y,
-                      width: contentSize.width,
-                      height: contentSize.height)
-    }
-
-    func dragContentToCorrespondingEdge(of cropFrame: CGRect, using action: KeepInBoundsAction) {
-        setContentOffset(action.contentOffsetInScrollView(self, forCropFrame: cropFrame, imageFrame: contentFrame), animated: false)
-    }
-
-    func centerWithView(_ view: UIView, animated: Bool = false) {
-        let xOf = contentSize.width / 2 + view.center.x.distance(to: frame.minX)
-        let yOf = contentSize.height / 2 + view.center.y.distance(to: frame.minY)
-
-        setContentOffset(CGPoint(x: xOf, y: yOf), animated: animated)
     }
 }
