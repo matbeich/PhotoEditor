@@ -7,14 +7,7 @@ import UIKit
 
 public final class EditsViewController: UIViewController {
 
-//    public var edits: Edits {
-//
-//    }
-
-
-    public var imageRotationAngle: CGFloat {
-        return scrollView.transform.rotation
-    }
+    public var edits: Edits
 
     public var mode: EditMode = .normal {
         didSet {
@@ -32,6 +25,7 @@ public final class EditsViewController: UIViewController {
 
     public init(frame: CGRect = .zero, image: UIImage? = nil, context: AppContext) {
         self.imageView = UIImageView(image: image)
+        self.edits = .initial
         self.scrollView = UIScrollView(frame: frame)
         self.cropView = CropView(grid: Grid(numberOfRows: 3, numberOfColumns: 3))
         self.visibleContentFrame = .zero
@@ -80,7 +74,7 @@ public final class EditsViewController: UIViewController {
         }
 
         updateInsets()
-//        self.imageRotationAngle = angle
+        updateEditsWith(angle: angle)
     }
 
     private func zoomForRotation(by angle: CGFloat) -> CGFloat {
@@ -128,7 +122,7 @@ public final class EditsViewController: UIViewController {
         scrollViewOffset = CGPoint(x: convertedCropViewFrame.origin.x + scrollView.bounds.origin.x,
                                    y: convertedCropViewFrame.origin.y + scrollView.bounds.origin.y)
 
-        let rotatedSize = context.calculator.boundingBoxOfRectWithSize(size, rotatedByAngle: imageRotationAngle)
+        let rotatedSize = context.calculator.boundingBoxOfRectWithSize(size, rotatedByAngle: edits.imageRotationAngle ?? 0)
         visibleContentFrame = relativeCutRect.absolute(in: CGRect(origin: .zero, size: rotatedSize))
     }
 
@@ -139,7 +133,7 @@ public final class EditsViewController: UIViewController {
         let allowedScale = min(scrollView.maximumZoomScale, cropScale)
         let scale = max(1, allowedScale / scrollView.zoomScale)
 
-        scrollView.minimumZoomScale = fitScaleForImageRotated(by: imageRotationAngle)
+        scrollView.minimumZoomScale = fitScaleForImageRotated(by: edits.imageRotationAngle ?? 0)
         scrollView.setZoomScale(allowedScale, animated: false)
 
         let offsett = CGPoint(x: (scrollViewOffset.x * scale) - convertedCropViewFrame.origin.x,
@@ -249,7 +243,7 @@ public final class EditsViewController: UIViewController {
     }
 
     private func setMinimumZoomScale() {
-        scrollView.minimumZoomScale = fitScaleForImageRotated(by: imageRotationAngle)
+        scrollView.minimumZoomScale = fitScaleForImageRotated(by: edits.imageRotationAngle ?? 0)
         scrollView.zoomScale = scrollView.minimumZoomScale
     }
 
@@ -270,21 +264,22 @@ public final class EditsViewController: UIViewController {
     }
 
     private func calculateCutRect() -> CGRect {
+        let angle = edits.imageRotationAngle ?? 0
         let photoFrame = CGRect(origin: .zero, size: photo?.size ?? .zero)
         let imagePositionInCenterOfScrollView = scrollView.contentPositionInCenter
 
         let photoBoundingBox = context.calculator.boundingBoxOfRectWithSize(photoFrame.size,
-                                                                    rotatedByAngle: imageRotationAngle)
+                                                                    rotatedByAngle: angle)
 
         let contentSize = CGSize(width: scrollView.contentSize.width * scrollViewScale,
                                  height: scrollView.contentSize.height * scrollViewScale)
 
         let contentBoundingBox = context.calculator.boundingBoxOfRectWithSize(contentSize,
-                                                                      rotatedByAngle: imageRotationAngle)
+                                                                      rotatedByAngle: angle)
 
         let center = context.calculator.boundedBoxPositionOfPoint(imagePositionInCenterOfScrollView,
                                                           afterRotationOfRect: photoFrame,
-                                                          byAngle: imageRotationAngle)
+                                                          byAngle: angle)
 
         let relativeSize = CGSize(width: cropView.bounds.width / contentBoundingBox.width,
                                   height: cropView.bounds.height / contentBoundingBox.height)
@@ -320,6 +315,14 @@ public final class EditsViewController: UIViewController {
         if convertedCropViewFrame.maxX > scrollView.contentFrame.maxX {
             scrollView.dragContentToCorrespondingEdge(of: convertedCropViewFrame, using: .dragRight)
         }
+    }
+
+    private func updateEditsWith(angle: CGFloat? = nil, relativeCutRect: CGRect? = nil, filter: AppFilter? = nil) {
+        edits = Edits(
+            angle: angle ?? self.edits.imageRotationAngle,
+            relativeCutFrame: relativeCutRect ?? self.edits.relativeCutFrame,
+            filterName: filter?.specs.name ?? self.edits.filterName
+        )
     }
 
     private var imageView: UIImageView {

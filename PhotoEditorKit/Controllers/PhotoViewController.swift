@@ -20,7 +20,7 @@ public final class PhotoViewController: UIViewController {
     }
 
     public var angle: CGFloat {
-        return editsViewController.imageRotationAngle
+        return editsViewController.edits.imageRotationAngle ?? 0
     }
 
     public var mode: EditMode = .crop {
