@@ -15,14 +15,6 @@ public final class PhotoViewController: UIViewController {
         }
     }
 
-    public var cutArea: CGRect {
-        return editsViewController.relativeCutRect
-    }
-
-    public var angle: CGFloat {
-        return editsViewController.edits.imageRotationAngle ?? 0
-    }
-
     public var mode: EditMode = .crop {
         didSet {
             editsViewController.mode = mode
