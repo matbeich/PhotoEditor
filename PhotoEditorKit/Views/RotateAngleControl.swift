@@ -81,7 +81,10 @@ public final class RotateAngleControl: UIControl {
         self.angle = angle
 
         if animated {
-            UIView.animate(withDuration: 1) { [weak self] in
+            let distance = Double((self.angle - angle).magnitude)
+            let speed: Double = 30.0
+            let duration: TimeInterval = distance / speed
+            UIView.animate(withDuration: duration) { [weak self] in
                 guard let self = self else {
                     return
                 }

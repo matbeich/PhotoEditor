@@ -15,14 +15,6 @@ public final class PhotoViewController: UIViewController {
         }
     }
 
-    public var cutArea: CGRect {
-        return editsViewController.relativeCutRect
-    }
-
-    public var angle: CGFloat {
-        return editsViewController.imageRotationAngle
-    }
-
     public var mode: EditMode = .crop {
         didSet {
             editsViewController.mode = mode
@@ -31,6 +23,7 @@ public final class PhotoViewController: UIViewController {
 
     public init(context: AppContext) {
         self.context = context
+        self.editsViewController = EditsViewController(context: context)
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -75,7 +68,7 @@ public final class PhotoViewController: UIViewController {
         switch recognizer.state {
         case .began:
             let point = view.convert(recognizer.location(in: view), to: editsViewController.view)
-            changingCorner = editsViewController.canCrop ? editsViewController.cropViewCorner(at: point) : nil
+            changingCorner = context.stateStore.state.value.editMode.state.showCrop ? editsViewController.cropViewCorner(at: point) : nil
 
         case .changed:
             guard let corner = changingCorner else {
@@ -108,5 +101,5 @@ public final class PhotoViewController: UIViewController {
 
     private let context: AppContext
     private var changingCorner: Corner?
-    private let editsViewController = EditsViewController()
+    private let editsViewController: EditsViewController
 }

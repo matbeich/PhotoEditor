@@ -5,19 +5,25 @@
 import Foundation
 
 public struct Edits: Codable {
-    var imageRotationAngle: CGFloat
-    var relativeCutFrame: CGRect
-    var filterName: String?
+    public var imageRotationAngle: CGFloat
+    public var relativeCutFrame: CGRect?
+    public var filterName: String?
+
+    public init(angle: CGFloat? = nil, relativeCutFrame: CGRect? = nil, filterName: String? = nil) {
+        self.imageRotationAngle = angle ?? 0
+        self.relativeCutFrame = relativeCutFrame
+        self.filterName = filterName
+    }
 
     public mutating func reset() {
         imageRotationAngle = 0
-        relativeCutFrame = .zero
+        relativeCutFrame = nil
         filterName = nil
     }
 }
 
 extension Edits {
     static var initial: Edits {
-        return Edits(imageRotationAngle: 0, relativeCutFrame: .zero, filterName: nil)
+        return Edits()
     }
 }

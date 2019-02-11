@@ -34,8 +34,8 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
             cancelContentEditing()
         }
 
-        if let editingParameters = editingInputService.editingParametersFromInput() {
-            restoreStateFromParameters(editingParameters)
+        if let edits = editingInputService.editsFromInput() {
+            restoreStateWithEdits(edits)
         }
     }
 
@@ -48,7 +48,7 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
         }
 
         var img: UIImage? = image
-        var editingParameters = EditingParameters()
+        var edits = Edits()
 //
 //        if let relativeCropZone = sceneController.relativeCropZone {
 //            img = image.cropedZone(relativeCropZone.absolute(in: CGRect(origin: .zero, size: image.size)))
@@ -57,13 +57,13 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
 
         if let filter = sceneController.selectedFilter, let image = img {
             img = context.photoEditService.applyFilter(filter, to: image)
-            editingParameters.filterName = filter.name
+            edits.filterName = filter.name
         }
 
         guard
             let result = img,
             let jpegData = result.jpegData(compressionQuality: 1.0),
-            let encodedData = editingInputService.encodeToData(parameters: editingParameters)
+            let encodedData = editingInputService.encodeToData(edits: edits)
         else {
             return
         }
@@ -86,12 +86,12 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
 
     }
 
-    private func restoreStateFromParameters(_ parameters: EditingParameters) {
-        if let cropRelative = parameters.relativeCropRectangle {
+    private func restoreStateWithEdits(_ edits: Edits) {
+        if let cropRelative = edits.relativeCutFrame {
             sceneController.restoreCropedRect(fromRelative: cropRelative)
         }
 
-        if let filterName = parameters.filterName {
+        if let filterName = edits.filterName {
             sceneController.selectedFilter = CIFilter(name: filterName)
         }
     }

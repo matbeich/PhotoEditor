@@ -329,6 +329,7 @@
 			children = (
 				8413020A21B7F87900908E58 /* AppStates */,
 				848897512191A6C000D99E91 /* EditingStates */,
+				842E308A21C157080096F1F9 /* Models */,
 				8422C96821B532E600F281A9 /* EditFilter.swift */,
 				8441824821F0A07E0038FC62 /* KeepInBoundsAction.swift */,
 				846E574C21A811EC00D24473 /* AppContext.swift */,
@@ -336,7 +337,6 @@
 				844FC8F52199670100E5BD08 /* Config.swift */,
 				843F78D421B6A5DA0028C43A /* Subscriber.swift */,
 				844102CB21B7FA4200695AC9 /* EditMode.swift */,
-				842E308A21C157080096F1F9 /* Models */,
 			);
 			path = Common;
 			sourceTree = "<group>";
