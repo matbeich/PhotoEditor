@@ -4,6 +4,7 @@
 
 import Foundation
 import PhotosUI
+import PhotoEditorKit
 
 final class ContentEditingService {
     var input: PHContentEditingInput
@@ -12,7 +13,7 @@ final class ContentEditingService {
         self.input = input
     }
 
-    func editingParametersFromInput() -> EditingParameters? {
+    func editsFromInput() -> Edits? {
         guard
             let data = input.adjustmentData?.data,
             let object = NSKeyedUnarchiver.unarchiveObject(with: data) as? Data
@@ -20,12 +21,12 @@ final class ContentEditingService {
             return nil
         }
 
-        return try? PropertyListDecoder().decode(EditingParameters.self, from: object)
+        return try? PropertyListDecoder().decode(Edits.self, from: object)
     }
 
-    func encodeToData(parameters: EditingParameters) -> Data? {
+    func encodeToData(edits: Edits) -> Data? {
         guard
-            let object = try? PropertyListEncoder().encode(parameters),
+            let object = try? PropertyListEncoder().encode(edits),
             let data = try? NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: true)
         else {
                 return nil

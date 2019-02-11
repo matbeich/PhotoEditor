@@ -5,18 +5,18 @@
 import Foundation
 
 public struct Edits: Codable {
-    public var imageRotationAngle: CGFloat?
+    public var imageRotationAngle: CGFloat
     public var relativeCutFrame: CGRect?
     public var filterName: String?
 
     public init(angle: CGFloat? = nil, relativeCutFrame: CGRect? = nil, filterName: String? = nil) {
-        self.imageRotationAngle = angle
+        self.imageRotationAngle = angle ?? 0
         self.relativeCutFrame = relativeCutFrame
         self.filterName = filterName
     }
 
     public mutating func reset() {
-        imageRotationAngle = nil
+        imageRotationAngle = 0
         relativeCutFrame = nil
         filterName = nil
     }
