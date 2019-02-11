@@ -11,19 +11,16 @@ open class SceneController: UIViewController {
     public var selectedFilter: EditFilter? {
         didSet {
             applyFilter(selectedFilter)
+            context.stateStore.state.value.performedEdits.filterName = selectedFilter?.name
         }
+    }
+
+    public var edits: Edits {
+        return context.stateStore.state.value.performedEdits
     }
 
     public var currentPhoto: UIImage? {
         return photoViewController.originalPhoto
-    }
-
-    public var cutArea: CGRect {
-        return photoViewController.cutArea
-    }
-
-    public var angle: CGFloat? {
-        return photoViewController.angle
     }
 
     public init(context: AppContext) {
