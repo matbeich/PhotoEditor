@@ -6,7 +6,6 @@ import SnapKit
 import UIKit
 
 public final class EditsViewController: UIViewController {
-
     public var edits: Edits
     public var mode: EditMode = .normal {
         didSet {

@@ -15,11 +15,7 @@ open class SceneController: UIViewController {
         }
     }
 
-    public var edits: Edits {
-        return context.stateStore.state.value.performedEdits
-    }
-
-    public var currentPhoto: UIImage? {
+    public var scenePhoto: UIImage? {
         return photoViewController.originalPhoto
     }
 
@@ -34,6 +30,11 @@ open class SceneController: UIViewController {
         fatalError("Not implemented")
     }
 
+    deinit {
+        context.stateStore.unsubscribeSubscriber(with: id)
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+
     override open func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -43,11 +44,6 @@ open class SceneController: UIViewController {
 
         setup()
         makeConstraints()
-    }
-
-    deinit {
-        context.stateStore.unsubscribeSubscriber(with: id)
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
 
     override open func viewDidAppear(_ animated: Bool) {
@@ -109,6 +105,7 @@ open class SceneController: UIViewController {
             rotateControl.removeFromSuperview()
 
             add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
+            toolControlsConstainerTop?.update(offset: -toolControlsContainer.bounds.height)
 
         case .normal:
             break
@@ -132,12 +129,13 @@ open class SceneController: UIViewController {
 
     private func updateFiltersPhoto() {
         photoViewController.savePerfomedEdits()
-        guard let photo = currentPhoto else {
+        guard let photo = scenePhoto else {
             return
         }
 
+        let size = thumbnailSizeFor(image: photo)
+
         DispatchQueue.global().async { [weak self] in
-            let size = photo.size.applying(CGAffineTransform(scaleX: 0.2, y: 0.2))
             guard let pht = photo.resizeVI(size: size), let self = self else {
                 return
             }
@@ -166,6 +164,13 @@ open class SceneController: UIViewController {
 
             self?.photoViewController.updatePhoto(image)
         }
+    }
+
+    private func thumbnailSizeFor(image: UIImage) -> CGSize {
+        let heightRatio =  image.size.height / image.size.width
+        let value: CGFloat = 150.0
+
+        return CGSize(width: value, height: value * heightRatio)
     }
 
     private lazy var filtersCollectionViewController: FiltersCollectionViewController = {
@@ -225,35 +230,6 @@ extension SceneController: FiltersCollectionViewControllerDelegate {
     }
 }
 
-extension PhotoEditorService {
-    public func applyEdits(_ edits: Edits, to image: UIImage, callback: @escaping (Bool, UIImage?) -> Void) {
-        var modifiedImage: UIImage? = image
+extension FiltersCollectionViewController {
 
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else {
-                callback(false, nil)
-                return
-            }
-
-            if edits.imageRotationAngle != 0, let image = modifiedImage?.zoom(scale: 1.0) {
-                modifiedImage = self.rotateImage(image, byDegrees: edits.imageRotationAngle)
-            }
-
-            let rotatedImageFrame = CGRect(origin: .zero, size: modifiedImage?.size ?? .zero)
-
-            if let cropZone = edits.relativeCutFrame?.absolute(in: rotatedImageFrame) {
-                modifiedImage = modifiedImage?.cropedZone(cropZone)
-            }
-
-            if let filter = edits.filter, let editingImage = modifiedImage {
-                self.asyncApplyFilter(filter, to: editingImage) { image in
-                    callback(image != nil, image)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    callback(true, modifiedImage)
-                }
-            }
-        }
-    }
 }

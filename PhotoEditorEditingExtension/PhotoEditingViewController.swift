@@ -47,33 +47,30 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
             return
         }
 
-        context.photoEditService.applyEdits(sceneController.edits, to: image) { [weak self] success, image in
-            guard
-                success,
-                let self = self,
-                let result = image,
-                let jpegData = result.jpegData(compressionQuality: 1.0),
-                let encodedData = self.editingInputService.encodeToData(edits: self.sceneController.edits)
-            else {
-                return
-            }
+//        context.photoEditService.applyEdits(sceneController.edits, to: image) { [weak self] success, image in
+//            guard
+//                success,
+//                let self = self,
+//                let result = image,
+//                let jpegData = result.jpegData(compressionQuality: 1.0),
+//                let encodedData = self.editingInputService.encodeToData(edits: self.sceneController.edits)
+//            else {
+//                return
+//            }
+//
+//            let output = self.editingInputService.configureOutputFromData(encodedData)
+//
+//            do {
+//                try jpegData.write(to: output.renderedContentURL)
+//            } catch let error {
+//                assertionFailure(error.localizedDescription)
+//                completionHandler(nil)
+//
+//                return
+//            }
 
-            let output = self.editingInputService.configureOutputFromData(encodedData)
-
-            do {
-                try jpegData.write(to: output.renderedContentURL)
-            } catch let error {
-                assertionFailure(error.localizedDescription)
-                completionHandler(nil)
-
-                return
-            }
-
-            completionHandler(output)
+//            completionHandler(output)
         }
-
-
-    }
 
     func cancelContentEditing() {
 

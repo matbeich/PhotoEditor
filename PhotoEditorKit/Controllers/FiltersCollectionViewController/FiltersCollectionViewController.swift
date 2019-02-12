@@ -23,7 +23,7 @@ public class FiltersCollectionViewController: UIViewController {
         }
     }
 
-    public init(context: AppContext,image: UIImage? = nil, filters: [AppFilter] = []) {
+    public init(context: AppContext, image: UIImage? = nil, filters: [AppFilter] = []) {
         self.filters = filters
         self.image = image
         self.context = context

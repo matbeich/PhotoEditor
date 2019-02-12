@@ -27,7 +27,8 @@ class AppNavigator: NSObject {
     }
 
     @objc private func saveImage() {
-        context.photoEditService.applyEdits(sceneController!.edits, to: image!) { [weak self] succes, image in
+        let edits = context.stateStore.state.value.performedEdits
+        context.photoEditService.applyEdits(edits, to: image!) { [weak self] succes, image in
             let message = succes ? "Success" : "Error"
 
             guard let self = self, let image = image else {

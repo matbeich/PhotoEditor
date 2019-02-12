@@ -76,3 +76,36 @@ private extension CIFilter {
         self.init(name: appFilter.specs.name, parameters: appFilter.specs.parameters)
     }
 }
+
+extension PhotoEditorService {
+    public func applyEdits(_ edits: Edits, to image: UIImage, callback: @escaping (Bool, UIImage?) -> Void) {
+        var modifiedImage: UIImage? = image
+
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else {
+                callback(false, nil)
+                return
+            }
+
+            if edits.imageRotationAngle != 0, let image = modifiedImage?.zoom(scale: 1.0) {
+                modifiedImage = self.rotateImage(image, byDegrees: edits.imageRotationAngle)
+            }
+
+            let rotatedImageFrame = CGRect(origin: .zero, size: modifiedImage?.size ?? .zero)
+
+            if let cropZone = edits.relativeCutFrame?.absolute(in: rotatedImageFrame) {
+                modifiedImage = modifiedImage?.cropedZone(cropZone)
+            }
+
+            if let filter = edits.filter, let editingImage = modifiedImage {
+                self.asyncApplyFilter(filter, to: editingImage) { image in
+                    callback(image != nil, image)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    callback(true, modifiedImage)
+                }
+            }
+        }
+    }
+}
