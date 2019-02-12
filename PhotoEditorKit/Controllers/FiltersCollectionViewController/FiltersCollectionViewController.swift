@@ -5,7 +5,7 @@
 import UIKit
 
 public protocol FiltersCollectionViewControllerDelegate: AnyObject {
-    func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter)
+    func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: AppFilter)
 }
 
 public class FiltersCollectionViewController: UIViewController {
@@ -17,13 +17,13 @@ public class FiltersCollectionViewController: UIViewController {
         }
     }
 
-    public var filters: [EditFilter] {
+    public var filters: [AppFilter] {
         didSet {
             collectionView.reloadData()
         }
     }
 
-    public init(context: AppContext,image: UIImage? = nil, filters: [EditFilter] = []) {
+    public init(context: AppContext,image: UIImage? = nil, filters: [AppFilter] = []) {
         self.filters = filters
         self.image = image
         self.context = context
@@ -80,7 +80,7 @@ extension FiltersCollectionViewController: UICollectionViewDataSource {
 
         context.photoEditService.asyncApplyFilter(filter, to: image) {
             filterCell.image = $0
-            filterCell.filterName = filter.name
+            filterCell.filterName = filter.rawValue
         }
 
         return filterCell
