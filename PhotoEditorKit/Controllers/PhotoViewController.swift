@@ -44,7 +44,15 @@ public final class PhotoViewController: UIViewController {
     }
 
     public func setPhoto(_ photo: UIImage) {
-        editsViewController.set(photo)
+        editsViewController.setPhoto(photo)
+    }
+
+    public func updatePhoto(_ photo: UIImage) {
+        editsViewController.updatePhoto(photo)
+    }
+
+    public func savePerfomedEdits() {
+        editsViewController.savePerfomedEdits()
     }
 
     public func restoreCropedRect(fromRelative rect: CGRect) {

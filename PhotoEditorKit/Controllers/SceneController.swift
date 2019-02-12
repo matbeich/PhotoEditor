@@ -8,10 +8,10 @@ import SnapKit
 import UIKit
 
 open class SceneController: UIViewController {
-    public var selectedFilter: EditFilter? {
+    public var selectedFilter: AppFilter? {
         didSet {
             applyFilter(selectedFilter)
-            context.stateStore.state.value.performedEdits.filterName = selectedFilter?.name
+            context.stateStore.state.value.performedEdits.filter = selectedFilter
         }
     }
 
@@ -53,7 +53,7 @@ open class SceneController: UIViewController {
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        changeAppearenceOfTools(for: photoViewController.mode)
+        showTools(for: photoViewController.mode)
         updateFiltersPhoto()
     }
 
@@ -91,7 +91,7 @@ open class SceneController: UIViewController {
         photoViewController.rotateImage(by: control.angle)
     }
 
-    private func changeAppearenceOfTools(for mode: EditMode) {
+    private func showTools(for mode: EditMode) {
         switch mode {
         case .crop:
             filtersCollectionViewController.view.removeFromSuperview()
@@ -103,8 +103,6 @@ open class SceneController: UIViewController {
             rotateControl.snp.remakeConstraints { make in
                 make.edges.equalToSuperview()
             }
-
-            toolControlsContainer.addSubview(rotateControl)
 
         case .filter:
             rotateControl.snp.removeConstraints()
@@ -127,34 +125,51 @@ open class SceneController: UIViewController {
         add(fullscreenChild: filtersCollectionViewController, in: toolControlsContainer)
 
         context.stateStore.bindSubscriber(with: id) { [weak self] state in
-            self?.changeAppearenceOfTools(for: state.value.editMode)
+            self?.showTools(for: state.value.editMode)
             self?.photoViewController.mode = state.value.editMode
         }
     }
 
-    #warning("set filters")
     private func updateFiltersPhoto() {
-//        let photo = 
-//        guard let photo = photoViewController.cropedOriginal else {
-//            return
-//        }
-//
-//        DispatchQueue.global().async { [weak self] in
-//            let size = photo.size.applying(CGAffineTransform(scaleX: 0.2, y: 0.2))
-//            let pht = photo.resizeVI(size: size)
-//
-//            DispatchQueue.main.async {
-//                self?.filtersCollectionViewController.image = pht
-//            }
-//        }
+        photoViewController.savePerfomedEdits()
+        guard let photo = currentPhoto else {
+            return
+        }
+
+        DispatchQueue.global().async { [weak self] in
+            let size = photo.size.applying(CGAffineTransform(scaleX: 0.2, y: 0.2))
+            guard let pht = photo.resizeVI(size: size), let self = self else {
+                return
+            }
+
+            self.context.photoEditService.applyEdits(self.context.stateStore.state.value.performedEdits, to: pht) { success, image in
+                guard let photo = image , success else {
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    self.filtersCollectionViewController.image = photo
+                }
+            }
+        }
+    }
+
+    private func applyFilter(_ filter: AppFilter?) {
+        guard let originalPhoto = photoViewController.originalPhoto, let filter = filter else {
+            return
+        }
+
+        context.photoEditService.asyncApplyFilter(filter, to: originalPhoto) { [weak self] image in
+            guard let image = image else {
+                return
+            }
+
+            self?.photoViewController.updatePhoto(image)
+        }
     }
 
     private lazy var filtersCollectionViewController: FiltersCollectionViewController = {
-        let filters = Array(AppFilter.allCases).compactMap { CIFilter(
-            name: $0.specs.name,
-            parameters: $0.specs.parameters)
-        }
-        
+        let filters = Array(AppFilter.allCases)
         let controller = FiltersCollectionViewController(context: context, filters: filters)
 
         controller.delegate = self
@@ -169,6 +184,7 @@ open class SceneController: UIViewController {
             BarButtonItem(title: "Filters", image: nil),
             BarButtonItem(title: "Preview", image: nil)
         ]
+
         let toolbar = Toolbar(frame: .zero, barItems: barItems)
         toolbar.delegate = self
         toolbar.backgroundColor = .white
@@ -176,45 +192,68 @@ open class SceneController: UIViewController {
         return toolbar
     }()
 
-    private func applyFilter(_ filter: EditFilter?) {
-        guard let originalPhoto = photoViewController.originalPhoto, let filter = filter else {
-            return
-        }
-
-        context.photoEditService.asyncApplyFilter(filter, to: originalPhoto) { [weak self] image in
-            guard let image = image else {
-                return
-            }
-
-            self?.photoViewController.setPhoto(image)
-        }
-    }
-
-    private let rotateControl = RotateAngleControl(startAngle: 0, frame: .zero)
     private let context: AppContext
     private var photoViewController: PhotoViewController
     private let toolControlsContainer = UIView()
     private let photoViewControllerContainer = UIView()
     private var toolControlsConstainerTop: Constraint?
+    private let rotateControl = RotateAngleControl(startAngle: 0, frame: .zero)
 }
 
 extension SceneController: ToolbarDelegate {
     public func toolbar(_ toolbar: Toolbar, itemTapped: BarButtonItem) {
-        if itemTapped.tag == 2 {
-            // FIXME: add stickers mode
-            // Current.stateStore.state.value.editMode = .stickers
-        } else if itemTapped.tag == 1 {
-            updateFiltersPhoto()
-            context.stateStore.state.value.editMode = .filter
-
-        } else if itemTapped.tag == 0 {
+        switch itemTapped.tag {
+        case 0:
             context.stateStore.state.value.editMode = .crop
+
+        case 1:
+            context.stateStore.state.value.editMode = .filter
+            updateFiltersPhoto()
+
+        case 2:
+            #warning("add stickers mode")
+            print("stickers mode not implemented yet")
+
+        default: break
         }
     }
 }
 
 extension SceneController: FiltersCollectionViewControllerDelegate {
-    public func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: EditFilter) {
+    public func filtersCollectionViewController(_ controller: FiltersCollectionViewController, didSelectFilter filter: AppFilter) {
         selectedFilter = filter
+    }
+}
+
+extension PhotoEditorService {
+    public func applyEdits(_ edits: Edits, to image: UIImage, callback: @escaping (Bool, UIImage?) -> Void) {
+        var modifiedImage: UIImage? = image
+
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else {
+                callback(false, nil)
+                return
+            }
+
+            if edits.imageRotationAngle != 0, let image = modifiedImage?.zoom(scale: 1.0) {
+                modifiedImage = self.rotateImage(image, byDegrees: edits.imageRotationAngle)
+            }
+
+            let rotatedImageFrame = CGRect(origin: .zero, size: modifiedImage?.size ?? .zero)
+
+            if let cropZone = edits.relativeCutFrame?.absolute(in: rotatedImageFrame) {
+                modifiedImage = modifiedImage?.cropedZone(cropZone)
+            }
+
+            if let filter = edits.filter, let editingImage = modifiedImage {
+                self.asyncApplyFilter(filter, to: editingImage) { image in
+                    callback(image != nil, image)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    callback(true, modifiedImage)
+                }
+            }
+        }
     }
 }

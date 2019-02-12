@@ -11,7 +11,7 @@ public final class PhotoEditorService {
         self.context = CIContext(options: options)
     }
 
-    public func asyncApplyFilter(_ filter: EditFilter, to image: UIImage, with callback: @escaping EditCallback) {
+    public func asyncApplyFilter(_ filter: AppFilter, to image: UIImage, with callback: @escaping EditCallback) {
         DispatchQueue.global().async { [weak self] in
             let img = self?.applyFilter(filter, to: image)
 
@@ -31,12 +31,12 @@ public final class PhotoEditorService {
         }
     }
 
-    public func applyFilter(_ filter: EditFilter, to image: UIImage, withOptions options: [String: Any] = [:]) -> UIImage? {
-        guard let ciImage = CIImage(image: image) else {
+    public func applyFilter(_ filter: AppFilter, to image: UIImage) -> UIImage? {
+        guard let ciImage = CIImage(image: image), let ciFilter = CIFilter(name: filter.specs.name, parameters: [:]) else {
             return nil
         }
 
-        return filter.applied(to: ciImage, in: context, withOptions: options).flatMap { UIImage(cgImage: $0) }
+        return ciFilter.applied(to: ciImage, in: context, withOptions: filter.specs.parameters).flatMap { UIImage(cgImage: $0) }
     }
 
     public func rotateImage(_ image: UIImage, byDegrees degrees: CGFloat) -> UIImage? {
@@ -68,5 +68,11 @@ public final class PhotoEditorService {
 public extension FloatingPoint {
     func isInRange(_ range: Range<Self>) -> Bool {
         return range.contains(self)
+    }
+}
+
+private extension CIFilter {
+    convenience init?(appFilter: AppFilter) {
+        self.init(name: appFilter.specs.name, parameters: appFilter.specs.parameters)
     }
 }

@@ -5,7 +5,7 @@
 import Foundation
 import CoreImage
 
-public enum AppFilter: String, CaseIterable {
+public enum AppFilter: String, CaseIterable, Codable {
     public typealias Specs = (name: String, parameters: [String: Any])
 
     case original

@@ -47,39 +47,32 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
             return
         }
 
-        var img: UIImage? = image
-        var edits = Edits()
-//
-//        if let relativeCropZone = sceneController.relativeCropZone {
-//            img = image.cropedZone(relativeCropZone.absolute(in: CGRect(origin: .zero, size: image.size)))
-//            editingParameters.relativeCropRectangle = relativeCropZone
-//        }
+        context.photoEditService.applyEdits(sceneController.edits, to: image) { [weak self] success, image in
+            guard
+                success,
+                let self = self,
+                let result = image,
+                let jpegData = result.jpegData(compressionQuality: 1.0),
+                let encodedData = self.editingInputService.encodeToData(edits: self.sceneController.edits)
+            else {
+                return
+            }
 
-        if let filter = sceneController.selectedFilter, let image = img {
-            img = context.photoEditService.applyFilter(filter, to: image)
-            edits.filterName = filter.name
+            let output = self.editingInputService.configureOutputFromData(encodedData)
+
+            do {
+                try jpegData.write(to: output.renderedContentURL)
+            } catch let error {
+                assertionFailure(error.localizedDescription)
+                completionHandler(nil)
+
+                return
+            }
+
+            completionHandler(output)
         }
 
-        guard
-            let result = img,
-            let jpegData = result.jpegData(compressionQuality: 1.0),
-            let encodedData = editingInputService.encodeToData(edits: edits)
-        else {
-            return
-        }
 
-        let output = editingInputService.configureOutputFromData(encodedData)
-
-        do {
-            try jpegData.write(to: output.renderedContentURL)
-        } catch let error {
-            assertionFailure(error.localizedDescription)
-            completionHandler(nil)
-
-            return
-        }
-
-        completionHandler(output)
     }
 
     func cancelContentEditing() {
@@ -91,8 +84,8 @@ class PhotoEditingViewController: UIViewController, PHContentEditingController {
             sceneController.restoreCropedRect(fromRelative: cropRelative)
         }
 
-        if let filterName = edits.filterName {
-            sceneController.selectedFilter = CIFilter(name: filterName)
+        if let filter = edits.filter {
+            sceneController.selectedFilter = filter
         }
     }
 

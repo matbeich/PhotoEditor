@@ -7,12 +7,7 @@ import UIKit
 
 public final class EditsViewController: UIViewController {
 
-    public var edits: Edits {
-        didSet {
-            context.stateStore.state.value.performedEdits = edits
-        }
-    }
-
+    public var edits: Edits
     public var mode: EditMode = .normal {
         didSet {
             applyMode()
@@ -25,11 +20,12 @@ public final class EditsViewController: UIViewController {
 
     public init(frame: CGRect = .zero, image: UIImage? = nil, context: AppContext) {
         self.imageView = UIImageView(image: image)
-        self.edits = .initial
+        self.edits = context.stateStore.state.value.performedEdits
         self.scrollView = UIScrollView(frame: frame)
         self.cropView = CropView(grid: Grid(numberOfRows: 3, numberOfColumns: 3))
         self.visibleContentFrame = .zero
         self.context = context
+        
         super.init(nibName: nil, bundle: nil)
 
         setupScrollView()
@@ -54,9 +50,15 @@ public final class EditsViewController: UIViewController {
         updateMaskPath()
     }
 
-    public func set(_ photo: UIImage) {
-        saveCropedAppearence()
+    public func setPhoto(_ photo: UIImage) {
+        edits = .initial
         imageView = UIImageView(image: photo)
+    }
+
+    public func updatePhoto(_ photo: UIImage) {
+        saveCropedAppearence()
+        imageView.image = photo
+        fitSavedRectToCropView()
     }
 
     public func rotatePhoto(by angle: CGFloat) {
@@ -111,6 +113,10 @@ public final class EditsViewController: UIViewController {
 
     public func fitCropView() {
         cropView.clipToAllowedBounds(aspectScaled: true)
+    }
+
+    public func savePerfomedEdits() {
+        context.stateStore.state.value.performedEdits = edits
     }
 
     public func saveCropedAppearence() {
@@ -319,7 +325,7 @@ public final class EditsViewController: UIViewController {
         edits = Edits(
             angle: angle ?? self.edits.imageRotationAngle,
             relativeCutFrame: relativeCutRect ?? self.edits.relativeCutFrame,
-            filterName: filter?.specs.name ?? self.edits.filterName
+            filter: filter ?? self.edits.filter
         )
     }
 
